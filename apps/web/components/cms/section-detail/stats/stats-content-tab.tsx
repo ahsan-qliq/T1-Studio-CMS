@@ -1,20 +1,15 @@
 "use client"
 
-import { useEffect } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
+import { useFormSync } from "@/hooks/use-form-sync"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { GripVertical, Trash2, Plus } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { cn } from "@workspace/ui/lib/utils"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { DragHandle } from "../shared/drag-handle"
+import { DeleteButton } from "../shared/delete-button"
+import { AddItemButton } from "../shared/add-item-button"
 import type { Language, StatsContent } from "@/types/cms"
 
 // ─── Schema ─────────────────────────────────────────────────────────────────
@@ -34,15 +29,13 @@ const statsSchema = z.object({
 
 type StatsFormValues = z.infer<typeof statsSchema>
 
-// ─── Props ───────────────────────────────────────────────────────────────────
+// ─── Component ───────────────────────────────────────────────────────────────
 
 interface StatsContentTabProps {
   content: StatsContent
   language: Language
   onChange: (content: StatsContent) => void
 }
-
-// ─── Component ───────────────────────────────────────────────────────────────
 
 export function StatsContentTab({ content, language, onChange }: StatsContentTabProps) {
   const isEn = language === "en"
@@ -61,23 +54,10 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
     name: "statistics",
   })
 
-  // Propagate validated changes up to parent
-  useEffect(() => {
-    const sub = form.watch((values) => {
-      if (values.sectionTitleEn !== undefined) {
-        onChange(values as StatsContent)
-      }
-    })
-    return () => sub.unsubscribe()
-  }, [form, onChange])
+  useFormSync(form, onChange)
 
   const addStatistic = () => {
-    append({
-      id: `stat-${Date.now()}`,
-      value: "",
-      labelEn: "",
-      labelAr: "",
-    })
+    append({ id: `stat-${Date.now()}`, value: "", labelEn: "", labelAr: "" })
   }
 
   const titleField = isEn ? "sectionTitleEn" : "sectionTitleAr"
@@ -85,7 +65,6 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
   return (
     <Form {...form}>
       <form className="space-y-5 px-4 py-4" noValidate>
-        {/* Section Title */}
         <FormField
           control={form.control}
           name={titleField}
@@ -105,7 +84,6 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
           )}
         />
 
-        {/* Statistics list */}
         <fieldset className="space-y-2">
           <legend className="text-xs font-medium text-zinc-700">Statistics</legend>
 
@@ -120,15 +98,8 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
                 role="listitem"
                 className="flex items-center gap-2 rounded-md border border-zinc-100 bg-white px-2 py-1.5"
               >
-                {/* Drag handle — visual only */}
-                <span
-                  aria-hidden
-                  className="shrink-0 cursor-grab text-zinc-300 active:cursor-grabbing"
-                >
-                  <GripVertical className="size-4" />
-                </span>
+                <DragHandle />
 
-                {/* Value */}
                 <div className="w-20 shrink-0">
                   <Input
                     {...form.register(`statistics.${index}.value`)}
@@ -136,18 +107,14 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
                     aria-label={`Statistic ${index + 1} value`}
                     className={cn(
                       "h-8 text-center text-sm font-semibold",
-                      form.formState.errors.statistics?.[index]?.value &&
-                        "border-red-400"
+                      form.formState.errors.statistics?.[index]?.value && "border-red-400"
                     )}
                   />
                 </div>
 
-                {/* Label */}
                 <Input
                   {...form.register(
-                    isEn
-                      ? `statistics.${index}.labelEn`
-                      : `statistics.${index}.labelAr`
+                    isEn ? `statistics.${index}.labelEn` : `statistics.${index}.labelAr`
                   )}
                   placeholder={isEn ? "Happy Clients" : "عملاء سعداء"}
                   dir={isEn ? "ltr" : "rtl"}
@@ -155,20 +122,14 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
                   aria-label={`Statistic ${index + 1} label`}
                   className={cn(
                     "h-8 flex-1",
-                    form.formState.errors.statistics?.[index]?.labelEn &&
-                      "border-red-400"
+                    form.formState.errors.statistics?.[index]?.labelEn && "border-red-400"
                   )}
                 />
 
-                {/* Remove */}
-                <button
-                  type="button"
-                  aria-label={`Remove statistic ${index + 1}`}
+                <DeleteButton
                   onClick={() => remove(index)}
-                  className="shrink-0 rounded p-1 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
-                >
-                  <Trash2 className="size-4" aria-hidden />
-                </button>
+                  ariaLabel={`Remove statistic ${index + 1}`}
+                />
               </div>
             ))}
 
@@ -179,15 +140,7 @@ export function StatsContentTab({ content, language, onChange }: StatsContentTab
             )}
           </div>
 
-          {/* Add Statistic */}
-          <button
-            type="button"
-            onClick={addStatistic}
-            className="flex w-full items-center justify-center gap-1.5 rounded-md border border-dashed border-zinc-200 py-2 text-xs font-medium text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
-          >
-            <Plus className="size-3.5" aria-hidden />
-            Add Statistic
-          </button>
+          <AddItemButton label="Add Statistic" onClick={addStatistic} />
         </fieldset>
       </form>
     </Form>
