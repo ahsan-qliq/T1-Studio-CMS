@@ -8,17 +8,33 @@ import {
   statsContent as defaultStatsContent,
   servicesContent as defaultServicesContent,
   featuredSpacesContent as defaultFeaturedSpacesContent,
+  journeyContent as defaultJourneyContent,
+  whyChooseContent as defaultWhyChooseContent,
+  testimonialsContent as defaultTestimonialsContent,
+  consultationCtaContent as defaultConsultationCtaContent,
+  awardsContent as defaultAwardsContent,
+  designTipsContent as defaultDesignTipsContent,
+  faqContent as defaultFaqContent,
+  locationLinksContent as defaultLocationLinksContent,
 } from "@/data/mock"
 import type {
+  AwardsContent,
   CmsPage,
+  DesignTipsContent,
+  FaqContent,
+  LocationLinksContent,
   CmsSection,
+  ConsultationCtaContent,
   FeaturedSpacesContent,
   HeroContent,
+  JourneyContent,
   Language,
   PageStatus,
   ServicesContent,
   SignatureProjectsContent,
   StatsContent,
+  TestimonialsContent,
+  WhyChooseContent,
 } from "@/types/cms"
 
 interface PageEditorProps {
@@ -44,6 +60,30 @@ export function PageEditor({ page: initialPage }: PageEditorProps) {
   const [signatureContent, setSignatureContent] = useState<SignatureProjectsContent>(
     initialPage.signatureProjectsContent
   )
+  const [journeyContent, setJourneyContent] = useState<JourneyContent>(
+    initialPage.journeyContent ?? defaultJourneyContent
+  )
+  const [whyChooseContent, setWhyChooseContent] = useState<WhyChooseContent>(
+    initialPage.whyChooseContent ?? defaultWhyChooseContent
+  )
+  const [testimonialsContent, setTestimonialsContent] = useState<TestimonialsContent>(
+    initialPage.testimonialsContent ?? defaultTestimonialsContent
+  )
+  const [consultationCtaContent, setConsultationCtaContent] = useState<ConsultationCtaContent>(
+    initialPage.consultationCtaContent ?? defaultConsultationCtaContent
+  )
+  const [awardsContent, setAwardsContent] = useState<AwardsContent>(
+    initialPage.awardsContent ?? defaultAwardsContent
+  )
+  const [designTipsContent, setDesignTipsContent] = useState<DesignTipsContent>(
+    initialPage.designTipsContent ?? defaultDesignTipsContent
+  )
+  const [faqContent, setFaqContent] = useState<FaqContent>(
+    initialPage.faqContent ?? defaultFaqContent
+  )
+  const [locationLinksContent, setLocationLinksContent] = useState<LocationLinksContent>(
+    initialPage.locationLinksContent ?? defaultLocationLinksContent
+  )
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -67,6 +107,22 @@ export function PageEditor({ page: initialPage }: PageEditorProps) {
         onFeaturedSpacesContentChange={setFeaturedSpacesContent}
         signatureContent={signatureContent}
         onSignatureContentChange={setSignatureContent}
+        journeyContent={journeyContent}
+        onJourneyContentChange={setJourneyContent}
+        whyChooseContent={whyChooseContent}
+        onWhyChooseContentChange={setWhyChooseContent}
+        testimonialsContent={testimonialsContent}
+        onTestimonialsContentChange={setTestimonialsContent}
+        consultationCtaContent={consultationCtaContent}
+        onConsultationCtaContentChange={setConsultationCtaContent}
+        awardsContent={awardsContent}
+        onAwardsContentChange={setAwardsContent}
+        designTipsContent={designTipsContent}
+        onDesignTipsContentChange={setDesignTipsContent}
+        faqContent={faqContent}
+        onFaqContentChange={setFaqContent}
+        locationLinksContent={locationLinksContent}
+        onLocationLinksContentChange={setLocationLinksContent}
       />
     </div>
   )
