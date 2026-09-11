@@ -1,19 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
+import { useFormSync } from "@/hooks/use-form-sync"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Plus } from "lucide-react"
-import { Input } from "@workspace/ui/components/input"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
+import { SectionField } from "../shared/section-field"
+import { AddItemButton } from "../shared/add-item-button"
 import { SpaceCardRow } from "./space-card-row"
 import type { FeaturedSpacesContent, Language } from "@/types/cms"
 
@@ -38,55 +31,7 @@ const featuredSpacesSchema = z.object({
 
 export type FeaturedSpacesFormValues = z.infer<typeof featuredSpacesSchema>
 
-// ─── Field helper ─────────────────────────────────────────────────────────────
-
-function SectionField({
-  label,
-  name,
-  isRtl,
-  placeholder,
-  optional,
-  form,
-}: {
-  label: string
-  name: keyof Omit<FeaturedSpacesFormValues, "cards">
-  isRtl?: boolean
-  placeholder?: string
-  optional?: boolean
-  form: ReturnType<typeof useForm<FeaturedSpacesFormValues>>
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel dir={isRtl ? "rtl" : undefined} lang={isRtl ? "ar" : undefined}>
-            {label}
-            {optional && (
-              <span className="ml-1 font-normal text-zinc-400">
-                {isRtl ? "(اختياري)" : "(Optional)"}
-              </span>
-            )}
-          </FormLabel>
-          <FormControl>
-            <Input
-              {...field}
-              dir={isRtl ? "rtl" : "ltr"}
-              lang={isRtl ? "ar" : "en"}
-              placeholder={placeholder}
-              aria-label={label}
-              className={isRtl ? "text-right" : undefined}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
-
-// ─── Main component ───────────────────────────────────────────────────────────
+// ─── Component ───────────────────────────────────────────────────────────────
 
 interface FeaturedSpacesContentTabProps {
   content: FeaturedSpacesContent
@@ -111,14 +56,7 @@ export function FeaturedSpacesContentTab({
     name: "cards",
   })
 
-  useEffect(() => {
-    const sub = form.watch((values) => {
-      if (values.sectionTitleEn !== undefined) {
-        onChange(values as FeaturedSpacesContent)
-      }
-    })
-    return () => sub.unsubscribe()
-  }, [form, onChange])
+  useFormSync(form, onChange)
 
   const addCard = () => {
     append({
@@ -132,35 +70,32 @@ export function FeaturedSpacesContentTab({
   return (
     <Form {...form}>
       <form className="space-y-5 px-5 py-5" noValidate>
-        {/* Section Title */}
         <SectionField
+          control={form.control}
           label={isEn ? "Section Title" : "عنوان القسم"}
           name={isEn ? "sectionTitleEn" : "sectionTitleAr"}
           isRtl={!isEn}
           placeholder={isEn ? "Featured Spaces" : "المساحات المميزة"}
-          form={form}
         />
 
-        {/* Button Label + Button Link — two columns */}
         <div className="grid grid-cols-2 gap-4">
           <SectionField
+            control={form.control}
             label={isEn ? "Button Label" : "نص الزر"}
             name={isEn ? "buttonLabelEn" : "buttonLabelAr"}
             isRtl={!isEn}
             optional
             placeholder={isEn ? "View All Spaces" : "عرض جميع المساحات"}
-            form={form}
           />
           <SectionField
+            control={form.control}
             label="Button Link"
             name="buttonLink"
             optional
             placeholder="/spaces"
-            form={form}
           />
         </div>
 
-        {/* Space Cards */}
         <fieldset className="space-y-3">
           <legend className="text-sm font-semibold text-zinc-900">Space Cards</legend>
 
@@ -195,14 +130,7 @@ export function FeaturedSpacesContentTab({
             ))}
           </div>
 
-          <button
-            type="button"
-            onClick={addCard}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-200 py-3 text-sm text-zinc-500 transition-colors hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900"
-          >
-            <Plus className="size-4" aria-hidden />
-            Add Space
-          </button>
+          <AddItemButton label="Add Space" onClick={addCard} />
         </fieldset>
       </form>
     </Form>
