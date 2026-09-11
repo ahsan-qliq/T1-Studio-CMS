@@ -1,3 +1,133 @@
+// "use client"
+
+// import { useState } from "react"
+// import { PageHeader } from "./page-header"
+// import { SectionList } from "./section-list"
+// import {
+//   heroContent as defaultHeroContent,
+//   statsContent as defaultStatsContent,
+//   servicesContent as defaultServicesContent,
+//   featuredSpacesContent as defaultFeaturedSpacesContent,
+//   journeyContent as defaultJourneyContent,
+//   whyChooseContent as defaultWhyChooseContent,
+//   testimonialsContent as defaultTestimonialsContent,
+//   consultationCtaContent as defaultConsultationCtaContent,
+//   awardsContent as defaultAwardsContent,
+//   designTipsContent as defaultDesignTipsContent,
+//   faqContent as defaultFaqContent,
+//   locationLinksContent as defaultLocationLinksContent,
+// } from "@/data/mock"
+// import type {
+//   AwardsContent,
+//   CmsPage,
+//   DesignTipsContent,
+//   FaqContent,
+//   LocationLinksContent,
+//   CmsSection,
+//   ConsultationCtaContent,
+//   FeaturedSpacesContent,
+//   HeroContent,
+//   JourneyContent,
+//   Language,
+//   PageStatus,
+//   ServicesContent,
+//   SignatureProjectsContent,
+//   StatsContent,
+//   TestimonialsContent,
+//   WhyChooseContent,
+// } from "@/types/cms"
+
+// interface PageEditorProps {
+//   page: CmsPage
+// }
+
+// export function PageEditor({ page: initialPage }: PageEditorProps) {
+//   const [language, setLanguage] = useState<Language>("en")
+//   const [status, setStatus] = useState<PageStatus>(initialPage.status)
+//   const [sections, setSections] = useState<CmsSection[]>(initialPage.sections)
+//   const [heroContent, setHeroContent] = useState<HeroContent>(
+//     initialPage.heroContent ?? defaultHeroContent
+//   )
+//   const [statsContent, setStatsContent] = useState<StatsContent>(
+//     initialPage.statsContent ?? defaultStatsContent
+//   )
+//   const [servicesContent, setServicesContent] = useState<ServicesContent>(
+//     initialPage.servicesContent ?? defaultServicesContent
+//   )
+//   const [featuredSpacesContent, setFeaturedSpacesContent] = useState<FeaturedSpacesContent>(
+//     initialPage.featuredSpacesContent ?? defaultFeaturedSpacesContent
+//   )
+//   const [signatureContent, setSignatureContent] = useState<SignatureProjectsContent>(
+//     initialPage.signatureProjectsContent
+//   )
+//   const [journeyContent, setJourneyContent] = useState<JourneyContent>(
+//     initialPage.journeyContent ?? defaultJourneyContent
+//   )
+//   const [whyChooseContent, setWhyChooseContent] = useState<WhyChooseContent>(
+//     initialPage.whyChooseContent ?? defaultWhyChooseContent
+//   )
+//   const [testimonialsContent, setTestimonialsContent] = useState<TestimonialsContent>(
+//     initialPage.testimonialsContent ?? defaultTestimonialsContent
+//   )
+//   const [consultationCtaContent, setConsultationCtaContent] = useState<ConsultationCtaContent>(
+//     initialPage.consultationCtaContent ?? defaultConsultationCtaContent
+//   )
+//   const [awardsContent, setAwardsContent] = useState<AwardsContent>(
+//     initialPage.awardsContent ?? defaultAwardsContent
+//   )
+//   const [designTipsContent, setDesignTipsContent] = useState<DesignTipsContent>(
+//     initialPage.designTipsContent ?? defaultDesignTipsContent
+//   )
+//   const [faqContent, setFaqContent] = useState<FaqContent>(
+//     initialPage.faqContent ?? defaultFaqContent
+//   )
+//   const [locationLinksContent, setLocationLinksContent] = useState<LocationLinksContent>(
+//     initialPage.locationLinksContent ?? defaultLocationLinksContent
+//   )
+
+//   return (
+//     <div className="flex h-full flex-col overflow-hidden">
+//       <PageHeader
+//         pageTitle={initialPage.title.en}
+//         language={language}
+//         onLanguageChange={setLanguage}
+//         status={status}
+//         onStatusChange={setStatus}
+//       />
+//       <SectionList
+//         sections={sections}
+//         onSectionsChange={setSections}
+//         heroContent={heroContent}
+//         onHeroContentChange={setHeroContent}
+//         statsContent={statsContent}
+//         onStatsContentChange={setStatsContent}
+//         servicesContent={servicesContent}
+//         onServicesContentChange={setServicesContent}
+//         featuredSpacesContent={featuredSpacesContent}
+//         onFeaturedSpacesContentChange={setFeaturedSpacesContent}
+//         signatureContent={signatureContent}
+//         onSignatureContentChange={setSignatureContent}
+//         journeyContent={journeyContent}
+//         onJourneyContentChange={setJourneyContent}
+//         whyChooseContent={whyChooseContent}
+//         onWhyChooseContentChange={setWhyChooseContent}
+//         testimonialsContent={testimonialsContent}
+//         onTestimonialsContentChange={setTestimonialsContent}
+//         consultationCtaContent={consultationCtaContent}
+//         onConsultationCtaContentChange={setConsultationCtaContent}
+//         awardsContent={awardsContent}
+//         onAwardsContentChange={setAwardsContent}
+//         designTipsContent={designTipsContent}
+//         onDesignTipsContentChange={setDesignTipsContent}
+//         faqContent={faqContent}
+//         onFaqContentChange={setFaqContent}
+//         locationLinksContent={locationLinksContent}
+//         onLocationLinksContentChange={setLocationLinksContent}
+//       />
+//     </div>
+//   )
+// }
+
 "use client"
 
 import { useState } from "react"
@@ -12,6 +142,7 @@ import {
   whyChooseContent as defaultWhyChooseContent,
   testimonialsContent as defaultTestimonialsContent,
   consultationCtaContent as defaultConsultationCtaContent,
+  partnershipContent as defaultPartnershipContent,
   awardsContent as defaultAwardsContent,
   designTipsContent as defaultDesignTipsContent,
   faqContent as defaultFaqContent,
@@ -30,6 +161,7 @@ import type {
   JourneyContent,
   Language,
   PageStatus,
+  PartnershipContent,
   ServicesContent,
   SignatureProjectsContent,
   StatsContent,
@@ -37,13 +169,18 @@ import type {
   WhyChooseContent,
 } from "@/types/cms"
 
+type SaveState = "idle" | "saving-draft" | "saving-publish" | "error"
+
 interface PageEditorProps {
   page: CmsPage
+  slug: string
 }
 
-export function PageEditor({ page: initialPage }: PageEditorProps) {
+export function PageEditor({ page: initialPage, slug }: PageEditorProps) {
   const [language, setLanguage] = useState<Language>("en")
   const [status, setStatus] = useState<PageStatus>(initialPage.status)
+  const [saveState, setSaveState] = useState<SaveState>("idle")
+  const [saveError, setSaveError] = useState<string | null>(null)
   const [sections, setSections] = useState<CmsSection[]>(initialPage.sections)
   const [heroContent, setHeroContent] = useState<HeroContent>(
     initialPage.heroContent ?? defaultHeroContent
@@ -54,24 +191,30 @@ export function PageEditor({ page: initialPage }: PageEditorProps) {
   const [servicesContent, setServicesContent] = useState<ServicesContent>(
     initialPage.servicesContent ?? defaultServicesContent
   )
-  const [featuredSpacesContent, setFeaturedSpacesContent] = useState<FeaturedSpacesContent>(
-    initialPage.featuredSpacesContent ?? defaultFeaturedSpacesContent
-  )
-  const [signatureContent, setSignatureContent] = useState<SignatureProjectsContent>(
-    initialPage.signatureProjectsContent
-  )
+  const [featuredSpacesContent, setFeaturedSpacesContent] =
+    useState<FeaturedSpacesContent>(
+      initialPage.featuredSpacesContent ?? defaultFeaturedSpacesContent
+    )
+  const [signatureContent, setSignatureContent] =
+    useState<SignatureProjectsContent>(initialPage.signatureProjectsContent)
   const [journeyContent, setJourneyContent] = useState<JourneyContent>(
     initialPage.journeyContent ?? defaultJourneyContent
   )
   const [whyChooseContent, setWhyChooseContent] = useState<WhyChooseContent>(
     initialPage.whyChooseContent ?? defaultWhyChooseContent
   )
-  const [testimonialsContent, setTestimonialsContent] = useState<TestimonialsContent>(
-    initialPage.testimonialsContent ?? defaultTestimonialsContent
-  )
-  const [consultationCtaContent, setConsultationCtaContent] = useState<ConsultationCtaContent>(
-    initialPage.consultationCtaContent ?? defaultConsultationCtaContent
-  )
+  const [testimonialsContent, setTestimonialsContent] =
+    useState<TestimonialsContent>(
+      initialPage.testimonialsContent ?? defaultTestimonialsContent
+    )
+  const [consultationCtaContent, setConsultationCtaContent] =
+    useState<ConsultationCtaContent>(
+      initialPage.consultationCtaContent ?? defaultConsultationCtaContent
+    )
+  const [partnershipContent, setPartnershipContent] =
+    useState<PartnershipContent>(
+      initialPage.partnershipContent ?? defaultPartnershipContent
+    )
   const [awardsContent, setAwardsContent] = useState<AwardsContent>(
     initialPage.awardsContent ?? defaultAwardsContent
   )
@@ -81,9 +224,63 @@ export function PageEditor({ page: initialPage }: PageEditorProps) {
   const [faqContent, setFaqContent] = useState<FaqContent>(
     initialPage.faqContent ?? defaultFaqContent
   )
-  const [locationLinksContent, setLocationLinksContent] = useState<LocationLinksContent>(
-    initialPage.locationLinksContent ?? defaultLocationLinksContent
-  )
+  const [locationLinksContent, setLocationLinksContent] =
+    useState<LocationLinksContent>(
+      initialPage.locationLinksContent ?? defaultLocationLinksContent
+    )
+
+  const buildPagePayload = (nextStatus: PageStatus): CmsPage => ({
+    slug,
+    title: initialPage.title,
+    status: nextStatus,
+    sections,
+    heroContent,
+    statsContent,
+    servicesContent,
+    featuredSpacesContent,
+    signatureProjectsContent: signatureContent,
+    journeyContent,
+    whyChooseContent,
+    testimonialsContent,
+    consultationCtaContent,
+    partnershipContent,
+    awardsContent,
+    designTipsContent,
+    faqContent,
+    locationLinksContent,
+  })
+
+  const persistPage = async (nextStatus: PageStatus) => {
+    setSaveState(nextStatus === "Published" ? "saving-publish" : "saving-draft")
+    setSaveError(null)
+
+    try {
+      const response = await fetch(`/api/pages/${slug}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(buildPagePayload(nextStatus)),
+      })
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null)
+        throw new Error(data?.error ?? `Save failed (${response.status})`)
+      }
+
+      setStatus(nextStatus)
+      setSaveState("idle")
+    } catch (err) {
+      setSaveState("error")
+      setSaveError(err instanceof Error ? err.message : "Failed to save page")
+    }
+  }
+
+  const handleSaveDraft = () => {
+    void persistPage("Draft")
+  }
+
+  const handlePublish = () => {
+    void persistPage("Published")
+  }
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -93,6 +290,11 @@ export function PageEditor({ page: initialPage }: PageEditorProps) {
         onLanguageChange={setLanguage}
         status={status}
         onStatusChange={setStatus}
+        onSaveDraft={handleSaveDraft}
+        onPublish={handlePublish}
+        savingDraft={saveState === "saving-draft"}
+        savingPublish={saveState === "saving-publish"}
+        saveError={saveError}
       />
       <SectionList
         sections={sections}
@@ -115,6 +317,8 @@ export function PageEditor({ page: initialPage }: PageEditorProps) {
         onTestimonialsContentChange={setTestimonialsContent}
         consultationCtaContent={consultationCtaContent}
         onConsultationCtaContentChange={setConsultationCtaContent}
+        partnershipContent={partnershipContent}
+        onPartnershipContentChange={setPartnershipContent}
         awardsContent={awardsContent}
         onAwardsContentChange={setAwardsContent}
         designTipsContent={designTipsContent}
