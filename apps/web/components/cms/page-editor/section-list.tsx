@@ -3,20 +3,36 @@
 import { useState } from "react"
 import { SectionFilters, type FilterKey } from "./section-filters"
 import { SectionRow } from "./section-row"
-import { SectionDetail } from "../section-detail/section-detail"
+import { SignatureProjectsSectionDetail } from "../section-detail/signature-projects/signature-projects-section-detail"
 import { HeroSectionDetail } from "../section-detail/hero/hero-section-detail"
 import { StatsSectionDetail } from "../section-detail/stats/stats-section-detail"
 import { ServicesSectionDetail } from "../section-detail/services/services-section-detail"
 import { FeaturedSpacesSectionDetail } from "../section-detail/featured-spaces/featured-spaces-section-detail"
+import { JourneySectionDetail } from "../section-detail/journey/journey-section-detail"
+import { WhyChooseSectionDetail } from "../section-detail/why-choose/why-choose-section-detail"
+import { TestimonialsSectionDetail } from "../section-detail/testimonials/testimonials-section-detail"
+import { ConsultationCtaSectionDetail } from "../section-detail/consultation-cta/consultation-cta-section-detail"
+import { AwardsRecognitionSectionDetail } from "../section-detail/awards-recognition/awards-recognition-section-detail"
+import { DesignTipsSectionDetail } from "../section-detail/design-tips/design-tips-section-detail"
+import { FaqSectionDetail } from "../section-detail/faq/faq-section-detail"
+import { LocationLinksSectionDetail } from "../section-detail/location-links/location-links-section-detail"
 import { SectionInfo } from "./section-info"
 import type {
+  AwardsContent,
   CmsSection,
+  DesignTipsContent,
+  FaqContent,
+  LocationLinksContent,
+  ConsultationCtaContent,
   FeaturedSpacesContent,
   HeroContent,
+  JourneyContent,
   ServicesContent,
   SignatureProjectsContent,
   StatsContent,
   SectionType,
+  TestimonialsContent,
+  WhyChooseContent,
 } from "@/types/cms"
 
 interface SectionListProps {
@@ -32,6 +48,22 @@ interface SectionListProps {
   onFeaturedSpacesContentChange: (content: FeaturedSpacesContent) => void
   signatureContent: SignatureProjectsContent
   onSignatureContentChange: (content: SignatureProjectsContent) => void
+  journeyContent: JourneyContent
+  onJourneyContentChange: (content: JourneyContent) => void
+  whyChooseContent: WhyChooseContent
+  onWhyChooseContentChange: (content: WhyChooseContent) => void
+  testimonialsContent: TestimonialsContent
+  onTestimonialsContentChange: (content: TestimonialsContent) => void
+  consultationCtaContent: ConsultationCtaContent
+  onConsultationCtaContentChange: (content: ConsultationCtaContent) => void
+  awardsContent: AwardsContent
+  onAwardsContentChange: (content: AwardsContent) => void
+  designTipsContent: DesignTipsContent
+  onDesignTipsContentChange: (content: DesignTipsContent) => void
+  faqContent: FaqContent
+  onFaqContentChange: (content: FaqContent) => void
+  locationLinksContent: LocationLinksContent
+  onLocationLinksContentChange: (content: LocationLinksContent) => void
 }
 
 function matchesFilter(type: SectionType, filter: FilterKey): boolean {
@@ -55,6 +87,22 @@ export function SectionList({
   onFeaturedSpacesContentChange,
   signatureContent,
   onSignatureContentChange,
+  journeyContent,
+  onJourneyContentChange,
+  whyChooseContent,
+  onWhyChooseContentChange,
+  testimonialsContent,
+  onTestimonialsContentChange,
+  consultationCtaContent,
+  onConsultationCtaContentChange,
+  awardsContent,
+  onAwardsContentChange,
+  designTipsContent,
+  onDesignTipsContentChange,
+  faqContent,
+  onFaqContentChange,
+  locationLinksContent,
+  onLocationLinksContentChange,
 }: SectionListProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all")
   const [expandedId, setExpandedId] = useState<string | null>("s05")
@@ -139,16 +187,79 @@ export function SectionList({
             )}
 
             {expandedId === section.id && section.id === "s05" && (
-              <SectionDetail
+              <SignatureProjectsSectionDetail
                 section={section}
                 content={signatureContent}
                 onContentChange={onSignatureContentChange}
-                onCollapse={() => setExpandedId(null)}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s06" && (
+              <JourneySectionDetail
+                section={section}
+                content={journeyContent}
+                onContentChange={onJourneyContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s07" && (
+              <WhyChooseSectionDetail
+                section={section}
+                content={whyChooseContent}
+                onContentChange={onWhyChooseContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s08" && (
+              <TestimonialsSectionDetail
+                section={section}
+                content={testimonialsContent}
+                onContentChange={onTestimonialsContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s09" && (
+              <ConsultationCtaSectionDetail
+                section={section}
+                content={consultationCtaContent}
+                onContentChange={onConsultationCtaContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s10" && (
+              <AwardsRecognitionSectionDetail
+                section={section}
+                content={awardsContent}
+                onContentChange={onAwardsContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s11" && (
+              <DesignTipsSectionDetail
+                section={section}
+                content={designTipsContent}
+                onContentChange={onDesignTipsContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s12" && (
+              <FaqSectionDetail
+                section={section}
+                content={faqContent}
+                onContentChange={onFaqContentChange}
+              />
+            )}
+
+            {expandedId === section.id && section.id === "s13" && (
+              <LocationLinksSectionDetail
+                section={section}
+                content={locationLinksContent}
+                onContentChange={onLocationLinksContentChange}
               />
             )}
 
             {expandedId === section.id &&
-              !["s01", "s02", "s03", "s04", "s05"].includes(section.id) && (
+              !["s01", "s02", "s03", "s04", "s05", "s06", "s07", "s08", "s09", "s10", "s11", "s12", "s13"].includes(section.id) && (
                 <div
                   className="border-b border-zinc-200 bg-zinc-50/60 px-6 py-6 text-sm text-zinc-500"
                   role="region"
