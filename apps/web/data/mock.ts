@@ -1,13 +1,22 @@
 import type {
+  AwardsContent,
   CmsPage,
+  DesignTipsContent,
+  FaqContent,
+  LocationLinksContent,
   CmsSection,
+  ConsultationCtaContent,
   CmsUser,
   FeaturedSpacesContent,
   HeroContent,
+  JourneyContent,
   NavSection,
+  PartnershipContent,
   ServicesContent,
   SignatureProjectsContent,
   StatsContent,
+  TestimonialsContent,
+  WhyChooseContent,
 } from "../types/cms"
 
 export const currentUser: CmsUser = {
@@ -139,6 +148,14 @@ export const homeSections: CmsSection[] = [
   {
     id: "s13",
     number: "13",
+    name: { en: "Location Links", ar: "روابط المواقع" },
+    type: "Manual",
+    status: { en: true, ar: true },
+    visible: true,
+  },
+  {
+    id: "s14",
+    number: "14",
     name: { en: "Footer", ar: "التذييل" },
     type: "Global",
     status: { en: true, ar: true },
@@ -149,26 +166,30 @@ export const homeSections: CmsSection[] = [
 export const signatureProjectsContent: SignatureProjectsContent = {
   headingEn: "Signature Projects",
   headingAr: "المشاريع المميزة",
-  buttonLabelEn: "View All Projects",
+  buttonLabelEn: "View all Projects",
   buttonLabelAr: "عرض جميع المشاريع",
+  buttonLink: "/projects",
   selectedProjects: [
     {
       id: "p01",
-      title: "Blue Waters Dubai",
+      title: "Jumeirah Gate Dubai",
       location: "Dubai, UAE",
       imageUrl: undefined,
+      position: "Top Left (1,1)",
     },
     {
       id: "p02",
-      title: "Emirates Gate",
-      location: "Abu Dhabi, UAE",
+      title: "Blue Waters Dubai",
+      location: "Dubai, UAE",
       imageUrl: undefined,
+      position: "Middle Right (2,2)",
     },
     {
       id: "p03",
-      title: "Al Yasmeen",
-      location: "Sharjah, UAE",
+      title: "Al Yasmeen Sharjah",
+      location: "Dubai, UAE",
       imageUrl: undefined,
+      position: "Bottom Left (3,1)",
     },
   ],
   sourceType: "Linked: Projects",
@@ -241,6 +262,300 @@ export const featuredSpacesContent: FeaturedSpacesContent = {
   ],
 }
 
+export const journeyContent: JourneyContent = {
+  eyebrowEn: "The T1 Project Journey",
+  eyebrowAr: "رحلة مشروع T1",
+  mainHeadingEn: "From Vision to a Smarter, Beautifully Delivered Space",
+  mainHeadingAr: "من الرؤية إلى مساحة أكثر ذكاءً وجمالاً",
+  steps: [
+    {
+      id: "step-1",
+      number: "01",
+      icon: "Globe",
+      titleEn: "Discover",
+      titleAr: "الاكتشاف",
+      subtitleEn: "Designed Around Your Life",
+      subtitleAr: "مصمم حول حياتك",
+      descriptionEn:
+        "We understand how you live, cook, work and entertain before defining the design, storage needs, budget and project timeline.",
+      descriptionAr:
+        "نفهم كيف تعيش وتطبخ وتعمل وتستضيف قبل تحديد التصميم واحتياجات التخزين والميزانية والجدول الزمني للمشروع.",
+      noteEn: "A solution designed around you–not selected from a catalogue.",
+      noteAr: "حل مصمم حولك — لا يُختار من كتالوج.",
+      advantageTitleEn: "T1 ADVANTAGE",
+      advantageTitleAr: "ميزة T1",
+      advantageTextEn: "Lifestyle-led consultation with one experienced design partner.",
+      advantageTextAr: "استشارة مرتكزة على أسلوب الحياة مع شريك تصميم ذي خبرة واحدة.",
+    },
+    {
+      id: "step-2",
+      number: "02",
+      icon: "Lightbulb",
+      titleEn: "Innovate",
+      titleAr: "الابتكار",
+      subtitleEn: "Smarter Use of Every Space",
+      subtitleAr: "استخدام أذكى لكل مساحة",
+      descriptionEn:
+        "T1 creates intelligent layouts, concealed storage and multifunctional solutions that improve how every square metre performs.",
+      descriptionAr:
+        "تُنشئ T1 تخطيطات ذكية وتخزيناً مخفياً وحلولاً متعددة الوظائف تحسّن أداء كل متر مربع.",
+      noteEn: "More storage, better functionality and greater freedom within the same space.",
+      noteAr: "مساحة تخزين أكبر ووظائف أفضل وحرية أوسع ضمن نفس المساحة.",
+      advantageTitleEn: "T1 ADVANTAGE",
+      advantageTitleAr: "ميزة T1",
+      advantageTextEn: "Smart space-saving innovation powered by Keller European engineering.",
+      advantageTextAr: "ابتكار ذكي لتوفير المساحة مدعوم بهندسة Keller الأوروبية.",
+    },
+    {
+      id: "step-3",
+      number: "03",
+      icon: "Building2",
+      titleEn: "Engineer",
+      titleAr: "الهندسة",
+      subtitleEn: "Every Detail Resolved Before Execution",
+      subtitleAr: "كل التفاصيل تُحسم قبل التنفيذ",
+      descriptionEn:
+        "Our designers, technical specialists and project managers coordinate drawings, specifications, manufacturing and installation requirements before work begins.",
+      descriptionAr:
+        "يُنسّق مصممونا والمتخصصون التقنيون ومديرو المشاريع الرسومات والمواصفات ومتطلبات التصنيع والتركيب قبل بدء العمل.",
+      noteEn: "",
+      noteAr: "",
+      advantageTitleEn: "T1 ADVANTAGE",
+      advantageTitleAr: "ميزة T1",
+      advantageTextEn: "European manufacturing precision combined with experienced local technical planning.",
+      advantageTextAr: "دقة التصنيع الأوروبية مقترنة بالتخطيط التقني المحلي الخبير.",
+    },
+  ],
+}
+
+export const whyChooseContent: WhyChooseContent = {
+  eyebrowEn: "Why Clients Choose T1",
+  eyebrowAr: "لماذا يختار العملاء T1",
+  mainHeadingEn: "Why Clients Choose T1",
+  mainHeadingAr: "لماذا يختار العملاء T1",
+  descriptionEn: "",
+  descriptionAr: "",
+  columns: [
+    {
+      id: "col-1",
+      number: "01",
+      titleEn: "T1 Studios",
+      titleAr: "استوديوهات T1",
+      highlighted: true,
+      bullets: [
+        { id: "b-1-1", textEn: "15 Min Design", textAr: "تصميم في 15 دقيقة" },
+        { id: "b-1-2", textEn: "4 - 6 Weeks Delivery", textAr: "التسليم في 4 - 6 أسابيع" },
+        { id: "b-1-3", textEn: "Premium (Not Overpriced)", textAr: "متميز (غير مبالغ في سعره)" },
+        { id: "b-1-4", textEn: "European Quality", textAr: "جودة أوروبية" },
+        { id: "b-1-5", textEn: "Architectural Design", textAr: "تصميم معماري" },
+        { id: "b-1-6", textEn: "Transparent Process", textAr: "عملية شفافة" },
+      ],
+    },
+    {
+      id: "col-2",
+      number: "02",
+      titleEn: "Luxury Brands",
+      titleAr: "العلامات التجارية الفاخرة",
+      highlighted: false,
+      bullets: [
+        { id: "b-2-1", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+        { id: "b-2-2", textEn: "Gorem ipsum dolor sit amet, consectetur adipi", textAr: "" },
+        { id: "b-2-3", textEn: "Gorem ipsum dolor sit amet, consectetur adip", textAr: "" },
+        { id: "b-2-4", textEn: "Gorem ipsum dolor sit amet, consectetur adipi", textAr: "" },
+        { id: "b-2-5", textEn: "Gorem ipsum dolor sit amet, consectetur adipi", textAr: "" },
+        { id: "b-2-6", textEn: "Gorem ipsum dolor sit amet, consectetur adipi", textAr: "" },
+      ],
+    },
+    {
+      id: "col-3",
+      number: "03",
+      titleEn: "Budget Brands",
+      titleAr: "العلامات التجارية الاقتصادية",
+      highlighted: false,
+      bullets: [
+        { id: "b-3-1", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+        { id: "b-3-2", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+        { id: "b-3-3", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+        { id: "b-3-4", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+        { id: "b-3-5", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+        { id: "b-3-6", textEn: "Gorem ipsum dolor sit amet, consectetur", textAr: "" },
+      ],
+    },
+  ],
+}
+
+export const testimonialsContent: TestimonialsContent = {
+  sectionTitleEn: "Client Testimonials",
+  sectionTitleAr: "شهادات العملاء",
+  testimonials: [
+    {
+      id: "t-1",
+      number: "01",
+      clientName: "Ahmed Khalid",
+      clientRole: "Home Owner",
+      quoteEn:
+        "“T1 turned our house into a home. The attention to detail and professionalism were exceptional.”",
+      quoteAr:
+        "“حوّل T1 منزلنا إلى بيت حقيقي. الاهتمام بالتفاصيل والاحترافية كانا استثنائيَّين.”",
+      imageUrl: undefined,
+    },
+    {
+      id: "t-2",
+      number: "02",
+      clientName: "Sara Malik",
+      clientRole: "Apartment Owner",
+      quoteEn:
+        "“A seamless experience from start to finish. The team understood our vision perfectly.”",
+      quoteAr:
+        "“تجربة سلسة من البداية إلى النهاية. فهم الفريق رؤيتنا بشكل مثالي.”",
+      imageUrl: undefined,
+    },
+    {
+      id: "t-3",
+      number: "03",
+      clientName: "Emily Carter",
+      clientRole: "Villa Owner",
+      quoteEn:
+        "“Beautiful designs, great communication and outstanding execution. Highly recommended!”",
+      quoteAr:
+        "“تصاميم رائعة وتواصل ممتاز وتنفيذ استثنائي. أوصي بهم بشدة!”",
+      imageUrl: undefined,
+    },
+    {
+      id: "t-4",
+      number: "04",
+      clientName: "James Peterson",
+      clientRole: "Business Owner",
+      quoteEn:
+        "“The quality, creativity and service from T1 exceeded our expectations. A truly professional team.”",
+      quoteAr:
+        "“تجاوزت جودة وإبداع وخدمة T1 توقعاتنا. فريق محترف حقاً.”",
+      imageUrl: undefined,
+    },
+  ],
+}
+
+export const consultationCtaContent: ConsultationCtaContent = {
+  mainHeadingEn: "Let's Create Your Dream Space",
+  mainHeadingAr: "لنبتكر معاً مساحة أحلامك",
+  tabs: [
+    { id: "ctab-1", labelEn: "Home Owners", labelAr: "أصحاب المنازل" },
+    { id: "ctab-2", labelEn: "Apartment Owners", labelAr: "أصحاب الشقق" },
+    { id: "ctab-3", labelEn: "Property Developers", labelAr: "مطورو العقارات" },
+  ],
+  formFields: [
+    { id: "ff-1", label: "Property Type", type: "Dropdown", placeholder: "Select property type" },
+    { id: "ff-2", label: "Space Required", type: "Dropdown", placeholder: "Select space required" },
+    { id: "ff-3", label: "Type of Service", type: "Dropdown", placeholder: "Select type of service" },
+    { id: "ff-4", label: "Timeline", type: "Dropdown", placeholder: "Select timeline" },
+    { id: "ff-5", label: "First Name", type: "Text", placeholder: "Enter first name" },
+    { id: "ff-6", label: "Last Name", type: "Text", placeholder: "Enter last name" },
+  ],
+  imageUrl: undefined,
+}
+
+export const partnershipContent: PartnershipContent = {
+  sectionTitleEn: "Grow Together Through Trusted Partnerships",
+  sectionTitleAr: "النمو معاً من خلال شراكات موثوقة",
+  descriptionEn:
+    "T1 works with a select group of trusted partners who share our commitment to excellence, innovation and delivering exceptional value. Together, we create opportunities, build lasting relationships and achieve greater success.",
+  descriptionAr:
+    "تعمل T1 مع مجموعة مختارة من الشركاء الموثوقين الذين يشاركوننا التزامنا بالتميز والابتكار وتقديم قيمة استثنائية. معاً، نخلق الفرص ونبني علاقات دائمة ونحقق نجاحاً أكبر.",
+  steps: [
+    { id: "ps-1", number: "01", icon: "Headset", titleEn: "Register", titleAr: "التسجيل", descriptionEn: "Join our partner network and share your details.", descriptionAr: "انضم إلى شبكة شركائنا وشارك تفاصيلك." },
+    { id: "ps-2", number: "02", icon: "CheckCircle", titleEn: "Approval", titleAr: "الموافقة", descriptionEn: "We review your information and align on collaboration terms.", descriptionAr: "نراجع معلوماتك ونتوافق على شروط التعاون." },
+    { id: "ps-3", number: "03", icon: "Lightbulb", titleEn: "Introduce Opportunity", titleAr: "تقديم الفرصة", descriptionEn: "We connect you with relevant opportunities.", descriptionAr: "نربطك بالفرص ذات الصلة." },
+    { id: "ps-4", number: "04", icon: "Monitor", titleEn: "Meeting", titleAr: "الاجتماع", descriptionEn: "Discuss project details and explore collaboration.", descriptionAr: "مناقشة تفاصيل المشروع واستكشاف التعاون." },
+    { id: "ps-5", number: "05", icon: "UserCheck", titleEn: "Project Award", titleAr: "منح المشروع", descriptionEn: "Get shortlisted and receive project awards.", descriptionAr: "احصل على القائمة المختصرة واستلم جوائز المشروع." },
+    { id: "ps-6", number: "06", icon: "Users", titleEn: "Referral Recognition", titleAr: "الاعتراف بالإحالة", descriptionEn: "Earn recognition for successful referrals.", descriptionAr: "احصل على التقدير مقابل الإحالات الناجحة." },
+    { id: "ps-7", number: "07", icon: "Handshake", titleEn: "Long-term Partnership", titleAr: "الشراكة طويلة الأمد", descriptionEn: "Grow together and create lasting value.", descriptionAr: "انمو معاً وأنشئ قيمة دائمة." },
+  ],
+}
+
+export const awardsContent: AwardsContent = {
+  sectionTitleEn: "Awards & Recognition",
+  sectionTitleAr: "الجوائز والتقدير",
+  subtitleEn: "",
+  subtitleAr: "",
+  logos: [
+    { id: "logo-1", number: "01", imageUrl: undefined, altText: "Zawya", linkUrl: "https://zawya.com" },
+    { id: "logo-2", number: "02", imageUrl: undefined, altText: "Campaign", linkUrl: "https://campaignme.com" },
+    { id: "logo-3", number: "03", imageUrl: undefined, altText: "Adgully", linkUrl: "https://adgully.com" },
+    { id: "logo-4", number: "04", imageUrl: undefined, altText: "Social Samosa", linkUrl: "https://socialsamosa.com" },
+  ],
+}
+
+export const designTipsContent: DesignTipsContent = {
+  sectionTitleEn: "Design Tips & Insights",
+  sectionTitleAr: "نصائح وأفكار التصميم",
+  descriptionEn: "",
+  descriptionAr: "",
+  articles: [
+    { id: "art-1", number: "01", imageUrl: undefined, titleEn: "Creating a calm and modern in Dubai", titleAr: "إنشاء مساحة هادئة وعصرية في دبي", category: "Guide", readTime: "5 min read", link: "" },
+    { id: "art-2", number: "02", imageUrl: undefined, titleEn: "What are Panelled Kitchens? Essential Elements?", titleAr: "ما هي المطابخ ذات الألواح؟ العناصر الأساسية؟", category: "Guide", readTime: "8 min read", link: "" },
+    { id: "art-3", number: "03", imageUrl: undefined, titleEn: "Dubai's Kitchens in D-Lux", titleAr: "مطابخ دبي في D-Lux", category: "Inspiration", readTime: "6 min read", link: "" },
+    { id: "art-4", number: "04", imageUrl: undefined, titleEn: "Bold and Smart: Style that Works in Dubai", titleAr: "جريء وذكي: أسلوب يناسب دبي", category: "Guide", readTime: "2 min read", link: "" },
+  ],
+}
+
+export const faqContent: FaqContent = {
+  eyebrowEn: "Our FAQs",
+  eyebrowAr: "أسئلتنا الشائعة",
+  sectionTitleEn: "Frequently Asked Questions",
+  sectionTitleAr: "الأسئلة المتكررة",
+  faqs: [
+    { id: "faq-1", number: "01", questionEn: "Dorem ipsum dolor sit amet, consectetur adipiscing elit.", questionAr: "ما هي خدمات التصميم الداخلي التي تقدمونها؟", answerEn: "Qorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus. Cla-ass aptent taciti sociosqu ad litora torquent per conubia nostra.", answerAr: "" },
+    { id: "faq-2", number: "02", questionEn: "Worem ipsum dolor sit amet, consectetur adipiscing elit.", questionAr: "كم تستغرق مشاريع التصميم الداخلي عادةً؟", answerEn: "", answerAr: "" },
+    { id: "faq-3", number: "03", questionEn: "Torem ipsum dolor sit amet, consectetur adipiscing elit.", questionAr: "هل تعملون خارج دبي؟", answerEn: "", answerAr: "" },
+    { id: "faq-4", number: "04", questionEn: "Qorem ipsum dolor sit amet, consectetur adipiscing elit.", questionAr: "كيف يمكنني البدء مع T1 Studio؟", answerEn: "", answerAr: "" },
+  ],
+}
+
+export const locationLinksContent: LocationLinksContent = {
+  sectionTitleEn: "Locations",
+  sectionTitleAr: "المواقع",
+  descriptionEn: "",
+  descriptionAr: "",
+  columns: [
+    {
+      id: "col-1", number: "01", titleEn: "Palm Jumeirah", titleAr: "نخلة جميرا",
+      links: [
+        { id: "ll-1-1", label: "Custom Kitchens in Palm Jumeirah", href: "/locations/palm-jumeirah/custom-kitchens" },
+        { id: "ll-1-2", label: "Bespoke Joinery in Palm Jumeirah", href: "/locations/palm-jumeirah/bespoke-joinery" },
+        { id: "ll-1-3", label: "Luxury Wardrobes in Palm Jumeirah", href: "/locations/palm-jumeirah/luxury-wardrobes" },
+        { id: "ll-1-4", label: "Custom Cabinets in Palm Jumeirah", href: "/locations/palm-jumeirah/custom-cabinets" },
+      ],
+    },
+    {
+      id: "col-2", number: "02", titleEn: "Dubai Marina", titleAr: "دبي مارينا",
+      links: [
+        { id: "ll-2-1", label: "Custom Kitchens in Dubai Marina", href: "/locations/dubai-marina/custom-kitchens" },
+        { id: "ll-2-2", label: "Bespoke Joinery in Dubai Marina", href: "/locations/dubai-marina/bespoke-joinery" },
+        { id: "ll-2-3", label: "Luxury Wardrobes in Dubai Marina", href: "/locations/dubai-marina/luxury-wardrobes" },
+        { id: "ll-2-4", label: "Custom Cabinets in Dubai Marina", href: "/locations/dubai-marina/custom-wardrobes" },
+      ],
+    },
+    {
+      id: "col-3", number: "03", titleEn: "Downtown Dubai", titleAr: "وسط مدينة دبي",
+      links: [
+        { id: "ll-3-1", label: "Custom Kitchens in Downtown Dubai", href: "/locations/downtown-dubai/custom-kitchens" },
+        { id: "ll-3-2", label: "Bespoke Joinery Work in Downtown Dubai", href: "/locations/downtown-dubai/bespoke-joinery" },
+        { id: "ll-3-3", label: "Luxury Wardrobes in Downtown Dubai", href: "/locations/downtown-dubai/luxury-wardrobes" },
+        { id: "ll-3-4", label: "Custom Cabinets in Downtown Dubai", href: "/locations/downtown-dubai/custom-cabinets" },
+      ],
+    },
+    {
+      id: "col-4", number: "04", titleEn: "Abu Dhabi", titleAr: "أبوظبي",
+      links: [
+        { id: "ll-4-1", label: "Custom Kitchens in Abu Dhabi", href: "/locations/abu-dhabi/custom-kitchens" },
+        { id: "ll-4-2", label: "Bespoke Joinery Work in Abu Dhabi", href: "/locations/abu-dhabi/bespoke-joinery" },
+        { id: "ll-4-3", label: "Luxury Wardrobes in Abu Dhabi", href: "/locations/abu-dhabi/luxury-wardrobes" },
+        { id: "ll-4-4", label: "Custom Cabinets in Abu Dhabi", href: "/locations/abu-dhabi/custom-cabinets" },
+      ],
+    },
+  ],
+}
+
 export const homePage: CmsPage = {
   slug: "home",
   title: { en: "Home", ar: "الرئيسية" },
@@ -251,4 +566,13 @@ export const homePage: CmsPage = {
   servicesContent,
   featuredSpacesContent,
   signatureProjectsContent,
+  journeyContent,
+  whyChooseContent,
+  testimonialsContent,
+  consultationCtaContent,
+  partnershipContent,
+  awardsContent,
+  designTipsContent,
+  faqContent,
+  locationLinksContent,
 }
