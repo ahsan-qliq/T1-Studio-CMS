@@ -147,12 +147,14 @@ import {
   designTipsContent as defaultDesignTipsContent,
   faqContent as defaultFaqContent,
   locationLinksContent as defaultLocationLinksContent,
+  footerContent as defaultFooterContent,
 } from "@/data/mock"
 import type {
   AwardsContent,
   CmsPage,
   DesignTipsContent,
   FaqContent,
+  FooterContent,
   LocationLinksContent,
   CmsSection,
   ConsultationCtaContent,
@@ -228,6 +230,9 @@ export function PageEditor({ page: initialPage, slug }: PageEditorProps) {
     useState<LocationLinksContent>(
       initialPage.locationLinksContent ?? defaultLocationLinksContent
     )
+  const [footerContent, setFooterContent] = useState<FooterContent>(
+    initialPage.footerContent ?? defaultFooterContent
+  )
 
   const buildPagePayload = (nextStatus: PageStatus): CmsPage => ({
     slug,
@@ -248,6 +253,7 @@ export function PageEditor({ page: initialPage, slug }: PageEditorProps) {
     designTipsContent,
     faqContent,
     locationLinksContent,
+    footerContent,
   })
 
   const persistPage = async (nextStatus: PageStatus) => {
@@ -327,6 +333,8 @@ export function PageEditor({ page: initialPage, slug }: PageEditorProps) {
         onFaqContentChange={setFaqContent}
         locationLinksContent={locationLinksContent}
         onLocationLinksContentChange={setLocationLinksContent}
+        footerContent={footerContent}
+        onFooterContentChange={setFooterContent}
       />
     </div>
   )

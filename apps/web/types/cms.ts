@@ -75,7 +75,14 @@ export interface SelectedProject {
   position?: GridPosition
 }
 
-export type ServiceIconKey = "Pencil" | "Hammer" | "Gem" | "Cog" | "Star" | "Home" | "Sparkles"
+export type ServiceIconKey =
+  | "Pencil"
+  | "Hammer"
+  | "Gem"
+  | "Cog"
+  | "Star"
+  | "Home"
+  | "Sparkles"
 
 export interface ServiceCard {
   id: string
@@ -252,7 +259,12 @@ export interface PartnershipContent {
   steps: PartnershipStep[]
 }
 
-export type ConsultationFieldType = "Dropdown" | "Text" | "Textarea" | "Email" | "Phone"
+export type ConsultationFieldType =
+  | "Dropdown"
+  | "Text"
+  | "Textarea"
+  | "Email"
+  | "Phone"
 
 export interface ConsultationFormField {
   id: string
@@ -349,6 +361,64 @@ export interface AwardsContent {
   logos: AwardsLogoItem[]
 }
 
+export type SocialPlatformKey =
+  | "Facebook"
+  | "Instagram"
+  | "X"
+  | "LinkedIn"
+  | "YouTube"
+
+export interface FooterSocialLink {
+  id: string
+  platform: SocialPlatformKey
+  url: string
+}
+
+export interface FooterHoursRow {
+  id: string
+  daysEn: string
+  daysAr: string
+  hoursEn: string
+  hoursAr: string
+}
+
+export interface FooterLegalLink {
+  id: string
+  labelEn: string
+  labelAr: string
+  href: string
+}
+
+export interface FooterContent {
+  newsletterHeadingEn: string
+  newsletterHeadingAr: string
+  newsletterSubtextEn: string
+  newsletterSubtextAr: string
+  newsletterPlaceholderEn: string
+  newsletterPlaceholderAr: string
+  newsletterButtonLabelEn: string
+  newsletterButtonLabelAr: string
+  brandDescriptionEn: string
+  brandDescriptionAr: string
+  socialLinks: FooterSocialLink[]
+  linkColumns: LocationColumn[]
+  openingHoursHeadingEn: string
+  openingHoursHeadingAr: string
+  hoursRows: FooterHoursRow[]
+  showroomHeadingEn: string
+  showroomHeadingAr: string
+  showroomAddressEn: string
+  showroomAddressAr: string
+  showroomPhone: string
+  showroomEmail: string
+  showroomDirectionsUrl: string
+  showroomDirectionsLabelEn: string
+  showroomDirectionsLabelAr: string
+  copyrightTextEn: string
+  copyrightTextAr: string
+  legalLinks: FooterLegalLink[]
+}
+
 export interface CmsPage {
   slug: string
   title: LocalizedContent
@@ -368,6 +438,7 @@ export interface CmsPage {
   designTipsContent: DesignTipsContent
   faqContent: FaqContent
   locationLinksContent: LocationLinksContent
+  footerContent: FooterContent
 }
 
 export interface NavPage {

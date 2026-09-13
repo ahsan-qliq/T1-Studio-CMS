@@ -298,12 +298,14 @@ import { AwardsRecognitionSectionDetail } from "../section-detail/awards-recogni
 import { DesignTipsSectionDetail } from "../section-detail/design-tips/design-tips-section-detail"
 import { FaqSectionDetail } from "../section-detail/faq/faq-section-detail"
 import { LocationLinksSectionDetail } from "../section-detail/location-links/location-links-section-detail"
+import { FooterSectionDetail } from "../section-detail/footer/footer-section-detail"
 import { SectionInfo } from "./section-info"
 import type {
   AwardsContent,
   CmsSection,
   DesignTipsContent,
   FaqContent,
+  FooterContent,
   LocationLinksContent,
   ConsultationCtaContent,
   FeaturedSpacesContent,
@@ -349,6 +351,8 @@ interface SectionListProps {
   onFaqContentChange: (content: FaqContent) => void
   locationLinksContent: LocationLinksContent
   onLocationLinksContentChange: (content: LocationLinksContent) => void
+  footerContent: FooterContent
+  onFooterContentChange: (content: FooterContent) => void
 }
 
 function matchesFilter(type: SectionType, filter: FilterKey): boolean {
@@ -391,6 +395,8 @@ export function SectionList({
   onFaqContentChange,
   locationLinksContent,
   onLocationLinksContentChange,
+  footerContent,
+  onFooterContentChange,
 }: SectionListProps) {
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all")
   const [expandedId, setExpandedId] = useState<string | null>("s05")
@@ -564,6 +570,14 @@ export function SectionList({
               />
             )}
 
+            {expandedId === section.id && section.id === "s15" && (
+              <FooterSectionDetail
+                section={section}
+                content={footerContent}
+                onContentChange={onFooterContentChange}
+              />
+            )}
+
             {expandedId === section.id &&
               ![
                 "s01",
@@ -580,6 +594,7 @@ export function SectionList({
                 "s12",
                 "s13",
                 "s14",
+                "s15",
               ].includes(section.id) && (
                 <div
                   className="border-b border-zinc-200 bg-zinc-50/60 px-6 py-6 text-sm text-zinc-500"

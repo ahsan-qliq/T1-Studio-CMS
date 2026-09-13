@@ -3,6 +3,7 @@ import type {
   CmsPage,
   DesignTipsContent,
   FaqContent,
+  FooterContent,
   LocationLinksContent,
   CmsSection,
   ConsultationCtaContent,
@@ -955,6 +956,152 @@ export const locationLinksContent: LocationLinksContent = {
   ],
 }
 
+export const footerContent: FooterContent = {
+  newsletterHeadingEn: "Stay In Loop",
+  newsletterHeadingAr: "ابقَ على اطلاع",
+  newsletterSubtextEn:
+    "Be the first to know about our exclusive offers, newest collections, and latest products!",
+  newsletterSubtextAr: "",
+  newsletterPlaceholderEn: "Enter your email",
+  newsletterPlaceholderAr: "أدخل بريدك الإلكتروني",
+  newsletterButtonLabelEn: "Submit",
+  newsletterButtonLabelAr: "إرسال",
+  brandDescriptionEn:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus.",
+  brandDescriptionAr: "",
+  socialLinks: [
+    { id: "soc-1", platform: "Facebook", url: "" },
+    { id: "soc-2", platform: "Instagram", url: "" },
+    { id: "soc-3", platform: "X", url: "" },
+    { id: "soc-4", platform: "LinkedIn", url: "" },
+    { id: "soc-5", platform: "YouTube", url: "" },
+  ],
+  linkColumns: [
+    {
+      id: "fcol-1",
+      number: "01",
+      titleEn: "Spaces",
+      titleAr: "المساحات",
+      links: [
+        { id: "fl-1-1", label: "Kitchen", href: "/spaces/kitchen" },
+        { id: "fl-1-2", label: "Wardrobes", href: "/spaces/wardrobes" },
+        {
+          id: "fl-1-3",
+          label: "Bespoke Joinery",
+          href: "/spaces/bespoke-joinery",
+        },
+        { id: "fl-1-4", label: "Living Room", href: "/spaces/living-room" },
+        { id: "fl-1-5", label: "Bedrooms", href: "/spaces/bedrooms" },
+        { id: "fl-1-6", label: "Bathrooms", href: "/spaces/bathrooms" },
+        { id: "fl-1-7", label: "Home Offices", href: "/spaces/home-offices" },
+        {
+          id: "fl-1-8",
+          label: "Outdoor Living",
+          href: "/spaces/outdoor-living",
+        },
+      ],
+    },
+    {
+      id: "fcol-2",
+      number: "02",
+      titleEn: "Projects",
+      titleAr: "المشاريع",
+      links: [
+        {
+          id: "fl-2-1",
+          label: "Jumeirah Gate Dubai",
+          href: "/projects/jumeirah-gate-dubai",
+        },
+        {
+          id: "fl-2-2",
+          label: "Blue Waters Dubai",
+          href: "/projects/blue-waters-dubai",
+        },
+        {
+          id: "fl-2-3",
+          label: "Al Yasmeen Sharjah",
+          href: "/projects/al-yasmeen-sharjah",
+        },
+        {
+          id: "fl-2-4",
+          label: "Citywalk Dubai",
+          href: "/projects/citywalk-dubai",
+        },
+      ],
+    },
+    {
+      id: "fcol-3",
+      number: "03",
+      titleEn: "Company",
+      titleAr: "الشركة",
+      links: [
+        { id: "fl-3-1", label: "Trade", href: "/trade" },
+        { id: "fl-3-2", label: "About", href: "/about" },
+        { id: "fl-3-3", label: "Contact", href: "/contact" },
+        { id: "fl-3-4", label: "Why T1", href: "/why-t1" },
+      ],
+    },
+  ],
+  openingHoursHeadingEn: "Opening Hours",
+  openingHoursHeadingAr: "ساعات العمل",
+  hoursRows: [
+    {
+      id: "hr-1",
+      daysEn: "Mon – Fri",
+      daysAr: "الإثنين - الجمعة",
+      hoursEn: "8am – 6pm",
+      hoursAr: "٨ص - ٦م",
+    },
+    {
+      id: "hr-2",
+      daysEn: "Sat",
+      daysAr: "السبت",
+      hoursEn: "8am – 4pm",
+      hoursAr: "٨ص - ٤م",
+    },
+  ],
+  showroomHeadingEn: "Showroom",
+  showroomHeadingAr: "صالة العرض",
+  showroomAddressEn:
+    "Showroom 1, MSM 2 Building, Exit 44, Sheikh Zayed Road, Dubai",
+  showroomAddressAr: "",
+  showroomPhone: "+971 4 2386 488",
+  showroomEmail: "info@tonestudios.com",
+  showroomDirectionsUrl: "",
+  showroomDirectionsLabelEn: "Get direction to showroom",
+  showroomDirectionsLabelAr: "احصل على الاتجاهات إلى صالة العرض",
+  copyrightTextEn: "© 2026 Prism. All rights reserved.",
+  copyrightTextAr: "",
+  legalLinks: [
+    { id: "leg-1", labelEn: "Privacy", labelAr: "الخصوصية", href: "/privacy" },
+    { id: "leg-2", labelEn: "Terms", labelAr: "الشروط", href: "/terms" },
+    {
+      id: "leg-3",
+      labelEn: "Cookies",
+      labelAr: "ملفات تعريف الارتباط",
+      href: "/cookies",
+    },
+    {
+      id: "leg-4",
+      labelEn: "Accessibility",
+      labelAr: "إمكانية الوصول",
+      href: "/accessibility",
+    },
+    {
+      id: "leg-5",
+      labelEn: "Sitemap",
+      labelAr: "خريطة الموقع",
+      href: "/sitemap",
+    },
+    {
+      id: "leg-6",
+      labelEn: "Copyright",
+      labelAr: "حقوق النشر",
+      href: "/copyright",
+    },
+  ],
+}
+
 export const homePage: CmsPage = {
   slug: "home",
   title: { en: "Home", ar: "الرئيسية" },
@@ -974,4 +1121,5 @@ export const homePage: CmsPage = {
   designTipsContent,
   faqContent,
   locationLinksContent,
+  footerContent,
 }
