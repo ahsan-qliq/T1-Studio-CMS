@@ -32,7 +32,7 @@ export async function fetchRawHomePage(): Promise<HomePageApiData> {
  */
 export async function saveHomePage(sections: HomePageSections): Promise<void> {
   const res = await fetch(`${API_BASE_URL}/api/home-page`, {
-    method: "PUT",
+    method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ sections }),
   })
