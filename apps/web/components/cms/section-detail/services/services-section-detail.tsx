@@ -22,8 +22,8 @@ export function ServicesSectionDetail({
       section={section}
       tabs={[
         { key: "content", label: "Content" },
-        { key: "media", label: "Media" },
-        { key: "settings", label: "Settings" },
+        // { key: "media", label: "Media" },
+        // { key: "settings", label: "Settings" },
       ]}
       panels={{
         content: ({ language }) => (

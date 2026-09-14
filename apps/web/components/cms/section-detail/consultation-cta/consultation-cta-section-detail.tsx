@@ -23,8 +23,8 @@ export function ConsultationCtaSectionDetail({
       subtitle="Configure the content and form fields for the consultation section."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "form-fields", label: "Form Fields" },
-        { key: "settings", label: "Settings" },
+        // { key: "form-fields", label: "Form Fields" },
+        // { key: "settings", label: "Settings" },
       ]}
       panels={{
         content: ({ language }) => (

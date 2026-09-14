@@ -24,8 +24,8 @@ export function SignatureProjectsSectionDetail({
       subtitle="Select and arrange the projects to display in this section."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "projects", label: "Projects" },
-        { key: "settings", label: "Settings" },
+        // { key: "projects", label: "Projects" },
+        // { key: "settings", label: "Settings" },
       ]}
       panels={{
         content: ({ language }) => (

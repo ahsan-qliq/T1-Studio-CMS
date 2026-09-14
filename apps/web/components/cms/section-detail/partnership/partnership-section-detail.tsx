@@ -23,8 +23,8 @@ export function PartnershipSectionDetail({
       subtitle="Add and edit content for the partnership section."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "media", label: "Media" },
-        { key: "settings", label: "Settings" },
+        // { key: "media", label: "Media" },
+        // { key: "settings", label: "Settings" },
       ]}
       panels={{
         content: ({ language }) => (

@@ -23,8 +23,8 @@ export function AwardsRecognitionSectionDetail({
       subtitle="Add and edit content for the awards & recognition section."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "settings", label: "Settings" },
-        { key: "style", label: "Style" },
+        // { key: "settings", label: "Settings" },
+        // { key: "style", label: "Style" },
       ]}
       panels={{
         content: ({ language }) => (

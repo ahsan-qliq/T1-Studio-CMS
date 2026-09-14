@@ -6,7 +6,11 @@ import { cn } from "@workspace/ui/lib/utils"
 import { ContentTab } from "./content-tab"
 import { DataSourceTab } from "./data-source-tab"
 import { DisplaySettingsTab } from "./display-settings-tab"
-import type { CmsSection, SignatureProjectsContent, SectionTab } from "@/types/cms"
+import type {
+  CmsSection,
+  SignatureProjectsContent,
+  SectionTab,
+} from "@/types/cms"
 
 interface SectionDetailProps {
   section: CmsSection
@@ -40,7 +44,9 @@ export function SectionDetail({
       <div className="flex flex-wrap items-center gap-3 border-b border-blue-100 px-4 py-3">
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-zinc-900">{section.name.en}</span>
+            <span className="text-sm font-semibold text-zinc-900">
+              {section.name.en}
+            </span>
             <span className="rounded border border-teal-200 bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold text-teal-700">
               {section.type}
             </span>
@@ -50,12 +56,22 @@ export function SectionDetail({
           </div>
           <div className="mt-1 flex items-center gap-3">
             <div className="flex items-center gap-1">
-              <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
-              <span className="text-[10px] font-medium text-zinc-500">EN complete</span>
+              <span
+                className="size-1.5 rounded-full bg-emerald-500"
+                aria-hidden="true"
+              />
+              <span className="text-[10px] font-medium text-zinc-500">
+                EN complete
+              </span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
-              <span className="text-[10px] font-medium text-zinc-500">AR complete</span>
+              <span
+                className="size-1.5 rounded-full bg-emerald-500"
+                aria-hidden="true"
+              />
+              <span className="text-[10px] font-medium text-zinc-500">
+                AR complete
+              </span>
             </div>
           </div>
         </div>

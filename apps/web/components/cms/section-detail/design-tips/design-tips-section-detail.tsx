@@ -23,8 +23,8 @@ export function DesignTipsSectionDetail({
       subtitle="Add and edit content for the design tips and insights section."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "settings", label: "Settings" },
-        { key: "style", label: "Style" },
+        // { key: "settings", label: "Settings" },
+        // { key: "style", label: "Style" },
       ]}
       panels={{
         content: ({ language }) => (

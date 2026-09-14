@@ -23,8 +23,8 @@ export function FooterSectionDetail({
       subtitle="Edit the newsletter, link columns, opening hours, showroom details, and legal links shown in the global footer."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "settings", label: "Settings" },
-        { key: "style", label: "Style" },
+        // { key: "settings", label: "Settings" },
+        // { key: "style", label: "Style" },
       ]}
       panels={{
         content: ({ language }) => (

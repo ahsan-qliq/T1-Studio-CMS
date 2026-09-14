@@ -14,7 +14,11 @@ interface HeroSectionDetailProps {
   onContentChange: (content: HeroContent) => void
 }
 
-export function HeroSectionDetail({ section, content, onContentChange }: HeroSectionDetailProps) {
+export function HeroSectionDetail({
+  section,
+  content,
+  onContentChange,
+}: HeroSectionDetailProps) {
   if (!content) return null
 
   const visibilityToggle = (
@@ -23,7 +27,9 @@ export function HeroSectionDetail({ section, content, onContentChange }: HeroSec
         role="switch"
         aria-checked={content.visible}
         aria-label="Toggle section visibility"
-        onClick={() => onContentChange({ ...content, visible: !content.visible })}
+        onClick={() =>
+          onContentChange({ ...content, visible: !content.visible })
+        }
         className={cn(
           "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900",
           content.visible ? "bg-zinc-800" : "bg-zinc-300"
@@ -45,13 +51,15 @@ export function HeroSectionDetail({ section, content, onContentChange }: HeroSec
       section={section}
       tabs={[
         { key: "content", label: "Content" },
-        { key: "media", label: "Media" },
-        { key: "settings", label: "Settings" },
+        // { key: "media", label: "Media" },
+        // { key: "settings", label: "Settings" },
       ]}
       showLanguageSwitcher={false}
       extraHeaderControls={visibilityToggle}
       panels={{
-        content: () => <HeroContentTab content={content} onChange={onContentChange} />,
+        content: () => (
+          <HeroContentTab content={content} onChange={onContentChange} />
+        ),
       }}
     />
   )

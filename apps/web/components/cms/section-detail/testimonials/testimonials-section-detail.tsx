@@ -23,8 +23,8 @@ export function TestimonialsSectionDetail({
       subtitle="Add, edit and reorder client testimonials to display in this section."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "media", label: "Media" },
-        { key: "settings", label: "Settings" },
+        // { key: "media", label: "Media" },
+        // { key: "settings", label: "Settings" },
       ]}
       panels={{
         content: ({ language }) => (

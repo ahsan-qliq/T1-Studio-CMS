@@ -23,8 +23,8 @@ export function JourneySectionDetail({
       subtitle="Manage the project journey section. Add, edit and reorder the steps."
       tabs={[
         { key: "content", label: "Content" },
-        { key: "steps", label: "Steps" },
-        { key: "settings", label: "Settings" },
+        // { key: "steps", label: "Steps" },
+        // { key: "settings", label: "Settings" },
       ]}
       panels={{
         content: ({ language }) => (
