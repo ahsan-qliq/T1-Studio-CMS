@@ -12,7 +12,7 @@ export function CmsLayout({ children }: CmsLayoutProps) {
 
       {/* Center: scrollable main content */}
       <main
-        className="flex min-w-0 flex-1 flex-col overflow-hidden"
+        className="flex min-w-0 flex-1 flex-col overflow-y-auto"
         id="main-content"
         aria-label="Page editor"
       >
