@@ -1,16 +1,9 @@
-import type { SpacesPageApiData, SpacesPageApiResponse } from "@/types/api-spaces-page"
-
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:3000"
+import type { SpacesPageApiData } from "@/types/api-spaces-page"
+import { cmsApiJson, cmsApiFetch } from "./cms-api-client"
 
 /** Fetches the Spaces page exactly as the API returns it — no mapping. */
 export async function fetchSpacesPage(): Promise<SpacesPageApiData> {
-  const res = await fetch(`${API_BASE_URL}/api/spaces-page?slug=spaces`, { cache: "no-store" })
-  if (!res.ok) throw new Error(`Failed to fetch spaces page (${res.status})`)
-
-  const json = (await res.json()) as SpacesPageApiResponse
-  if (!json.success || !json.data) throw new Error("Unexpected API response shape")
-
-  return json.data
+  return cmsApiJson<SpacesPageApiData>("/spaces-page?slug=spaces")
 }
 
 /**
@@ -19,10 +12,10 @@ export async function fetchSpacesPage(): Promise<SpacesPageApiData> {
  */
 export async function saveSpacesPage(data: SpacesPageApiData): Promise<void> {
   const method = data._id ? "PATCH" : "POST"
-  const res = await fetch(`${API_BASE_URL}/api/spaces-page`, {
+  const query = data._id ? "?slug=spaces" : ""
+  await cmsApiFetch(`/spaces-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    data,
   })
-  if (!res.ok) throw new Error(`Failed to save spaces page (${res.status})`)
 }

@@ -37,6 +37,14 @@ export const sidebarNav: NavSection[] = [
       { slug: "space-detail/wardrobes", label: "Wardrobes (Space Detail)" },
       { slug: "about", label: "About" },
       { slug: "projects", label: "Projects" },
+      {
+        slug: "project-detail/emirates-hills",
+        label: "Emirates Hills (Project Detail)",
+      },
+      {
+        slug: "project-detail/jumeirah-gate-dubai",
+        label: "Jumeirah Gate Dubai (Project Detail)",
+      },
       { slug: "design-tips", label: "Design Tips (Blog)" },
       { slug: "services", label: "Services" },
       { slug: "materials-finishes", label: "Materials & Finishes" },
