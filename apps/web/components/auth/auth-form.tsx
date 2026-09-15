@@ -3,6 +3,9 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
+import { Button } from "@workspace/ui/components/button"
+import { Input } from "@workspace/ui/components/input"
+import { Label } from "@workspace/ui/components/label"
 
 interface AuthFormProps {
   mode: "login" | "register"
@@ -43,7 +46,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const isRegister = mode === "register"
 
   return (
-    <section className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm">
+    <section className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-card-foreground shadow-lg shadow-zinc-950/5">
       <div className="mb-8">
         <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-amber-400 text-sm font-black text-zinc-900">
           T1
@@ -58,24 +61,24 @@ export function AuthForm({ mode }: AuthFormProps) {
 
       <form onSubmit={submit} className="space-y-4">
         {isRegister && (
-          <label className="block text-sm font-medium text-zinc-700">
-            Full name
-            <input required value={name} onChange={(event) => setName(event.target.value)} className="mt-1.5 flex h-10 w-full rounded-md border border-zinc-200 px-3 text-sm outline-none focus:ring-2 focus:ring-zinc-900" />
-          </label>
+          <div className="space-y-2">
+            <Label htmlFor="name">Full name</Label>
+            <Input id="name" required value={name} onChange={(event) => setName(event.target.value)} />
+          </div>
         )}
-        <label className="block text-sm font-medium text-zinc-700">
-          Email
-          <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-1.5 flex h-10 w-full rounded-md border border-zinc-200 px-3 text-sm outline-none focus:ring-2 focus:ring-zinc-900" />
-        </label>
-        <label className="block text-sm font-medium text-zinc-700">
-          Password
-          <input required minLength={8} type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-1.5 flex h-10 w-full rounded-md border border-zinc-200 px-3 text-sm outline-none focus:ring-2 focus:ring-zinc-900" />
-        </label>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" required type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input id="password" required minLength={8} type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+        </div>
 
-        {error && <p role="alert" className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-        <button disabled={submitting} className="h-10 w-full rounded-md bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:opacity-50">
+        {error && <p role="alert" className="rounded-md border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
+        <Button type="submit" disabled={submitting} className="w-full">
           {submitting ? "Please wait..." : isRegister ? "Create account" : "Sign in"}
-        </button>
+        </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-zinc-500">
