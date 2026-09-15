@@ -1,6 +1,5 @@
-import type { SpaceDetailPageApiData, SpaceDetailPageApiResponse } from "@/types/api-space-detail-page"
-
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:3000"
+import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
+import { cmsApiJson, cmsApiFetch } from "./cms-api-client"
 
 /**
  * Fetches a Space Detail page by slug. The documented GET endpoint also
@@ -9,15 +8,10 @@ const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:3000"
  * returns only one language per request, this needs two merged requests.
  */
 export async function fetchSpaceDetailPage(slug: string): Promise<SpaceDetailPageApiData> {
-  const res = await fetch(`${API_BASE_URL}/api/space-detail-page?slug=${encodeURIComponent(slug)}`, {
-    cache: "no-store",
-  })
-  if (!res.ok) throw new Error(`Failed to fetch space detail page "${slug}" (${res.status})`)
-
-  const json = (await res.json()) as SpaceDetailPageApiResponse
-  if (!json.success || !json.data) throw new Error("Unexpected API response shape")
-
-  return json.data
+  return cmsApiJson<SpaceDetailPageApiData>(
+    `/space-detail-page?slug=${encodeURIComponent(slug)}`,
+    { cache: "no-store" }
+  )
 }
 
 /**
@@ -26,10 +20,10 @@ export async function fetchSpaceDetailPage(slug: string): Promise<SpaceDetailPag
  */
 export async function saveSpaceDetailPage(data: SpaceDetailPageApiData): Promise<void> {
   const method = data._id ? "PATCH" : "POST"
-  const res = await fetch(`${API_BASE_URL}/api/space-detail-page`, {
+  const query = data.slug ? `?slug=${encodeURIComponent(data.slug)}` : ""
+  await cmsApiFetch(`/space-detail-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   })
-  if (!res.ok) throw new Error(`Failed to save space detail page (${res.status})`)
 }
