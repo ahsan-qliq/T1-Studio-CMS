@@ -28,7 +28,9 @@ export function AuthForm({ mode }: AuthFormProps) {
       const response = await fetch(`/api/auth/${mode}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mode === "register" ? { name, email, password } : { email, password }),
+        body: JSON.stringify(
+          mode === "register" ? { name, email, password } : { email, password }
+        ),
       })
       const payload = await response.json()
       if (!response.ok || !payload.success) {
@@ -46,16 +48,18 @@ export function AuthForm({ mode }: AuthFormProps) {
   const isRegister = mode === "register"
 
   return (
-    <section className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-card-foreground shadow-lg shadow-zinc-950/5">
-      <div className="mb-8">
+    <section className="w-full max-w-md rounded-xl border border-border bg-card p-4 text-card-foreground shadow-lg shadow-zinc-950/5">
+      <div className="mb-4">
         <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-amber-400 text-sm font-black text-zinc-900">
           T1
         </div>
-        <h1 className="text-2xl font-semibold text-zinc-900">
+        <h1 className="text-zinc text-2xl font-semibold">
           {isRegister ? "Create your account" : "Welcome back"}
         </h1>
         <p className="mt-2 text-sm text-zinc-500">
-          {isRegister ? "Set up access to the T1 Studio CMS." : "Sign in to manage your studio content."}
+          {isRegister
+            ? "Set up access to the T1 Studio CMS."
+            : "Sign in to manage your studio content."}
         </p>
       </div>
 
@@ -63,27 +67,59 @@ export function AuthForm({ mode }: AuthFormProps) {
         {isRegister && (
           <div className="space-y-2">
             <Label htmlFor="name">Full name</Label>
-            <Input id="name" required value={name} onChange={(event) => setName(event.target.value)} />
+            <Input
+              id="name"
+              required
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
           </div>
         )}
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" required type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+          <Input
+            id="email"
+            required
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" required minLength={8} type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+          <Input
+            id="password"
+            required
+            minLength={8}
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
         </div>
 
-        {error && <p role="alert" className="rounded-md border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">{error}</p>}
+        {error && (
+          <p
+            role="alert"
+            className="rounded-md border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive"
+          >
+            {error}
+          </p>
+        )}
         <Button type="submit" disabled={submitting} className="w-full">
-          {submitting ? "Please wait..." : isRegister ? "Create account" : "Sign in"}
+          {submitting
+            ? "Please wait..."
+            : isRegister
+              ? "Create account"
+              : "Sign in"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-sm text-zinc-500">
         {isRegister ? "Already have an account?" : "Need an account?"}{" "}
-        <Link className="font-medium text-zinc-900 underline underline-offset-4" href={isRegister ? "/login" : "/register"}>
+        <Link
+          className="font-medium text-zinc-900 underline underline-offset-4"
+          href={isRegister ? "/login" : "/register"}
+        >
           {isRegister ? "Sign in" : "Register"}
         </Link>
       </p>
