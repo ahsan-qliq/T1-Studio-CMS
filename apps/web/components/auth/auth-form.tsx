@@ -28,7 +28,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     try {
       const response =
         mode === "register"
-          ? await register({ name, email, password })
+          ? await register({ name, email, password, role: "admin" })
           : await login({ email, password })
 
       if (!response.success) {
