@@ -1,45 +1,22 @@
+import type { AxiosRequestConfig, AxiosResponse } from "axios"
 import { getAuthTokens } from "./auth"
+import { createCmsAuthInstance } from "./auth-instance"
 
-const configuredBaseUrl = process.env.CMS_API_BASE_URL ?? "http://localhost:5000/api"
-
-export const CMS_API_BASE_URL = configuredBaseUrl.replace(/\/+$/, "").endsWith("/api")
-  ? configuredBaseUrl.replace(/\/+$/, "")
-  : `${configuredBaseUrl.replace(/\/+$/, "")}/api`
-
-async function getHeaders(headers?: HeadersInit): Promise<Headers> {
-  const result = new Headers(headers)
-  let accessToken = process.env.CMS_ACCESS_TOKEN
-  accessToken = (await getAuthTokens()).accessToken ?? accessToken
-
-  if (accessToken && !result.has("Authorization")) {
-    result.set("Authorization", `Bearer ${accessToken}`)
-  }
-
-  return result
+function getMessage(response: AxiosResponse): string {
+  const payload = response.data as { message?: string } | undefined
+  return payload?.message ?? `CMS API request failed (${response.status})`
 }
 
-export async function cmsApiRawFetch(path: string, init?: RequestInit): Promise<Response> {
-  return fetch(`${CMS_API_BASE_URL}${path}`, {
-    ...init,
-    headers: await getHeaders(init?.headers),
-  })
-}
+export async function cmsApiFetch(
+  path: string,
+  init?: AxiosRequestConfig
+): Promise<AxiosResponse> {
+  const { accessToken } = await getAuthTokens()
+  const client = createCmsAuthInstance(accessToken ?? process.env.CMS_ACCESS_TOKEN)
+  const response = await client.request({ ...init, url: path, validateStatus: () => true })
 
-export async function cmsApiFetch(path: string, init?: RequestInit): Promise<Response> {
-  const response = await cmsApiRawFetch(path, init)
-  if (!response.ok) {
-    let message = `CMS API request failed (${response.status})`
-
-    try {
-      const payload = (await response.clone().json()) as {
-        message?: string
-      }
-      if (payload.message) message = payload.message
-    } catch {
-      // Preserve the status-based error when the API does not return JSON.
-    }
-
-    throw new Error(message)
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error(getMessage(response))
   }
 
   return response
@@ -47,10 +24,10 @@ export async function cmsApiFetch(path: string, init?: RequestInit): Promise<Res
 
 export async function cmsApiJson<T>(
   path: string,
-  init?: RequestInit
+  init?: AxiosRequestConfig
 ): Promise<T> {
   const response = await cmsApiFetch(path, init)
-  const payload = (await response.json()) as { success?: boolean; data?: T; message?: string }
+  const payload = response.data as { success?: boolean; data?: T; message?: string }
 
   if (!payload.success || payload.data === undefined) {
     throw new Error(payload.message ?? "Unexpected CMS API response shape")

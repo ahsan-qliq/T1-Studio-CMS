@@ -6,6 +6,7 @@ import { FormEvent, useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
+import { authInstance } from "@/lib/auth-instance"
 
 interface AuthFormProps {
   mode: "login" | "register"
@@ -25,16 +26,12 @@ export function AuthForm({ mode }: AuthFormProps) {
     setError("")
 
     try {
-      const response = await fetch(`/api/auth/${mode}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          mode === "register" ? { name, email, password } : { email, password }
-        ),
-      })
-      const payload = await response.json()
-      if (!response.ok || !payload.success) {
-        throw new Error(payload.message ?? "Authentication failed")
+      const response = await authInstance.post(
+        `/auth/${mode}`,
+        mode === "register" ? { name, email, password } : { email, password }
+      )
+      if (!response.data?.success) {
+        throw new Error(response.data?.message ?? "Authentication failed")
       }
       router.push(mode === "login" ? "/pages/home" : "/login")
       router.refresh()

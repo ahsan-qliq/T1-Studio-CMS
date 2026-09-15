@@ -3,7 +3,7 @@ import { cmsApiJson, cmsApiFetch } from "./cms-api-client"
 
 /** Fetches the Spaces page exactly as the API returns it — no mapping. */
 export async function fetchSpacesPage(): Promise<SpacesPageApiData> {
-  return cmsApiJson<SpacesPageApiData>("/spaces-page?slug=spaces", { cache: "no-store" })
+  return cmsApiJson<SpacesPageApiData>("/spaces-page?slug=spaces")
 }
 
 /**
@@ -16,6 +16,6 @@ export async function saveSpacesPage(data: SpacesPageApiData): Promise<void> {
   await cmsApiFetch(`/spaces-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    data,
   })
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { cmsApiRawFetch } from "@/lib/cms-api-client"
+import { createCmsAuthInstance } from "@/lib/auth-instance"
 import {
   getAuthTokens,
   setAuthCookies,
@@ -27,22 +27,18 @@ async function proxyAuthRequest(
   request: Request,
   body: Record<string, unknown>
 ) {
-  const tokens = await getAuthTokens()
-  const headers = new Headers({ "Content-Type": "application/json" })
-  const accessToken = tokens.accessToken
-
-  if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`)
-
-  const apiResponse = await cmsApiRawFetch(`/auth/${action}`, {
+  const { accessToken } = await getAuthTokens()
+  const client = createCmsAuthInstance(accessToken)
+  const apiResponse = await client.request({
+    url: `/auth/${action}`,
     method: request.method,
-    headers,
-    body: request.method === "GET" ? undefined : JSON.stringify(body),
+    data: request.method === "GET" ? undefined : body,
+    validateStatus: () => true,
   })
-  const payload = await apiResponse.json()
-  const response = NextResponse.json(payload, { status: apiResponse.status })
+  const response = NextResponse.json(apiResponse.data, { status: apiResponse.status })
 
   if (action === "login" || action === "refresh") {
-    const data = payload?.data as
+    const data = apiResponse.data?.data as
       | { accessToken?: string; refreshToken?: string }
       | undefined
     setAuthCookies(response, data ?? {})
@@ -59,7 +55,10 @@ async function proxyAuthRequest(
 export async function POST(request: Request, { params }: AuthRouteProps) {
   const { action } = await params
   if (!["register", "login", "refresh", "logout"].includes(action)) {
-    return NextResponse.json({ success: false, message: "Unsupported auth action" }, { status: 404 })
+    return NextResponse.json(
+      { success: false, message: "Unsupported auth action" },
+      { status: 404 }
+    )
   }
 
   const body = await readBody(request)
@@ -72,7 +71,13 @@ export async function POST(request: Request, { params }: AuthRouteProps) {
     return await proxyAuthRequest(action, request, body)
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : "Authentication request failed" },
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Authentication request failed",
+      },
       { status: 502 }
     )
   }
@@ -81,14 +86,23 @@ export async function POST(request: Request, { params }: AuthRouteProps) {
 export async function GET(request: Request, { params }: AuthRouteProps) {
   const { action } = await params
   if (action !== "me") {
-    return NextResponse.json({ success: false, message: "Unsupported auth action" }, { status: 404 })
+    return NextResponse.json(
+      { success: false, message: "Unsupported auth action" },
+      { status: 404 }
+    )
   }
 
   try {
     return await proxyAuthRequest(action, request, {})
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: error instanceof Error ? error.message : "Authentication request failed" },
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Authentication request failed",
+      },
       { status: 502 }
     )
   }

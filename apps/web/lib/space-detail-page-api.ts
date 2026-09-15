@@ -10,7 +10,7 @@ import { cmsApiJson, cmsApiFetch } from "./cms-api-client"
 export async function fetchSpaceDetailPage(slug: string): Promise<SpaceDetailPageApiData> {
   return cmsApiJson<SpaceDetailPageApiData>(
     `/space-detail-page?slug=${encodeURIComponent(slug)}`,
-    { cache: "no-store" }
+    {}
   )
 }
 
@@ -24,6 +24,6 @@ export async function saveSpaceDetailPage(data: SpaceDetailPageApiData): Promise
   await cmsApiFetch(`/space-detail-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    data,
   })
 }
