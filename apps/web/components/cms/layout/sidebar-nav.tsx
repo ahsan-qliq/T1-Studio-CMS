@@ -13,6 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { cn } from "@workspace/ui/lib/utils"
 import type { NavSection } from "@/types/cms"
 
@@ -33,6 +34,7 @@ interface SidebarNavProps {
 
 export function SidebarNav({ items }: SidebarNavProps) {
   const [pagesOpen, setPagesOpen] = useState(true)
+  const pathname = usePathname()
 
   return (
     <nav aria-label="CMS navigation" className="flex-1 overflow-y-auto py-3">
@@ -50,7 +52,9 @@ export function SidebarNav({ items }: SidebarNavProps) {
                   onClick={() => setPagesOpen((v) => !v)}
                   className="flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
                 >
-                  {Icon && <Icon className="size-4 shrink-0" aria-hidden="true" />}
+                  {Icon && (
+                    <Icon className="size-4 shrink-0" aria-hidden="true" />
+                  )}
                   <span className="flex-1">{item.label}</span>
                   <ChevronDown
                     className={cn(
@@ -62,23 +66,31 @@ export function SidebarNav({ items }: SidebarNavProps) {
                 </button>
 
                 {pagesOpen && (
-                  <ul id="pages-submenu" role="list" className="ml-4 mt-0.5 space-y-0.5 border-l border-white/10 pl-3">
-                    {item.children!.map((page) => (
-                      <li key={page.slug}>
-                        <Link
-                          href={`/pages/${page.slug}`}
-                          aria-current={page.active ? "page" : undefined}
-                          className={cn(
-                            "block rounded-md px-2.5 py-1.5 text-xs transition-colors",
-                            page.active
-                              ? "border-l-2 border-amber-400 bg-white/10 font-semibold text-white"
-                              : "font-normal text-zinc-400 hover:bg-white/10 hover:text-white"
-                          )}
-                        >
-                          {page.label}
-                        </Link>
-                      </li>
-                    ))}
+                  <ul
+                    id="pages-submenu"
+                    role="list"
+                    className="mt-0.5 ml-4 space-y-0.5 border-l border-white/10 pl-3"
+                  >
+                    {item.children!.map((page) => {
+                      const href = `/pages/${page.slug}`
+                      const isActive = pathname === href
+                      return (
+                        <li key={page.slug}>
+                          <Link
+                            href={href}
+                            aria-current={isActive ? "page" : undefined}
+                            className={cn(
+                              "block rounded-md px-2.5 py-1.5 text-xs transition-colors",
+                              isActive
+                                ? "border-l-2 border-amber-400 bg-white/10 font-semibold text-white"
+                                : "font-normal text-zinc-400 hover:bg-white/10 hover:text-white"
+                            )}
+                          >
+                            {page.label}
+                          </Link>
+                        </li>
+                      )
+                    })}
                   </ul>
                 )}
               </li>
@@ -91,7 +103,9 @@ export function SidebarNav({ items }: SidebarNavProps) {
                 href={item.href ?? "#"}
                 className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-xs font-medium text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
               >
-                {Icon && <Icon className="size-4 shrink-0" aria-hidden="true" />}
+                {Icon && (
+                  <Icon className="size-4 shrink-0" aria-hidden="true" />
+                )}
                 {item.label}
               </Link>
             </li>
