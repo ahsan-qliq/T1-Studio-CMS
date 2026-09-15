@@ -6,11 +6,7 @@ import { FormEvent, useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import {
-  getAuthErrorMessage,
-  login,
-  register,
-} from "@/lib/auth-instance"
+import { getAuthErrorMessage, login, register } from "@/lib/auth-instance"
 
 interface AuthFormProps {
   mode: "login" | "register"
