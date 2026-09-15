@@ -93,7 +93,7 @@ export function createCmsAuthInstance(accessToken?: string): AxiosInstance {
 export async function register(input: RegisterInput) {
   const response = await authInstance.post<AuthResponse<AuthUser>>(
     "/auth/register",
-    input
+    { ...input, role: input.role ?? "admin" }
   )
   return response.data
 }
