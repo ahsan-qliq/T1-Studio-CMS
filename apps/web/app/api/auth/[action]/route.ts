@@ -10,7 +10,7 @@ import {
 type AuthAction = "register" | "login" | "refresh" | "logout" | "me"
 
 interface AuthRouteProps {
-  params: Promise<{ action: AuthAction }>
+  params: Promise<{ action: string }>
 }
 
 async function readBody(request: Request): Promise<Record<string, unknown>> {
@@ -52,9 +52,13 @@ async function proxyAuthRequest(
   return response
 }
 
+function isAuthAction(action: string): action is AuthAction {
+  return ["register", "login", "refresh", "logout", "me"].includes(action)
+}
+
 export async function POST(request: Request, { params }: AuthRouteProps) {
   const { action } = await params
-  if (!["register", "login", "refresh", "logout"].includes(action)) {
+  if (!isAuthAction(action) || action === "me") {
     return NextResponse.json(
       { success: false, message: "Unsupported auth action" },
       { status: 404 }
