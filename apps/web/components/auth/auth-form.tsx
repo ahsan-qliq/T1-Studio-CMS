@@ -82,9 +82,13 @@ export function AuthForm({ mode }: AuthFormProps) {
       </form>
 
       <p className="mt-6 text-center text-sm text-zinc-500">
-        {isRegister ? "Already have an account?" : "Need an account?"}{" "}
-        <Link className="font-medium text-zinc-900 underline underline-offset-4" href={isRegister ? "/login" : "/register"}>
-          {isRegister ? "Sign in" : "Register"}
+        <Link
+          className="font-medium text-zinc-900 underline underline-offset-4"
+          href={isRegister ? "/login" : "/register"}
+        >
+          {isRegister
+            ? "Already have an account? Sign in"
+            : "Need an account? Register"}
         </Link>
       </p>
     </section>
