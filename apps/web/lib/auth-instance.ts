@@ -5,9 +5,11 @@ import axios, {
 } from "axios"
 
 const configuredBaseUrl =
-  process.env.CMS_API_BASE_URL ?? "http://localhost:5000/api"
+  process.env.CMS_API_BASE_URL ?? "http://localhost:4000/api"
 
-export const CMS_API_BASE_URL = configuredBaseUrl.replace(/\/+$/, "").endsWith("/api")
+export const CMS_API_BASE_URL = configuredBaseUrl
+  .replace(/\/+$/, "")
+  .endsWith("/api")
   ? configuredBaseUrl.replace(/\/+$/, "")
   : `${configuredBaseUrl.replace(/\/+$/, "")}/api`
 
@@ -63,7 +65,12 @@ authInstance.interceptors.response.use(
       | undefined
     const isRefreshRequest = request?.url?.endsWith("/auth/refresh")
 
-    if (error.response?.status !== 401 || !request || request._retry || isRefreshRequest) {
+    if (
+      error.response?.status !== 401 ||
+      !request ||
+      request._retry ||
+      isRefreshRequest
+    ) {
       throw error
     }
 
@@ -107,16 +114,14 @@ export async function login(input: LoginInput) {
 }
 
 export async function refresh() {
-  const response = await authInstance.post<AuthResponse<RefreshData>>(
-    "/auth/refresh"
-  )
+  const response =
+    await authInstance.post<AuthResponse<RefreshData>>("/auth/refresh")
   return response.data
 }
 
 export async function logout() {
-  const response = await authInstance.post<AuthResponse<undefined>>(
-    "/auth/logout"
-  )
+  const response =
+    await authInstance.post<AuthResponse<undefined>>("/auth/logout")
   return response.data
 }
 
