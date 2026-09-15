@@ -6,7 +6,11 @@ import { FormEvent, useState } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
-import { authInstance } from "@/lib/auth-instance"
+import {
+  getAuthErrorMessage,
+  login,
+  register,
+} from "@/lib/auth-instance"
 
 interface AuthFormProps {
   mode: "login" | "register"
@@ -26,17 +30,18 @@ export function AuthForm({ mode }: AuthFormProps) {
     setError("")
 
     try {
-      const response = await authInstance.post(
-        `/auth/${mode}`,
-        mode === "register" ? { name, email, password } : { email, password }
-      )
-      if (!response.data?.success) {
-        throw new Error(response.data?.message ?? "Authentication failed")
+      const response =
+        mode === "register"
+          ? await register({ name, email, password })
+          : await login({ email, password })
+
+      if (!response.success) {
+        throw new Error(response.message ?? "Authentication failed")
       }
       router.push(mode === "login" ? "/pages/home" : "/login")
       router.refresh()
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Authentication failed")
+      setError(getAuthErrorMessage(cause))
     } finally {
       setSubmitting(false)
     }

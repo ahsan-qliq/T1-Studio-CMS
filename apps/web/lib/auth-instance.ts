@@ -17,6 +17,42 @@ export const authInstance = axios.create({
   headers: { "Content-Type": "application/json" },
 })
 
+export interface AuthUser {
+  id: string
+  name: string
+  email: string
+  role: "admin" | "user"
+}
+
+export interface AuthResponse<T> {
+  success: boolean
+  data?: T
+  message?: string
+}
+
+export interface LoginData {
+  accessToken: string
+  refreshToken: string
+  user: AuthUser
+}
+
+export interface RefreshData {
+  accessToken: string
+  refreshToken: string
+}
+
+export interface RegisterInput {
+  name: string
+  email: string
+  password: string
+  role?: "admin" | "user"
+}
+
+export interface LoginInput {
+  email: string
+  password: string
+}
+
 let refreshRequest: Promise<unknown> | null = null
 
 authInstance.interceptors.response.use(
@@ -52,4 +88,48 @@ export function createCmsAuthInstance(accessToken?: string): AxiosInstance {
       ? { Authorization: `Bearer ${accessToken}` }
       : undefined,
   })
+}
+
+export async function register(input: RegisterInput) {
+  const response = await authInstance.post<AuthResponse<AuthUser>>(
+    "/auth/register",
+    input
+  )
+  return response.data
+}
+
+export async function login(input: LoginInput) {
+  const response = await authInstance.post<AuthResponse<LoginData>>(
+    "/auth/login",
+    input
+  )
+  return response.data
+}
+
+export async function refresh() {
+  const response = await authInstance.post<AuthResponse<RefreshData>>(
+    "/auth/refresh"
+  )
+  return response.data
+}
+
+export async function logout() {
+  const response = await authInstance.post<AuthResponse<undefined>>(
+    "/auth/logout"
+  )
+  return response.data
+}
+
+export async function me() {
+  const response = await authInstance.get<AuthResponse<AuthUser>>("/auth/me")
+  return response.data
+}
+
+export function getAuthErrorMessage(error: unknown): string {
+  if (axios.isAxiosError(error)) {
+    const payload = error.response?.data as { message?: string } | undefined
+    return payload?.message ?? error.message
+  }
+
+  return error instanceof Error ? error.message : "Authentication failed"
 }
