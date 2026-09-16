@@ -1,8 +1,7 @@
 "use client"
 
-import { Button } from "@workspace/ui/components/button"
-
 import { useForm, Controller } from "react-hook-form"
+import { Button } from "@workspace/ui/components/button"
 import Link from "next/link"
 import { LocalizedField, PlainField, ImageField, ButtonField, BoolField, SectionAccordion } from "../home-page-form/shared-fields"
 import { SeoFields } from "../form-shared/seo-field"
@@ -17,13 +16,16 @@ export function BlogPageFormClient({ initialData }: { initialData: BlogPageApiDa
   })
   return (
     <form onSubmit={submit} className="space-y-4 pb-24">
-      <div className="flex flex-wrap items-end gap-3 rounded-lg border border-zinc-200 bg-white p-4">
-        <div className="grid min-w-0 flex-1 grid-cols-3 gap-3">
+      <div className="rounded-lg border border-zinc-200 bg-white p-4">
+        <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_180px_auto] md:items-end">
           <PlainField control={control} name="pageName" label="Page Name" placeholder="Blog" />
           <PlainField control={control} name="slug" label="Slug" placeholder="blog" />
-          <Controller control={control} name="status" render={({ field }) => <select {...field} className="h-9 rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option></select>} />
+          <div className="space-y-1.5">
+            <label htmlFor="blog-status" className="text-sm font-medium text-zinc-900">Status</label>
+            <Controller control={control} name="status" render={({ field }) => <select id="blog-status" {...field} className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option></select>} />
+          </div>
+          <Link href="/pages/blog-detail/new" className="inline-flex h-9 items-center justify-center rounded-md border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-50">Add new blog</Link>
         </div>
-        <Link href="/pages/blog-detail/new" className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium">Add new blog</Link>
       </div>
       <SectionAccordion title="Hero Banner" order={1} control={control} visibleName="sections.hero.isVisible" defaultOpen>
         <LocalizedField control={control} name="sections.hero.eyebrow" label="Eyebrow" />
