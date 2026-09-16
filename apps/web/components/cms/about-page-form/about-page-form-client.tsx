@@ -51,5 +51,46 @@ export function AboutPageFormClient({ initialData }: { initialData: AboutPageApi
 }
 
 function AboutSectionForm({ control, name, title, order, hasEyebrow }: { control: Control<AboutPageApiData>; name: string; title: string; order: number; hasEyebrow: boolean }) {
-  return <SectionAccordion title={title} order={order} control={control} visibleName={`sections.${name}.isVisible`}><div className="space-y-3">{hasEyebrow && <LocalizedField control={control} name={`sections.${name}.eyebrow`} label="Eyebrow" />}<LocalizedField control={control} name={`sections.${name}.heading`} label="Heading" /><LocalizedField control={control} name={`sections.${name}.description`} label="Description" multiline /></div></SectionAccordion>
+  return <SectionAccordion title={title} order={order} control={control} visibleName={`sections.${name}.isVisible`}>
+    <div className="space-y-3">
+      {hasEyebrow && <LocalizedField control={control} name={`sections.${name}.eyebrow`} label="Eyebrow" />}
+      {name !== "journey" && name !== "philosophy" && name !== "values" && name !== "stats" && name !== "team" && name !== "showcase" && name !== "brands" && name !== "partnership" && name !== "faq" && <LocalizedField control={control} name={`sections.${name}.heading`} label="Heading" />}
+      {name !== "journey" && name !== "philosophy" && name !== "values" && name !== "stats" && name !== "team" && name !== "showcase" && name !== "brands" && name !== "partnership" && name !== "faq" && <LocalizedField control={control} name={`sections.${name}.description`} label="Description" multiline />}
+      {name === "story" && <><LocalizedField control={control} name="sections.story.secondaryDescription" label="Secondary Description" multiline /><ImageField control={control} name="sections.story.image" label="Story Image" /><PlainField control={control} name="sections.story.imagePosition" label="Image Position" placeholder="left or right" /><ButtonField control={control} name="sections.story.button" label="Button" /></>}
+      {name === "journey" && <JsonField control={control} name="sections.journey.items" label="Journey Items" />}
+      {name === "philosophy" && <JsonField control={control} name="sections.philosophy.items" label="Philosophy Items" />}
+      {name === "values" && <JsonField control={control} name="sections.values.items" label="Values Items" />}
+      {name === "stats" && <JsonField control={control} name="sections.stats.items" label="Stats Items" />}
+      {name === "team" && (
+        <>
+          <JsonField control={control} name="sections.team.items" label="Team Items" />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Controller control={control} name="sections.team.autoplay" render={({ field }) => <label className="flex gap-2 text-sm"><input type="checkbox" checked={!!field.value} onChange={field.onChange} /> Autoplay</label>} />
+            <Controller control={control} name="sections.team.showNavigation" render={({ field }) => <label className="flex gap-2 text-sm"><input type="checkbox" checked={!!field.value} onChange={field.onChange} /> Show navigation</label>} />
+          </div>
+        </>
+      )}
+      {name === "showcase" && <JsonField control={control} name="sections.showcase.items" label="Showcase Items" />}
+      {name === "brands" && <JsonField control={control} name="sections.brands.items" label="Brand Items" />}
+      {name === "partnership" && <JsonField control={control} name="sections.partnership.items" label="Partnership Items" />}
+      {name === "faq" && <JsonField control={control} name="sections.faq.items" label="FAQ Items" />}
+    </div>
+  </SectionAccordion>
+}
+
+function JsonField({ control, name, label }: { control: Control<AboutPageApiData>; name: string; label: string }) {
+  return <Controller control={control} name={name as never} render={({ field }) => (
+    <div className="space-y-1.5">
+      <Label className="text-sm font-medium text-zinc-900">{label}</Label>
+      <textarea
+        className="min-h-40 w-full rounded-md border border-zinc-200 bg-white p-3 font-mono text-xs text-zinc-900"
+        value={JSON.stringify(field.value ?? [], null, 2)}
+        onChange={(event) => {
+          try { field.onChange(JSON.parse(event.target.value)) } catch { /* preserve the text until valid JSON is entered */ }
+        }}
+        aria-label={label}
+      />
+      <p className="text-xs text-zinc-500">Enter an array using the API request-body shape.</p>
+    </div>
+  )} />
 }

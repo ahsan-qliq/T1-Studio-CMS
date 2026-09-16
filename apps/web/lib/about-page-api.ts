@@ -6,9 +6,21 @@ export function fetchAboutPage() {
 }
 
 export function saveAboutPage(data: AboutPageApiData) {
-  return cmsApiFetch(`/about-page${data._id ? "?slug=about" : ""}`, {
-    method: data._id ? "PATCH" : "POST",
+  const save = async () => {
+    let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
+    if (!data._id) {
+      try {
+        await fetchAboutPage()
+        method = "PATCH"
+      } catch {
+        method = "POST"
+      }
+    }
+    return cmsApiFetch(`/about-page${method === "PATCH" ? "?slug=about" : ""}`, {
+    method,
     headers: { "Content-Type": "application/json" },
     data,
-  })
+    })
+  }
+  return save()
 }
