@@ -23,22 +23,28 @@ export async function fetchSpaceDetailPage(
 export async function saveSpaceDetailPage(
   data: SpaceDetailPageApiData,
   isNew?: boolean
-): Promise<SpaceDetailPageApiData | void> {
+): Promise<SpaceDetailPageApiData> {
   const slug = data.slug.trim()
   const validSpaceTypes = ["kitchen", "wardrobe", "living-room", "bedroom", "bathroom", "home-office", "outdoor-living", "bespoke-joinery"]
   if (!slug) throw new Error("Space slug is required.")
   if (!validSpaceTypes.includes(data.spaceType)) throw new Error("Select a valid space type.")
-  const method = isNew || !data._id ? "POST" : "PATCH"
+  let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
+  if (isNew && !data._id) {
+    try {
+      await fetchSpaceDetailPage(slug)
+      method = "PATCH"
+    } catch {
+      method = "POST"
+    }
+  }
   const query = method === "PATCH" ? `?slug=${encodeURIComponent(slug)}` : ""
   const response = await cmsApiFetch(`/space-detail-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
     data: { ...data, slug },
   })
-  if (method === "POST") {
-    const payload = response.data as { data?: SpaceDetailPageApiData }
-    return payload.data
-  }
+  const payload = response.data as { data?: SpaceDetailPageApiData }
+  return payload.data ?? { ...data, ...(method === "PATCH" ? {} : { _id: data._id }) }
 }
 
 export function createSpaceDetailPage(

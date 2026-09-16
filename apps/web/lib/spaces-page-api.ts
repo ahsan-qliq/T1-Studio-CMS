@@ -13,16 +13,22 @@ export async function fetchSpacesPage(): Promise<SpacesPageApiData> {
 export async function saveSpacesPage(
   data: SpacesPageApiData,
   isNew?: boolean
-): Promise<SpacesPageApiData | void> {
-  const method = isNew || !data._id ? "POST" : "PATCH"
+): Promise<SpacesPageApiData> {
+  let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
+  if (isNew && !data._id) {
+    try {
+      await fetchSpacesPage()
+      method = "PATCH"
+    } catch {
+      method = "POST"
+    }
+  }
   const query = method === "PATCH" ? "?slug=spaces" : ""
   const response = await cmsApiFetch(`/spaces-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
     data,
   })
-  if (method === "POST") {
-    const payload = response.data as { data?: SpacesPageApiData }
-    return payload.data
-  }
+  const payload = response.data as { data?: SpacesPageApiData }
+  return payload.data ?? data
 }
