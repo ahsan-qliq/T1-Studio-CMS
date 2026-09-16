@@ -45,7 +45,13 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <HomePageFormClient initialData={data} />
         </div>
       )
-    } catch { return <HomePageFormClient initialData={createEmptyHomePage()} /> }
+    } catch {
+      return (
+        <div className="mx-auto w-full px-6 py-6">
+          <HomePageFormClient initialData={createEmptyHomePage()} />
+        </div>
+      )
+    }
   }
 
   if (slug === "spaces") {
@@ -56,7 +62,13 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <SpacesPageFormClient initialData={data} />
         </div>
       )
-    } catch { return <SpacesPageFormClient initialData={createEmptySpacesPage()} /> }
+    } catch {
+      return (
+        <div className="mx-auto w-full px-6 py-6">
+          <SpacesPageFormClient initialData={createEmptySpacesPage()} />
+        </div>
+      )
+    }
   }
 
   if (slug === "projects") {
@@ -67,7 +79,13 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <ProjectsPageFormClient initialData={data} />
         </div>
       )
-    } catch { return <ProjectsPageFormClient initialData={createEmptyProjectsPage()} /> }
+    } catch {
+      return (
+        <div className="mx-auto w-full px-6 py-6">
+          <ProjectsPageFormClient initialData={createEmptyProjectsPage()} />
+        </div>
+      )
+    }
   }
 
   notFound()
