@@ -942,14 +942,84 @@ export function ImageField({
   name: string
   label: string
 }) {
+  const inputId = `image-upload-${name.replace(/[^a-zA-Z0-9]/g, "-")}`
+
   return (
     <div className="space-y-2 rounded-md border border-zinc-100 bg-zinc-50/60 p-3">
       <p className="text-xs font-medium text-zinc-600">{label}</p>
-      <PlainField
+      <Controller
         control={control}
-        name={`${name}.url`}
-        label="Image URL"
-        placeholder="https://..."
+        name={`${name}.url` as HomePagePath}
+        render={({ field }) => (
+          <div className="space-y-2">
+            <input
+              id={inputId}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0]
+                if (!file) return
+                if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                  alert("Please upload a JPG, PNG or WEBP image.")
+                  event.target.value = ""
+                  return
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                  alert("Image must be smaller than 5MB.")
+                  event.target.value = ""
+                  return
+                }
+                const reader = new FileReader()
+                reader.onload = () => {
+                  if (typeof reader.result === "string") field.onChange(reader.result)
+                }
+                reader.readAsDataURL(file)
+              }}
+            />
+            <label
+              htmlFor={inputId}
+              className="flex cursor-pointer items-center gap-3 rounded-md border border-dashed border-zinc-300 bg-white p-3 transition hover:border-zinc-500"
+            >
+              {field.value ? (
+                <img
+                  src={field.value}
+                  alt={label}
+                  className="size-16 rounded object-cover"
+                />
+              ) : (
+                <span className="flex size-16 items-center justify-center rounded bg-zinc-100 text-xs text-zinc-500">
+                  Upload
+                </span>
+              )}
+              <span className="text-xs text-zinc-600">
+                {field.value ? "Click to replace image" : "Click to upload image"}
+                <span className="mt-1 block text-[11px] text-zinc-400">
+                  JPG, PNG or WEBP · Max 5MB
+                </span>
+              </span>
+            </label>
+            {field.value && (
+              <button
+                type="button"
+                className="text-xs text-red-600 hover:text-red-700"
+                onClick={() => {
+                  field.onChange("")
+                  const input = document.getElementById(inputId) as HTMLInputElement | null
+                  if (input) input.value = ""
+                }}
+              >
+                Remove image
+              </button>
+            )}
+            <PlainField
+              control={control}
+              name={`${name}.url`}
+              label="Image URL or uploaded data"
+              placeholder="https://..."
+            />
+          </div>
+        )}
       />
       <LocalizedField control={control} name={`${name}.alt`} label="Alt Text" />
     </div>
