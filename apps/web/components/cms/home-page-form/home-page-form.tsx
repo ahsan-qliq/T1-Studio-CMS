@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@workspace/ui/components/button"
+
 import { useForm, useFieldArray, Controller, type Control } from "react-hook-form"
 import { useState } from "react"
 import {
@@ -55,13 +57,12 @@ export function HomePageForm({ initialData, onSave }: HomePageFormProps) {
       <LocationLinksSection control={control} />
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
-        <button
-          type="submit"
+        <Button type="submit"
           disabled={saving}
           className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
         >
           {saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}
-        </button>
+        </Button>
       </div>
     </form>
   )

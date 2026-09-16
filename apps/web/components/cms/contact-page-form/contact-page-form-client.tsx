@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@workspace/ui/components/button"
+
 import { Controller, useForm, type Control } from "react-hook-form"
 import { useState } from "react"
 import { Label } from "@workspace/ui/components/label"
@@ -38,7 +40,7 @@ export function ContactPageFormClient({ initialData }: { initialData: ContactPag
     </SectionAccordion>
     {sections.map(([name, title, hasEyebrow], index) => <ContactSectionForm key={name} control={control} name={name} title={title} order={index + 2} hasEyebrow={hasEyebrow} />)}
     <SeoFields control={control} namePrefix="seo" />
-    <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3"><button type="submit" disabled={saving} className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">{saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}</button></div>
+    <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3"><Button type="submit" disabled={saving} className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">{saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}</Button></div>
   </form>
 }
 

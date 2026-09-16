@@ -1,4 +1,6 @@
 "use client"
+
+import { Button } from "@workspace/ui/components/button"
 import { useForm, Controller, type Control } from "react-hook-form"
 import { useState } from "react"
 import { Input } from "@workspace/ui/components/input"
@@ -164,8 +166,7 @@ export function WhyT1PageFormClient({
       />
       <SeoFields control={control} namePrefix="seo" />
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
-        <button
-          type="submit"
+        <Button type="submit"
           disabled={saving}
           className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
         >
@@ -174,7 +175,7 @@ export function WhyT1PageFormClient({
             : formState.isDirty
               ? "Save All Changes"
               : "Saved"}
-        </button>
+        </Button>
       </div>
     </form>
   )
