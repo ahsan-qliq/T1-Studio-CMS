@@ -8,7 +8,7 @@ export function HomePageFormClient({ initialData }: { initialData: HomePageApiDa
     const res = await fetch("/api/save-home-page", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sections }),
+      body: JSON.stringify({ ...initialData, sections }),
     })
     if (!res.ok) {
       // Replace with your preferred toast/notification pattern.

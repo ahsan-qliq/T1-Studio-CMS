@@ -5,7 +5,7 @@ import type { HomePageSections } from "@/types/api-home-page"
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as { sections: HomePageSections }
-    await saveHomePage(body.sections)
+    await saveHomePage(body.sections, Boolean((body as { _id?: string })._id))
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error("[POST /api/save-home-page]", err)

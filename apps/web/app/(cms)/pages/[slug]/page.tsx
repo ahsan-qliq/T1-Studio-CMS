@@ -5,6 +5,11 @@ import { ProjectsPageFormClient } from "@/components/cms/projects-page-form/proj
 import { fetchRawHomePage } from "@/lib/home-page-api"
 import { fetchSpacesPage } from "@/lib/spaces-page-api"
 import { fetchProjectsPage } from "@/lib/projects-page-api"
+import {
+  createEmptyHomePage,
+  createEmptyProjectsPage,
+  createEmptySpacesPage,
+} from "@/lib/legacy-page-defaults"
 
 interface PageEditorPageProps {
   params: Promise<{ slug: string }>
@@ -40,9 +45,7 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <HomePageFormClient initialData={data} />
         </div>
       )
-    } catch (err) {
-      return <LoadError err={err} />
-    }
+    } catch { return <HomePageFormClient initialData={createEmptyHomePage()} /> }
   }
 
   if (slug === "spaces") {
@@ -53,9 +56,7 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <SpacesPageFormClient initialData={data} />
         </div>
       )
-    } catch (err) {
-      return <LoadError err={err} />
-    }
+    } catch { return <SpacesPageFormClient initialData={createEmptySpacesPage()} /> }
   }
 
   if (slug === "projects") {
@@ -66,9 +67,7 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <ProjectsPageFormClient initialData={data} />
         </div>
       )
-    } catch (err) {
-      return <LoadError err={err} />
-    }
+    } catch { return <ProjectsPageFormClient initialData={createEmptyProjectsPage()} /> }
   }
 
   notFound()
