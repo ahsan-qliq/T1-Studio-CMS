@@ -1139,7 +1139,7 @@ export function SectionAccordion({
           type="button"
           onClick={() => setOpen((o) => !o)}
           variant="ghost"
-          className="h-auto flex-1 justify-between gap-2 bg-transparent px-0 text-left hover:bg-transparent aria-expanded:bg-transparent"
+          className="h-auto flex-1 justify-between gap-2 !bg-transparent px-0 text-left hover:!bg-transparent aria-expanded:!bg-transparent"
         >
           <span className="text-sm font-semibold text-zinc-900">{title}</span>
           <ChevronDown
@@ -1157,7 +1157,7 @@ export function SectionAccordion({
               aria-label={field.value ? "Hide section" : "Show section"}
               variant="ghost"
               size="icon-sm"
-              className="text-zinc-500 hover:bg-zinc-100"
+              className="text-zinc-500 hover:!bg-zinc-100"
             >
               {field.value ? (
                 <Eye className="size-4" />
