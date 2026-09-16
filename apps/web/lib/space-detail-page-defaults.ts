@@ -8,7 +8,7 @@ const section = (order: number) => ({ isVisible: true, order })
 export function createEmptySpaceDetailPage(): SpaceDetailPageApiData {
   return {
     pageName: "New Space",
-    spaceType: "",
+    spaceType: "kitchen",
     slug: "",
     status: "draft",
     sections: {

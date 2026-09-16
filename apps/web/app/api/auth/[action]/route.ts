@@ -5,6 +5,8 @@ import {
   setAuthCookies,
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
+  AUTH_USER_COOKIE,
+  setAuthUserCookie,
   DEV_ACCESS_TOKEN,
   isDevAuthBypassEnabled,
 } from "@/lib/auth"
@@ -44,11 +46,14 @@ async function proxyAuthRequest(
       | { accessToken?: string; refreshToken?: string }
       | undefined
     setAuthCookies(response, data ?? {})
+    const user = apiResponse.data?.data?.user
+    if (user) setAuthUserCookie(response, user)
   }
 
   if (action === "logout") {
     response.cookies.delete(ACCESS_TOKEN_COOKIE)
     response.cookies.delete(REFRESH_TOKEN_COOKIE)
+    response.cookies.delete(AUTH_USER_COOKIE)
   }
 
   return response
@@ -88,6 +93,12 @@ export async function POST(request: Request, { params }: AuthRouteProps) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
+    })
+    setAuthUserCookie(response, {
+      id: "dev-user",
+      name: String(body.name ?? body.email ?? "Development Admin"),
+      email: String(body.email ?? "dev@example.com"),
+      role: "admin",
     })
     return response
   }

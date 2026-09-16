@@ -32,6 +32,7 @@ export const sidebarNav: NavSection[] = [
     icon: "FileText",
     children: [
       { slug: "home", label: "Home" },
+      { slug: "landing", label: "Landing Page" },
       { slug: "spaces", label: "Spaces" },
       { slug: "space-detail/kitchens", label: "Kitchens (Space Detail)" },
       { slug: "space-detail/wardrobes", label: "Wardrobes (Space Detail)" },
@@ -48,9 +49,6 @@ export const sidebarNav: NavSection[] = [
         slug: "project-detail/jumeirah-gate-dubai",
         label: "Jumeirah Gate Dubai (Project Detail)",
       },
-      { slug: "design-tips", label: "Design Tips (Blog)" },
-      { slug: "services", label: "Services" },
-      { slug: "materials-finishes", label: "Materials & Finishes" },
       { slug: "contact", label: "Contact" },
     ],
   },

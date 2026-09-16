@@ -12,9 +12,12 @@ export async function fetchRawHomePage(): Promise<HomePageApiData> {
 /**
  * Saves only the edited sections using the documented singleton PATCH endpoint.
  */
-export async function saveHomePage(sections: HomePageSections): Promise<void> {
-  await cmsApiFetch("/home-page?slug=home", {
-    method: "PATCH",
+export async function saveHomePage(
+  sections: HomePageSections,
+  exists = true
+): Promise<void> {
+  await cmsApiFetch(`/home-page${exists ? "?slug=home" : ""}`, {
+    method: exists ? "PATCH" : "POST",
     headers: { "Content-Type": "application/json" },
     data: { sections },
   })

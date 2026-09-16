@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@workspace/ui/components/button"
+
 import { useForm, useFieldArray, Controller, type Control } from "react-hook-form"
 import { useState } from "react"
 import {
@@ -55,13 +57,12 @@ export function HomePageForm({ initialData, onSave }: HomePageFormProps) {
       <LocationLinksSection control={control} />
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
-        <button
-          type="submit"
+        <Button type="submit"
           disabled={saving}
           className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
         >
           {saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}
-        </button>
+        </Button>
       </div>
     </form>
   )
@@ -569,7 +570,7 @@ function DesignTipsSection({ control }: { control: Control<HomePageSections> }) 
               <ImageField control={control} name={`designTips.articles.${i}.image`} label="Image" />
               <div className="grid grid-cols-2 gap-3">
                 <LocalizedField control={control} name={`designTips.articles.${i}.category`} label="Category" />
-                <PlainField control={control} name={`designTips.articles.${i}.readTime`} label="Read Time" placeholder="2 min read" />
+                <LocalizedField control={control} name={`designTips.articles.${i}.readTime`} label="Read Time" />
               </div>
               <PlainField control={control} name={`designTips.articles.${i}.href`} label="Link URL" />
               <BoolField control={control} name={`designTips.articles.${i}.isVisible`} label="Visible" />
@@ -586,7 +587,7 @@ function DesignTipsSection({ control }: { control: Control<HomePageSections> }) 
             title: { en: "", ar: "" },
             image: { url: "", key: "", alt: { en: "", ar: "" } },
             category: { en: "", ar: "" },
-            readTime: "",
+            readTime: { en: "", ar: "" },
             href: "",
             isVisible: true,
           })

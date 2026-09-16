@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@workspace/ui/components/button"
+
 import { Controller, useForm, type Control } from "react-hook-form"
 import { useState } from "react"
 import { Label } from "@workspace/ui/components/label"
@@ -33,14 +35,14 @@ export function InspirationPageFormClient({ initialData }: { initialData: Inspir
     <div className="grid grid-cols-3 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
       <PlainField control={control} name="pageName" label="Page Name" />
       <PlainField control={control} name="slug" label="Slug" />
-      <Controller control={control} name="status" render={({ field }) => <div className="space-y-1.5"><Label>Status</Label><select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm"><option value="draft">draft</option><option value="published">published</option></select></div>} />
+      <Controller control={control} name="status" render={({ field }) => <div className="space-y-1.5"><Label>Status</Label><select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option></select></div>} />
     </div>
     <SectionAccordion title="Hero" order={1} control={control} visibleName="sections.hero.isVisible" defaultOpen>
       <LocalizedField control={control} name="sections.hero.eyebrow" label="Eyebrow" /><LocalizedField control={control} name="sections.hero.heading" label="Heading" multiline /><LocalizedField control={control} name="sections.hero.description" label="Description" multiline /><ImageField control={control} name="sections.hero.backgroundImage" label="Background Image" /><ImageField control={control} name="sections.hero.mobileImage" label="Mobile Image" /><ButtonField control={control} name="sections.hero.primaryButton" label="Primary Button" /><PlainField control={control} name="sections.hero.overlayOpacity" label="Overlay Opacity" type="number" />
     </SectionAccordion>
     {sections.map(([name, title, hasEyebrow], index) => <InspirationSectionForm key={name} control={control} name={name} title={title} order={index + 2} hasEyebrow={hasEyebrow} />)}
     <SeoFields control={control} namePrefix="seo" />
-    <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3"><button type="submit" disabled={saving} className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">{saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}</button></div>
+    <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3"><Button type="submit" disabled={saving} className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50">{saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}</Button></div>
   </form>
 }
 

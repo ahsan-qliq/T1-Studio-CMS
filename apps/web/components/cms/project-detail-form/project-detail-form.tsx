@@ -1,5 +1,7 @@
 "use client"
 
+import { Button } from "@workspace/ui/components/button"
+
 import { useForm, useFieldArray, Controller, type Control } from "react-hook-form"
 import { useState } from "react"
 import {
@@ -50,9 +52,9 @@ export function ProjectDetailForm({ initialData, onSave }: ProjectDetailFormProp
     <form onSubmit={submit} className="space-y-4 pb-24">
       {/* Page-level meta */}
       <div className="grid grid-cols-4 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
-        <PlainField control={control} name="pageName" label="Page Name" placeholder="Emirates Hills Project" />
+        <PlainField control={control} name="pageName" label="Page Name" placeholder="Emirates Hills Project" required />
         <LocalizedField control={control} name="projectName" label="Project Name" />
-        <PlainField control={control} name="slug" label="Slug" placeholder="emirates-hills" />
+        <PlainField control={control} name="slug" label="Slug" placeholder="emirates-hills" required />
         <PlainField control={control} name="projectCategory" label="Category" placeholder="residential" />
       </div>
       <div className="grid grid-cols-4 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
@@ -84,13 +86,12 @@ export function ProjectDetailForm({ initialData, onSave }: ProjectDetailFormProp
       <SeoFields control={control} namePrefix="seo" />
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
-        <button
-          type="submit"
+        <Button type="submit"
           disabled={saving}
           className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
         >
           {saving ? "Saving..." : formState.isDirty ? "Save All Changes" : "Saved"}
-        </button>
+        </Button>
       </div>
     </form>
   )

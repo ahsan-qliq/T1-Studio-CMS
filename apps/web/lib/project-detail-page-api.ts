@@ -18,11 +18,14 @@ export async function fetchProjectDetailPage(slug: string): Promise<ProjectDetai
  * _id (an update), POST when it doesn't (first-time creation).
  */
 export async function saveProjectDetailPage(data: ProjectDetailPageApiData): Promise<void> {
+  const slug = data.slug.trim()
+  if (!slug) throw new Error("Project slug is required.")
+  if (!data.pageName.trim()) throw new Error("Project page name is required.")
   const method = data._id ? "PATCH" : "POST"
-  const query = data._id ? `?slug=${encodeURIComponent(data.slug)}` : ""
+  const query = method === "PATCH" ? `?slug=${encodeURIComponent(slug)}` : ""
   await cmsApiFetch(`/project-detail-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
-    data,
+    data: { ...data, slug },
   })
 }

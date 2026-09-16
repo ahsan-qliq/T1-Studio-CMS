@@ -5,6 +5,11 @@ import { ProjectsPageFormClient } from "@/components/cms/projects-page-form/proj
 import { fetchRawHomePage } from "@/lib/home-page-api"
 import { fetchSpacesPage } from "@/lib/spaces-page-api"
 import { fetchProjectsPage } from "@/lib/projects-page-api"
+import {
+  createEmptyHomePage,
+  createEmptyProjectsPage,
+  createEmptySpacesPage,
+} from "@/lib/legacy-page-defaults"
 
 interface PageEditorPageProps {
   params: Promise<{ slug: string }>
@@ -40,8 +45,12 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <HomePageFormClient initialData={data} />
         </div>
       )
-    } catch (err) {
-      return <LoadError err={err} />
+    } catch {
+      return (
+        <div className="mx-auto w-full px-6 py-6">
+          <HomePageFormClient initialData={createEmptyHomePage()} />
+        </div>
+      )
     }
   }
 
@@ -53,8 +62,12 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <SpacesPageFormClient initialData={data} />
         </div>
       )
-    } catch (err) {
-      return <LoadError err={err} />
+    } catch {
+      return (
+        <div className="mx-auto w-full px-6 py-6">
+          <SpacesPageFormClient initialData={createEmptySpacesPage()} />
+        </div>
+      )
     }
   }
 
@@ -66,8 +79,12 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
           <ProjectsPageFormClient initialData={data} />
         </div>
       )
-    } catch (err) {
-      return <LoadError err={err} />
+    } catch {
+      return (
+        <div className="mx-auto w-full px-6 py-6">
+          <ProjectsPageFormClient initialData={createEmptyProjectsPage()} />
+        </div>
+      )
     }
   }
 

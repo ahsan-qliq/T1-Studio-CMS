@@ -799,6 +799,7 @@ import { ChevronDown, Eye, EyeOff, Plus, Trash2 } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Label } from "@workspace/ui/components/label"
+import { Button } from "@workspace/ui/components/button"
 import { VisibilityToggle } from "../section-detail/shared/visibility-toggle"
 import type { HomePageSections } from "@/types/api-home-page"
 
@@ -872,12 +873,14 @@ export function PlainField({
   label,
   placeholder,
   type = "text",
+  required = false,
 }: {
   control: HomePageControl
   name: string
   label: string
   placeholder?: string
   type?: string
+  required?: boolean
 }) {
   return (
     <div className="space-y-1.5">
@@ -889,6 +892,7 @@ export function PlainField({
           <Input
             {...field}
             type={type}
+            required={required}
             value={
               typeof field.value === "string"
                 ? field.value
@@ -1072,14 +1076,16 @@ export function DeleteItemButton({
   label?: string
 }) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       aria-label={label ?? "Delete item"}
-      className="shrink-0 rounded p-1.5 text-red-400 transition-colors hover:bg-red-50 hover:text-red-600"
+      variant="ghost"
+      size="icon-sm"
+      className="text-red-400 hover:bg-red-50 hover:text-red-600"
     >
       <Trash2 className="size-4" aria-hidden />
-    </button>
+    </Button>
   )
 }
 
@@ -1092,14 +1098,15 @@ export function AddItemButton({
   label: string
 }) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-200 py-2.5 text-sm text-zinc-500 transition-colors hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-700"
+      variant="outline"
+      className="w-full border-dashed text-zinc-500 hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-700"
     >
       <Plus className="size-4" aria-hidden />
       {label}
-    </button>
+    </Button>
   )
 }
 
@@ -1126,38 +1133,41 @@ export function SectionAccordion({
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white">
+    <div className="rounded-lg border border-zinc-200 bg-transparent">
       <div className="flex items-center gap-3 px-4 py-3">
         <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-xs font-semibold text-zinc-600">
           {String(order).padStart(2, "0")}
         </span>
-        <button
+        <Button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          className="flex flex-1 items-center justify-between gap-2 text-left"
+          variant="ghost"
+          className="h-auto flex-1 justify-between gap-2 !bg-transparent px-0 text-left hover:!bg-transparent aria-expanded:!bg-transparent"
         >
           <span className="text-sm font-semibold text-zinc-900">{title}</span>
           <ChevronDown
             className={`size-4 text-zinc-400 transition-transform ${open ? "rotate-180" : ""}`}
             aria-hidden
           />
-        </button>
+        </Button>
         <Controller
           control={control}
           name={visibleName as HomePagePath}
           render={({ field }) => (
-            <button
+            <Button
               type="button"
               onClick={() => field.onChange(!field.value)}
               aria-label={field.value ? "Hide section" : "Show section"}
-              className="shrink-0 rounded p-1 text-zinc-500 hover:bg-zinc-100"
+              variant="ghost"
+              size="icon-sm"
+              className="text-zinc-500 hover:!bg-zinc-100"
             >
               {field.value ? (
                 <Eye className="size-4" />
               ) : (
                 <EyeOff className="size-4" />
               )}
-            </button>
+            </Button>
           )}
         />
       </div>
