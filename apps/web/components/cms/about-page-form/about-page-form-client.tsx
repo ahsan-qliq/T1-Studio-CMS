@@ -2,10 +2,10 @@
 
 import { Button } from "@workspace/ui/components/button"
 
-import { Controller, useForm, type Control } from "react-hook-form"
+import { Controller, useForm, useFieldArray, type Control } from "react-hook-form"
 import { useState } from "react"
 import { Label } from "@workspace/ui/components/label"
-import { LocalizedField, PlainField, ImageField, ButtonField, SectionAccordion } from "../home-page-form/shared-fields"
+import { LocalizedField, PlainField, ImageField, ButtonField, SectionAccordion, BoolField, AddItemButton, DeleteItemButton } from "../home-page-form/shared-fields"
 import { SeoFields } from "../form-shared/seo-field"
 import type { AboutPageApiData } from "@/types/api-about-page"
 
@@ -57,40 +57,63 @@ function AboutSectionForm({ control, name, title, order, hasEyebrow }: { control
       {name !== "journey" && name !== "philosophy" && name !== "values" && name !== "stats" && name !== "team" && name !== "showcase" && name !== "brands" && name !== "partnership" && name !== "faq" && <LocalizedField control={control} name={`sections.${name}.heading`} label="Heading" />}
       {name !== "journey" && name !== "philosophy" && name !== "values" && name !== "stats" && name !== "team" && name !== "showcase" && name !== "brands" && name !== "partnership" && name !== "faq" && <LocalizedField control={control} name={`sections.${name}.description`} label="Description" multiline />}
       {name === "story" && <><LocalizedField control={control} name="sections.story.secondaryDescription" label="Secondary Description" multiline /><ImageField control={control} name="sections.story.image" label="Story Image" /><PlainField control={control} name="sections.story.imagePosition" label="Image Position" placeholder="left or right" /><ButtonField control={control} name="sections.story.button" label="Button" /></>}
-      {name === "journey" && <JsonField control={control} name="sections.journey.items" label="Journey Items" />}
-      {name === "philosophy" && <JsonField control={control} name="sections.philosophy.items" label="Philosophy Items" />}
-      {name === "values" && <JsonField control={control} name="sections.values.items" label="Values Items" />}
-      {name === "stats" && <JsonField control={control} name="sections.stats.items" label="Stats Items" />}
+      {name === "journey" && <AboutArray control={control} path="sections.journey.items" kind="journey" label="Journey Items" />}
+      {name === "philosophy" && <AboutArray control={control} path="sections.philosophy.items" kind="philosophy" label="Philosophy Items" />}
+      {name === "values" && <AboutArray control={control} path="sections.values.items" kind="values" label="Values Items" />}
+      {name === "stats" && <AboutArray control={control} path="sections.stats.items" kind="stats" label="Stats Items" />}
       {name === "team" && (
         <>
-          <JsonField control={control} name="sections.team.items" label="Team Items" />
+          <AboutArray control={control} path="sections.team.items" kind="team" label="Team Items" />
           <div className="grid gap-3 sm:grid-cols-2">
             <Controller control={control} name="sections.team.autoplay" render={({ field }) => <label className="flex gap-2 text-sm"><input type="checkbox" checked={!!field.value} onChange={field.onChange} /> Autoplay</label>} />
             <Controller control={control} name="sections.team.showNavigation" render={({ field }) => <label className="flex gap-2 text-sm"><input type="checkbox" checked={!!field.value} onChange={field.onChange} /> Show navigation</label>} />
           </div>
         </>
       )}
-      {name === "showcase" && <JsonField control={control} name="sections.showcase.items" label="Showcase Items" />}
-      {name === "brands" && <JsonField control={control} name="sections.brands.items" label="Brand Items" />}
-      {name === "partnership" && <JsonField control={control} name="sections.partnership.items" label="Partnership Items" />}
-      {name === "faq" && <JsonField control={control} name="sections.faq.items" label="FAQ Items" />}
+      {name === "showcase" && <AboutArray control={control} path="sections.showcase.items" kind="showcase" label="Showcase Items" />}
+      {name === "brands" && <AboutArray control={control} path="sections.brands.items" kind="brands" label="Brand Items" />}
+      {name === "partnership" && <AboutArray control={control} path="sections.partnership.items" kind="partnership" label="Partnership Items" />}
+      {name === "faq" && <AboutArray control={control} path="sections.faq.items" kind="faq" label="FAQ Items" />}
     </div>
   </SectionAccordion>
 }
 
-function JsonField({ control, name, label }: { control: Control<AboutPageApiData>; name: string; label: string }) {
-  return <Controller control={control} name={name as never} render={({ field }) => (
-    <div className="space-y-1.5">
-      <Label className="text-sm font-medium text-zinc-900">{label}</Label>
-      <textarea
-        className="min-h-40 w-full rounded-md border border-zinc-200 bg-white p-3 font-mono text-xs text-zinc-900"
-        value={JSON.stringify(field.value ?? [], null, 2)}
-        onChange={(event) => {
-          try { field.onChange(JSON.parse(event.target.value)) } catch { /* preserve the text until valid JSON is entered */ }
-        }}
-        aria-label={label}
-      />
-      <p className="text-xs text-zinc-500">Enter an array using the API request-body shape.</p>
-    </div>
-  )} />
+type AboutArrayKind = "journey" | "philosophy" | "values" | "stats" | "team" | "showcase" | "brands" | "partnership" | "faq"
+
+function AboutArray({ control, path, kind, label }: { control: Control<AboutPageApiData>; path: string; kind: AboutArrayKind; label: string }) {
+  const { fields, append, remove } = useFieldArray({ control: control as Control<any>, name: path as never })
+  const localized = { en: "", ar: "" }
+  const image = { url: "", key: "", alt: { en: "", ar: "" } }
+  const empty = {
+    journey: { icon: "", year: "", title: localized, description: localized, isVisible: true },
+    philosophy: { icon: "", title: localized, description: localized },
+    values: { title: localized, description: localized, image },
+    stats: { value: "", label: localized, description: localized },
+    team: { name: localized, designation: localized, description: localized, image, linkedinUrl: "" },
+    showcase: { title: localized, caption: localized, image, href: "" },
+    brands: { name: "", logo: image, href: "", openInNewTab: false, isVisible: true },
+    partnership: { icon: "", title: localized, description: localized },
+    faq: { question: localized, answer: localized, isVisible: true },
+  }[kind]
+  return <div className="space-y-3">
+    <p className="text-sm font-medium text-zinc-900">{label}</p>
+    {fields.map((field, index) => {
+      const item = `${path}.${index}`
+      return <div key={field.id} className="flex items-start gap-2 rounded-lg border border-zinc-200 p-3">
+        <div className="flex-1 space-y-3">
+          {kind === "journey" && <><div className="grid gap-3 sm:grid-cols-2"><PlainField control={control} name={`${item}.icon`} label="Icon" /><PlainField control={control} name={`${item}.year`} label="Year" /></div><LocalizedField control={control} name={`${item}.title`} label="Title" /><LocalizedField control={control} name={`${item}.description`} label="Description" multiline /><BoolField control={control} name={`${item}.isVisible`} label="Visible" /></>}
+          {kind === "philosophy" && <><PlainField control={control} name={`${item}.icon`} label="Icon" /><LocalizedField control={control} name={`${item}.title`} label="Title" /><LocalizedField control={control} name={`${item}.description`} label="Description" multiline /></>}
+          {kind === "values" && <><LocalizedField control={control} name={`${item}.title`} label="Title" /><LocalizedField control={control} name={`${item}.description`} label="Description" multiline /><ImageField control={control} name={`${item}.image`} label="Image" /></>}
+          {kind === "stats" && <><div className="grid gap-3 sm:grid-cols-2"><PlainField control={control} name={`${item}.value`} label="Value" /><LocalizedField control={control} name={`${item}.label`} label="Label" /></div><LocalizedField control={control} name={`${item}.description`} label="Description" multiline /></>}
+          {kind === "team" && <><LocalizedField control={control} name={`${item}.name`} label="Name" /><LocalizedField control={control} name={`${item}.designation`} label="Designation" /><LocalizedField control={control} name={`${item}.description`} label="Description" multiline /><ImageField control={control} name={`${item}.image`} label="Image" /><PlainField control={control} name={`${item}.linkedinUrl`} label="LinkedIn URL" /></>}
+          {kind === "showcase" && <><LocalizedField control={control} name={`${item}.title`} label="Title" /><LocalizedField control={control} name={`${item}.caption`} label="Caption" /><ImageField control={control} name={`${item}.image`} label="Image" /><PlainField control={control} name={`${item}.href`} label="Link URL" /></>}
+          {kind === "brands" && <><div className="grid gap-3 sm:grid-cols-2"><PlainField control={control} name={`${item}.name`} label="Name" /><PlainField control={control} name={`${item}.href`} label="Link URL" /></div><ImageField control={control} name={`${item}.logo`} label="Logo" /><div className="grid gap-3 sm:grid-cols-2"><BoolField control={control} name={`${item}.openInNewTab`} label="Open in new tab" /><BoolField control={control} name={`${item}.isVisible`} label="Visible" /></div></>}
+          {kind === "partnership" && <><PlainField control={control} name={`${item}.icon`} label="Icon" /><LocalizedField control={control} name={`${item}.title`} label="Title" /><LocalizedField control={control} name={`${item}.description`} label="Description" multiline /></>}
+          {kind === "faq" && <><LocalizedField control={control} name={`${item}.question`} label="Question" /><LocalizedField control={control} name={`${item}.answer`} label="Answer" multiline /><BoolField control={control} name={`${item}.isVisible`} label="Visible" /></>}
+        </div>
+        <DeleteItemButton onClick={() => remove(index)} />
+      </div>
+    })}
+    <AddItemButton label={`Add ${label.replace(/ Items$/, "").replace(/s$/, "")}`} onClick={() => append(empty as never)} />
+  </div>
 }
