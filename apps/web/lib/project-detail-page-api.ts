@@ -1,6 +1,6 @@
 import type { ProjectDetailPageApiData, ProjectDetailPageApiResponse } from "@/types/api-project-detail-page"
 
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5000"
+const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5500"
 
 /**
  * Fetches a Project Detail page by slug. The documented GET endpoint also
