@@ -1,8 +1,138 @@
 import { SidebarNav } from "./sidebar-nav"
 import { SidebarUser } from "./sidebar-user"
 import { currentUser, sidebarNav } from "@/data/mock"
+import { fetchSpaceDetailPage } from "@/lib/space-detail-page-api"
+import { fetchSpacesPage } from "@/lib/spaces-page-api"
+import { fetchProjectDetailPage } from "@/lib/project-detail-page-api"
+import { fetchProjectsPage } from "@/lib/projects-page-api"
+import type { NavPage, NavSection } from "@/types/cms"
 
-export function Sidebar() {
+function getSpaceSlug(href: string) {
+  const match = href.match(/^\/spaces\/([^/?#]+)\/?$/)
+  return match?.[1]
+}
+
+function getProjectSlug(href: string) {
+  const match = href.match(/^\/projects\/([^/?#]+)\/?$/)
+  return match?.[1]
+}
+
+async function getSidebarNav(): Promise<NavSection[]> {
+  const pagesSection = sidebarNav.find((section) => section.label === "Pages")
+  if (!pagesSection) return sidebarNav
+
+  try {
+    const spacesPage = await fetchSpacesPage()
+    const candidates = spacesPage.sections.featuredSpaces.spaces
+      .map((space): NavPage | null => {
+        const slug = getSpaceSlug(space.href)
+        if (!slug) return null
+
+        return {
+          slug: `space-detail/${slug}`,
+          label: space.title.en || slug,
+        }
+      })
+      .filter((page): page is NavPage => page !== null)
+
+    const detailPages = await Promise.all(
+      candidates.map(async (candidate) => {
+        try {
+          await fetchSpaceDetailPage(candidate.slug.slice("space-detail/".length))
+          return candidate
+        } catch {
+          return null
+        }
+      })
+    )
+
+    let projectDetailPages: NavPage[] = []
+    try {
+      const projectsPage = await fetchProjectsPage()
+      const projectCandidates = projectsPage.sections.projects.projects
+        .map((project): NavPage | null => {
+          const slug = getProjectSlug(project.href)
+          if (!slug) return null
+          return {
+            slug: `project-detail/${slug}`,
+            label: project.title.en || slug,
+          }
+        })
+        .filter((page): page is NavPage => page !== null)
+
+      const verifiedProjects = await Promise.all(
+        projectCandidates.map(async (candidate) => {
+          try {
+            await fetchProjectDetailPage(
+              candidate.slug.slice("project-detail/".length)
+            )
+            return candidate
+          } catch {
+            return null
+          }
+        })
+      )
+      projectDetailPages = verifiedProjects.filter(
+        (page): page is NavPage => page !== null
+      )
+    } catch {
+      projectDetailPages = []
+    }
+
+    const staticPages =
+      pagesSection.children?.filter(
+        (page) =>
+          !page.slug.startsWith("space-detail/") &&
+          !page.slug.startsWith("project-detail/")
+      ) ?? []
+
+    const spacesChildren = detailPages.filter(
+      (page): page is NavPage => page !== null
+    )
+    const dynamicSections: NavSection[] = []
+    if (spacesChildren.length > 0) {
+      dynamicSections.push({
+        label: "Spaces",
+        icon: "Home",
+        children: spacesChildren,
+      })
+    }
+    if (projectDetailPages.length > 0) {
+      dynamicSections.push({
+        label: "Projects",
+        icon: "FolderOpen",
+        children: projectDetailPages,
+      })
+    }
+
+    return sidebarNav.flatMap((section) => {
+      if (section === pagesSection) {
+        return [{ ...section, children: staticPages }, ...dynamicSections]
+      }
+      if (section.label === "Projects" && projectDetailPages.length > 0) {
+        return []
+      }
+      return [section]
+    })
+  } catch {
+    return sidebarNav.map((section) =>
+      section === pagesSection
+        ? {
+            ...section,
+            children: section.children?.filter(
+              (page) =>
+                !page.slug.startsWith("space-detail/") &&
+                !page.slug.startsWith("project-detail/")
+            ),
+          }
+        : section
+    )
+  }
+}
+
+export async function Sidebar() {
+  const navigation = await getSidebarNav()
+
   return (
     <aside
       aria-label="CMS sidebar"
@@ -27,7 +157,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <SidebarNav items={sidebarNav} />
+      <SidebarNav items={navigation} />
 
       {/* User */}
       <SidebarUser user={currentUser} />
