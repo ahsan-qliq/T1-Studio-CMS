@@ -1130,7 +1130,7 @@ export function SectionAccordion({
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white">
+    <div className="rounded-lg border border-zinc-200 bg-transparent">
       <div className="flex items-center gap-3 px-4 py-3">
         <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-xs font-semibold text-zinc-600">
           {String(order).padStart(2, "0")}
