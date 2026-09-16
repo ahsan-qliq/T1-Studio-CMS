@@ -38,6 +38,7 @@ export const sidebarNav: NavSection[] = [
       { slug: "about", label: "About" },
       { slug: "why-t1", label: "Why T1" },
       { slug: "trade", label: "Trade" },
+      { slug: "inspiration", label: "Inspiration" },
       { slug: "projects", label: "Projects" },
       {
         slug: "project-detail/emirates-hills",
