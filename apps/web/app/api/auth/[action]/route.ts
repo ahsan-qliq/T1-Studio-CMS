@@ -5,6 +5,7 @@ import {
   setAuthCookies,
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
+  isDevAuthBypassEnabled,
 } from "@/lib/auth"
 
 type AuthAction = "register" | "login" | "refresh" | "logout" | "me"
@@ -66,6 +67,29 @@ export async function POST(request: Request, { params }: AuthRouteProps) {
   }
 
   const body = await readBody(request)
+  if ((action === "login" || action === "register") && isDevAuthBypassEnabled()) {
+    const response = NextResponse.json({
+      success: true,
+      data: {
+        accessToken: process.env.CMS_ACCESS_TOKEN,
+        refreshToken: "dev-refresh-token",
+        user: {
+          id: "dev-user",
+          name: body.name ?? "Development Admin",
+          email: body.email ?? "dev@example.com",
+          role: "admin",
+        },
+      },
+    })
+    response.cookies.set(ACCESS_TOKEN_COOKIE, process.env.CMS_ACCESS_TOKEN!, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+    })
+    return response
+  }
+
   const tokens = await getAuthTokens()
   if (action === "refresh" && !body.refreshToken && tokens.refreshToken) {
     body.refreshToken = tokens.refreshToken

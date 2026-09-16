@@ -4,6 +4,14 @@ import type { NextResponse } from "next/server"
 export const ACCESS_TOKEN_COOKIE = "t1_access_token"
 export const REFRESH_TOKEN_COOKIE = "t1_refresh_token"
 
+export function isDevAuthBypassEnabled() {
+  return (
+    process.env.NODE_ENV !== "production" &&
+    process.env.CMS_DEV_AUTH_BYPASS === "true" &&
+    Boolean(process.env.CMS_ACCESS_TOKEN)
+  )
+}
+
 const cookieOptions = {
   httpOnly: true,
   sameSite: "lax" as const,
@@ -14,7 +22,9 @@ const cookieOptions = {
 export async function getAuthTokens() {
   const store = await cookies()
   return {
-    accessToken: store.get(ACCESS_TOKEN_COOKIE)?.value,
+    accessToken:
+      store.get(ACCESS_TOKEN_COOKIE)?.value ??
+      (isDevAuthBypassEnabled() ? process.env.CMS_ACCESS_TOKEN : undefined),
     refreshToken: store.get(REFRESH_TOKEN_COOKIE)?.value,
   }
 }
