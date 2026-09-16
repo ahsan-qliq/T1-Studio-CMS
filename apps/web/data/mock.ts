@@ -32,6 +32,7 @@ export const sidebarNav: NavSection[] = [
     icon: "FileText",
     children: [
       { slug: "home", label: "Home" },
+      { slug: "landing", label: "Landing Page" },
       { slug: "spaces", label: "Spaces" },
       { slug: "space-detail/kitchens", label: "Kitchens (Space Detail)" },
       { slug: "space-detail/wardrobes", label: "Wardrobes (Space Detail)" },
