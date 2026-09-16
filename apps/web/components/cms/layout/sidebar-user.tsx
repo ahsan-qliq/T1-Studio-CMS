@@ -1,4 +1,8 @@
+"use client"
+
 import { LogOut } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@workspace/ui/components/button"
 import type { CmsUser } from "@/types/cms"
 
 interface SidebarUserProps {
@@ -7,6 +11,18 @@ interface SidebarUserProps {
 }
 
 export function SidebarUser({ user, onLogout }: SidebarUserProps) {
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  const logout = async () => {
+    setLoggingOut(true)
+    try {
+      await fetch("/api/auth/logout", { method: "POST" })
+    } finally {
+      onLogout?.()
+      window.location.href = "/login"
+    }
+  }
+
   return (
     <div className="border-t border-white/10 px-4 py-3">
       <div className="flex items-center gap-3">
@@ -25,13 +41,17 @@ export function SidebarUser({ user, onLogout }: SidebarUserProps) {
         </div>
 
         {/* Log out */}
-        <button
+        <Button
+          type="button"
           aria-label="Log out"
-          onClick={onLogout}
-          className="rounded p-1.5 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+          onClick={logout}
+          disabled={loggingOut}
+          variant="ghost"
+          size="icon-sm"
+          className="text-zinc-400 hover:!bg-white/10 hover:text-white"
         >
           <LogOut className="size-3.5" aria-hidden="true" />
-        </button>
+        </Button>
       </div>
     </div>
   )

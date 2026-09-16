@@ -1,6 +1,7 @@
 import { SidebarNav } from "./sidebar-nav"
 import { SidebarUser } from "./sidebar-user"
 import { currentUser, sidebarNav } from "@/data/mock"
+import { getAuthenticatedUser } from "@/lib/auth"
 import { fetchSpaceDetailPage } from "@/lib/space-detail-page-api"
 import { fetchSpacesPage } from "@/lib/spaces-page-api"
 import { fetchProjectDetailPage } from "@/lib/project-detail-page-api"
@@ -180,6 +181,19 @@ async function getSidebarNav(): Promise<NavSection[]> {
 
 export async function Sidebar() {
   const navigation = await getSidebarNav()
+  const authenticatedUser = await getAuthenticatedUser()
+  const sidebarUser = authenticatedUser
+    ? {
+        name: authenticatedUser.name || authenticatedUser.email || currentUser.name,
+        role: authenticatedUser.role || currentUser.role,
+        avatarInitials: (authenticatedUser.name || authenticatedUser.email || currentUser.name)
+          .split(/\s+/)
+          .map((part) => part[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase(),
+      }
+    : currentUser
 
   return (
     <aside
@@ -208,7 +222,7 @@ export async function Sidebar() {
       <SidebarNav items={navigation} />
 
       {/* User */}
-      <SidebarUser user={currentUser} />
+      <SidebarUser user={sidebarUser} />
 
       {/* Footer */}
       <div className="border-t border-white/10 px-4 py-2">
