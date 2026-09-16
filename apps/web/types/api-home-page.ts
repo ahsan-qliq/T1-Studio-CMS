@@ -130,7 +130,7 @@ export interface ArticleItem {
   title?: Localized
   image?: ApiImage
   category?: Localized
-  readTime?: string
+  readTime?: Localized
   href?: string
   isVisible?: boolean
 }

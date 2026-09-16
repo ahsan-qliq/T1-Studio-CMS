@@ -570,7 +570,7 @@ function DesignTipsSection({ control }: { control: Control<HomePageSections> }) 
               <ImageField control={control} name={`designTips.articles.${i}.image`} label="Image" />
               <div className="grid grid-cols-2 gap-3">
                 <LocalizedField control={control} name={`designTips.articles.${i}.category`} label="Category" />
-                <PlainField control={control} name={`designTips.articles.${i}.readTime`} label="Read Time" placeholder="2 min read" />
+                <LocalizedField control={control} name={`designTips.articles.${i}.readTime`} label="Read Time" />
               </div>
               <PlainField control={control} name={`designTips.articles.${i}.href`} label="Link URL" />
               <BoolField control={control} name={`designTips.articles.${i}.isVisible`} label="Visible" />
@@ -587,7 +587,7 @@ function DesignTipsSection({ control }: { control: Control<HomePageSections> }) 
             title: { en: "", ar: "" },
             image: { url: "", key: "", alt: { en: "", ar: "" } },
             category: { en: "", ar: "" },
-            readTime: "",
+            readTime: { en: "", ar: "" },
             href: "",
             isVisible: true,
           })
