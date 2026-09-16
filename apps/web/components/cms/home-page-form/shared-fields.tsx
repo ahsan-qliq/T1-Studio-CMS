@@ -1139,7 +1139,7 @@ export function SectionAccordion({
           type="button"
           onClick={() => setOpen((o) => !o)}
           variant="ghost"
-          className="h-auto flex-1 justify-between gap-2 px-0 text-left"
+          className="h-auto flex-1 justify-between gap-2 bg-transparent px-0 text-left hover:bg-transparent aria-expanded:bg-transparent"
         >
           <span className="text-sm font-semibold text-zinc-900">{title}</span>
           <ChevronDown
