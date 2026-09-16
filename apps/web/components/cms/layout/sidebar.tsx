@@ -86,27 +86,43 @@ async function getSidebarNav(): Promise<NavSection[]> {
           !page.slug.startsWith("project-detail/")
       ) ?? []
 
-    return sidebarNav.map((section) =>
-      section === pagesSection
-        ? {
-            ...section,
-            children: [
-              ...staticPages,
-              ...detailPages.filter(
-                (page): page is NavPage => page !== null
-              ),
-              ...projectDetailPages,
-            ],
-          }
-        : section
+    const spacesChildren = detailPages.filter(
+      (page): page is NavPage => page !== null
     )
+    const dynamicSections: NavSection[] = []
+    if (spacesChildren.length > 0) {
+      dynamicSections.push({
+        label: "Spaces",
+        icon: "Home",
+        children: spacesChildren,
+      })
+    }
+    if (projectDetailPages.length > 0) {
+      dynamicSections.push({
+        label: "Projects",
+        icon: "FolderOpen",
+        children: projectDetailPages,
+      })
+    }
+
+    return sidebarNav.flatMap((section) => {
+      if (section === pagesSection) {
+        return [{ ...section, children: staticPages }, ...dynamicSections]
+      }
+      if (section.label === "Projects" && projectDetailPages.length > 0) {
+        return []
+      }
+      return [section]
+    })
   } catch {
     return sidebarNav.map((section) =>
       section === pagesSection
         ? {
             ...section,
             children: section.children?.filter(
-              (page) => !page.slug.startsWith("space-detail/")
+              (page) =>
+                !page.slug.startsWith("space-detail/") &&
+                !page.slug.startsWith("project-detail/")
             ),
           }
         : section
