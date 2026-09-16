@@ -18,7 +18,7 @@ export function BlogDetailFormClient({ initialData }: { initialData: BlogDetailP
         <LocalizedField control={control} name="title" label="Title" />
         <PlainField control={control} name="slug" label="Slug" placeholder="article-slug" />
         <PlainField control={control} name="category" label="Category" />
-        <Controller control={control} name="status" render={({ field }) => <select {...field} className="h-9 rounded-md border border-zinc-200 px-2 text-sm"><option value="draft">draft</option><option value="published">published</option><option value="archived">archived</option></select>} />
+        <Controller control={control} name="status" render={({ field }) => <select {...field} className="h-9 rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option><option value="archived">archived</option></select>} />
         <LocalizedField control={control} name="excerpt" label="Excerpt" multiline />
         <ImageField control={control} name="featuredImage" label="Featured Image" />
         <BoolField control={control} name="isFeatured" label="Featured article" />

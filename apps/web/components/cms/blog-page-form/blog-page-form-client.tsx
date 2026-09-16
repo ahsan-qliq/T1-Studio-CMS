@@ -19,7 +19,7 @@ export function BlogPageFormClient({ initialData }: { initialData: BlogPageApiDa
         <div className="grid min-w-0 flex-1 grid-cols-3 gap-3">
           <PlainField control={control} name="pageName" label="Page Name" placeholder="Blog" />
           <PlainField control={control} name="slug" label="Slug" placeholder="blog" />
-          <Controller control={control} name="status" render={({ field }) => <select {...field} className="h-9 rounded-md border border-zinc-200 px-2 text-sm"><option value="draft">draft</option><option value="published">published</option></select>} />
+          <Controller control={control} name="status" render={({ field }) => <select {...field} className="h-9 rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option></select>} />
         </div>
         <Link href="/pages/blog-detail/new" className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium">Add new blog</Link>
       </div>

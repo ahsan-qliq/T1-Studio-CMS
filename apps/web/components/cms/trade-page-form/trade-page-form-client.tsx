@@ -64,7 +64,7 @@ export function TradePageFormClient({
               <Label>Status</Label>
               <select
                 {...field}
-                className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm"
+                className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"
               >
                 <option value="draft">draft</option>
                 <option value="published">published</option>
