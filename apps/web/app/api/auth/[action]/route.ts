@@ -5,6 +5,7 @@ import {
   setAuthCookies,
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
+  DEV_ACCESS_TOKEN,
   isDevAuthBypassEnabled,
 } from "@/lib/auth"
 
@@ -68,10 +69,11 @@ export async function POST(request: Request, { params }: AuthRouteProps) {
 
   const body = await readBody(request)
   if ((action === "login" || action === "register") && isDevAuthBypassEnabled()) {
+    const accessToken = process.env.CMS_ACCESS_TOKEN ?? DEV_ACCESS_TOKEN
     const response = NextResponse.json({
       success: true,
       data: {
-        accessToken: process.env.CMS_ACCESS_TOKEN,
+        accessToken,
         refreshToken: "dev-refresh-token",
         user: {
           id: "dev-user",
@@ -81,7 +83,7 @@ export async function POST(request: Request, { params }: AuthRouteProps) {
         },
       },
     })
-    response.cookies.set(ACCESS_TOKEN_COOKIE, process.env.CMS_ACCESS_TOKEN!, {
+    response.cookies.set(ACCESS_TOKEN_COOKIE, accessToken, {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",

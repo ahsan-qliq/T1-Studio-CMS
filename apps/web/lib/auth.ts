@@ -3,13 +3,10 @@ import type { NextResponse } from "next/server"
 
 export const ACCESS_TOKEN_COOKIE = "t1_access_token"
 export const REFRESH_TOKEN_COOKIE = "t1_refresh_token"
+export const DEV_ACCESS_TOKEN = "dev-access-token"
 
 export function isDevAuthBypassEnabled() {
-  return (
-    process.env.NODE_ENV !== "production" &&
-    process.env.CMS_DEV_AUTH_BYPASS === "true" &&
-    Boolean(process.env.CMS_ACCESS_TOKEN)
-  )
+  return process.env.NODE_ENV !== "production" && process.env.CMS_DEV_AUTH_BYPASS === "true"
 }
 
 const cookieOptions = {
@@ -24,7 +21,9 @@ export async function getAuthTokens() {
   return {
     accessToken:
       store.get(ACCESS_TOKEN_COOKIE)?.value ??
-      (isDevAuthBypassEnabled() ? process.env.CMS_ACCESS_TOKEN : undefined),
+      (isDevAuthBypassEnabled()
+        ? process.env.CMS_ACCESS_TOKEN ?? DEV_ACCESS_TOKEN
+        : undefined),
     refreshToken: store.get(REFRESH_TOKEN_COOKIE)?.value,
   }
 }
