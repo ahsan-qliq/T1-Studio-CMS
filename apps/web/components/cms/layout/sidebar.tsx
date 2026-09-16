@@ -3,10 +3,17 @@ import { SidebarUser } from "./sidebar-user"
 import { currentUser, sidebarNav } from "@/data/mock"
 import { fetchSpaceDetailPage } from "@/lib/space-detail-page-api"
 import { fetchSpacesPage } from "@/lib/spaces-page-api"
+import { fetchProjectDetailPage } from "@/lib/project-detail-page-api"
+import { fetchProjectsPage } from "@/lib/projects-page-api"
 import type { NavPage, NavSection } from "@/types/cms"
 
 function getSpaceSlug(href: string) {
   const match = href.match(/^\/spaces\/([^/?#]+)\/?$/)
+  return match?.[1]
+}
+
+function getProjectSlug(href: string) {
+  const match = href.match(/^\/projects\/([^/?#]+)\/?$/)
   return match?.[1]
 }
 
@@ -39,9 +46,45 @@ async function getSidebarNav(): Promise<NavSection[]> {
       })
     )
 
-    const staticPages = pagesSection.children?.filter(
-      (page) => !page.slug.startsWith("space-detail/")
-    ) ?? []
+    let projectDetailPages: NavPage[] = []
+    try {
+      const projectsPage = await fetchProjectsPage()
+      const projectCandidates = projectsPage.sections.projects.projects
+        .map((project): NavPage | null => {
+          const slug = getProjectSlug(project.href)
+          if (!slug) return null
+          return {
+            slug: `project-detail/${slug}`,
+            label: project.title.en || slug,
+          }
+        })
+        .filter((page): page is NavPage => page !== null)
+
+      const verifiedProjects = await Promise.all(
+        projectCandidates.map(async (candidate) => {
+          try {
+            await fetchProjectDetailPage(
+              candidate.slug.slice("project-detail/".length)
+            )
+            return candidate
+          } catch {
+            return null
+          }
+        })
+      )
+      projectDetailPages = verifiedProjects.filter(
+        (page): page is NavPage => page !== null
+      )
+    } catch {
+      projectDetailPages = []
+    }
+
+    const staticPages =
+      pagesSection.children?.filter(
+        (page) =>
+          !page.slug.startsWith("space-detail/") &&
+          !page.slug.startsWith("project-detail/")
+      ) ?? []
 
     return sidebarNav.map((section) =>
       section === pagesSection
@@ -52,6 +95,7 @@ async function getSidebarNav(): Promise<NavSection[]> {
               ...detailPages.filter(
                 (page): page is NavPage => page !== null
               ),
+              ...projectDetailPages,
             ],
           }
         : section

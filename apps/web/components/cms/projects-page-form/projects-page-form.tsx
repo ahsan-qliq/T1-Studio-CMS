@@ -2,6 +2,7 @@
 
 import { useForm, useFieldArray, Controller, type Control } from "react-hook-form"
 import { useState } from "react"
+import Link from "next/link"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
 import {
@@ -49,7 +50,8 @@ export function ProjectsPageForm({ initialData, onSave }: ProjectsPageFormProps)
   return (
     <form onSubmit={submit} className="space-y-4 pb-24">
       {/* Page-level meta */}
-      <div className="grid grid-cols-3 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
+      <div className="flex flex-wrap items-end gap-3 rounded-lg border border-zinc-200 bg-white p-4">
+        <div className="grid min-w-0 flex-1 grid-cols-3 gap-3">
         <PlainField control={control} name="pageName" label="Page Name" placeholder="Projects" />
         <PlainField control={control} name="slug" label="Slug" placeholder="projects" />
         <div className="space-y-1.5">
@@ -64,6 +66,10 @@ export function ProjectsPageForm({ initialData, onSave }: ProjectsPageFormProps)
               </select>
             )}
           />
+          </div>
+          <Link href="/pages/project-detail/new" className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50">
+            Add new project
+          </Link>
         </div>
       </div>
 

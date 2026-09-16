@@ -1,5 +1,6 @@
 import { ProjectDetailFormClient } from "@/components/cms/project-detail-form/project-detail-form-client"
 import { fetchProjectDetailPage } from "@/lib/project-detail-page-api"
+import { createEmptyProjectDetailPage } from "@/lib/project-detail-page-defaults"
 
 interface ProjectDetailPageProps {
   params: Promise<{ projectSlug: string }>
@@ -11,9 +12,12 @@ export default async function ProjectDetailEditorPage({
   const { projectSlug } = await params
 
   let data
-  try {
-    data = await fetchProjectDetailPage(projectSlug)
-  } catch (err) {
+  if (projectSlug === "new") {
+    data = createEmptyProjectDetailPage()
+  } else {
+    try {
+      data = await fetchProjectDetailPage(projectSlug)
+    } catch (err) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-16 text-center">
         <h1 className="text-lg font-semibold text-zinc-900">
@@ -26,6 +30,7 @@ export default async function ProjectDetailEditorPage({
         </p>
       </div>
     )
+    }
   }
 
   return (

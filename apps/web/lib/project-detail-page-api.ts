@@ -1,6 +1,5 @@
-import type { ProjectDetailPageApiData, ProjectDetailPageApiResponse } from "@/types/api-project-detail-page"
-
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5500"
+import type { ProjectDetailPageApiData } from "@/types/api-project-detail-page"
+import { cmsApiFetch, cmsApiJson } from "./cms-api-client"
 
 /**
  * Fetches a Project Detail page by slug. The documented GET endpoint also
@@ -9,15 +8,9 @@ const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5500"
  * returns only one language per request, this needs two merged requests.
  */
 export async function fetchProjectDetailPage(slug: string): Promise<ProjectDetailPageApiData> {
-  const res = await fetch(`${API_BASE_URL}/api/project-detail-page?slug=${encodeURIComponent(slug)}`, {
-    cache: "no-store",
-  })
-  if (!res.ok) throw new Error(`Failed to fetch project detail page "${slug}" (${res.status})`)
-
-  const json = (await res.json()) as ProjectDetailPageApiResponse
-  if (!json.success || !json.data) throw new Error("Unexpected API response shape")
-
-  return json.data
+  return cmsApiJson<ProjectDetailPageApiData>(
+    `/project-detail-page?slug=${encodeURIComponent(slug)}`
+  )
 }
 
 /**
@@ -26,10 +19,10 @@ export async function fetchProjectDetailPage(slug: string): Promise<ProjectDetai
  */
 export async function saveProjectDetailPage(data: ProjectDetailPageApiData): Promise<void> {
   const method = data._id ? "PATCH" : "POST"
-  const res = await fetch(`${API_BASE_URL}/api/project-detail-page`, {
+  const query = data._id ? `?slug=${encodeURIComponent(data.slug)}` : ""
+  await cmsApiFetch(`/project-detail-page${query}`, {
     method,
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    data,
   })
-  if (!res.ok) throw new Error(`Failed to save project detail page (${res.status})`)
 }
