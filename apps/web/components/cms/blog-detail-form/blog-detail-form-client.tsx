@@ -16,14 +16,31 @@ export function BlogDetailFormClient({ initialData }: { initialData: BlogDetailP
   })
   return (
     <form onSubmit={submit} className="space-y-4 pb-24">
-      <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 md:grid-cols-4">
-        <LocalizedField control={control} name="title" label="Title" />
-        <PlainField control={control} name="slug" label="Slug" placeholder="article-slug" />
-        <PlainField control={control} name="category" label="Category" />
-        <Controller control={control} name="status" render={({ field }) => <select {...field} className="h-9 rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option><option value="archived">archived</option></select>} />
-        <LocalizedField control={control} name="excerpt" label="Excerpt" multiline />
-        <ImageField control={control} name="featuredImage" label="Featured Image" />
-        <BoolField control={control} name="isFeatured" label="Featured article" />
+      <div className="rounded-lg border border-zinc-200 bg-white p-4">
+        <div className="grid gap-4 md:grid-cols-12 md:items-start">
+          <div className="md:col-span-6">
+            <LocalizedField control={control} name="title" label="Title" />
+          </div>
+          <div className="md:col-span-2">
+            <PlainField control={control} name="slug" label="Slug" placeholder="article-slug" />
+          </div>
+          <div className="md:col-span-2">
+            <PlainField control={control} name="category" label="Category" />
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <label htmlFor="blog-detail-status" className="text-sm font-medium text-zinc-900">Status</label>
+            <Controller control={control} name="status" render={({ field }) => <select id="blog-detail-status" {...field} className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2 text-sm text-zinc-900"><option value="draft">draft</option><option value="published">published</option><option value="archived">archived</option></select>} />
+          </div>
+          <div className="md:col-span-6">
+            <LocalizedField control={control} name="excerpt" label="Excerpt" multiline />
+          </div>
+          <div className="md:col-span-4">
+            <ImageField control={control} name="featuredImage" label="Featured Image" />
+          </div>
+          <div className="flex items-center pt-8 md:col-span-2">
+            <BoolField control={control} name="isFeatured" label="Featured article" />
+          </div>
+        </div>
       </div>
       <SectionAccordion title="Article Hero" order={1} control={control} visibleName="sections.hero.isVisible" defaultOpen>
         <LocalizedField control={control} name="sections.hero.eyebrow" label="Eyebrow" />
