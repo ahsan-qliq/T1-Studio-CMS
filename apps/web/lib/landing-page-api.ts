@@ -1,6 +1,12 @@
 import type { LandingPageApiData } from "@/types/api-landing-page"
 import { cmsApiFetch, cmsApiJson } from "./cms-api-client"
-export function fetchLandingPage() { return cmsApiJson<LandingPageApiData>("/landing-page?slug=landing-page") }
+export function fetchLandingPage(slug = "landing-page") {
+  return cmsApiJson<LandingPageApiData>(`/landing-page?slug=${encodeURIComponent(slug)}`)
+}
 export function saveLandingPage(data: LandingPageApiData) {
-  return cmsApiFetch(`/landing-page${data._id ? "?slug=landing-page" : ""}`, { method: data._id ? "PATCH" : "POST", headers: { "Content-Type": "application/json" }, data })
+  const slug = data.slug.trim()
+  if (!slug) throw new Error("Landing page slug is required.")
+  const method = data._id ? "PATCH" : "POST"
+  const query = method === "PATCH" ? `?slug=${encodeURIComponent(slug)}` : ""
+  return cmsApiFetch(`/landing-page${query}`, { method, headers: { "Content-Type": "application/json" }, data: { ...data, slug } })
 }

@@ -52,9 +52,9 @@ export function ProjectDetailForm({ initialData, onSave }: ProjectDetailFormProp
     <form onSubmit={submit} className="space-y-4 pb-24">
       {/* Page-level meta */}
       <div className="grid grid-cols-4 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
-        <PlainField control={control} name="pageName" label="Page Name" placeholder="Emirates Hills Project" />
+        <PlainField control={control} name="pageName" label="Page Name" placeholder="Emirates Hills Project" required />
         <LocalizedField control={control} name="projectName" label="Project Name" />
-        <PlainField control={control} name="slug" label="Slug" placeholder="emirates-hills" />
+        <PlainField control={control} name="slug" label="Slug" placeholder="emirates-hills" required />
         <PlainField control={control} name="projectCategory" label="Category" placeholder="residential" />
       </div>
       <div className="grid grid-cols-4 gap-3 rounded-lg border border-zinc-200 bg-white p-4">

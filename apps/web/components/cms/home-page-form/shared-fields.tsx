@@ -873,12 +873,14 @@ export function PlainField({
   label,
   placeholder,
   type = "text",
+  required = false,
 }: {
   control: HomePageControl
   name: string
   label: string
   placeholder?: string
   type?: string
+  required?: boolean
 }) {
   return (
     <div className="space-y-1.5">
@@ -890,6 +892,7 @@ export function PlainField({
           <Input
             {...field}
             type={type}
+            required={required}
             value={
               typeof field.value === "string"
                 ? field.value

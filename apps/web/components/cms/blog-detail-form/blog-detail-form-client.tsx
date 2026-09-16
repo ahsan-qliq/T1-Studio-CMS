@@ -22,10 +22,10 @@ export function BlogDetailFormClient({ initialData }: { initialData: BlogDetailP
             <LocalizedField control={control} name="title" label="Title" />
           </div>
           <div className="md:col-span-2">
-            <PlainField control={control} name="slug" label="Slug" placeholder="article-slug" />
+            <PlainField control={control} name="slug" label="Slug" placeholder="article-slug" required />
           </div>
           <div className="md:col-span-2">
-            <PlainField control={control} name="category" label="Category" />
+            <PlainField control={control} name="category" label="Category" required />
           </div>
           <div className="space-y-1.5 md:col-span-2">
             <label htmlFor="blog-detail-status" className="text-sm font-medium text-zinc-900">Status</label>

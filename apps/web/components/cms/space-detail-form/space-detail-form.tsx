@@ -51,8 +51,21 @@ export function SpaceDetailForm({ initialData, onSave }: SpaceDetailFormProps) {
       {/* Page-level meta */}
       <div className="grid grid-cols-4 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
         <PlainField control={control} name="pageName" label="Page Name" placeholder="Kitchens" />
-        <PlainField control={control} name="spaceType" label="Space Type" placeholder="kitchen" />
-        <PlainField control={control} name="slug" label="Slug" placeholder="kitchens" />
+        <Controller
+          control={control}
+          name="spaceType"
+          rules={{ required: true }}
+          render={({ field }) => (
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-zinc-900">Space Type</label>
+              <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900" required>
+                <option value="">Select a type</option>
+                {["kitchen", "wardrobe", "living-room", "bedroom", "bathroom", "home-office", "outdoor-living", "bespoke-joinery"].map((type) => <option key={type} value={type}>{type}</option>)}
+              </select>
+            </div>
+          )}
+        />
+        <PlainField control={control} name="slug" label="Slug" placeholder="kitchens" required />
         <div className="space-y-1.5">
           <label className="text-sm font-medium">Status</label>
           <Controller
