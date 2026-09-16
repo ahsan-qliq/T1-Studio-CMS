@@ -5,6 +5,8 @@ import { fetchSpaceDetailPage } from "@/lib/space-detail-page-api"
 import { fetchSpacesPage } from "@/lib/spaces-page-api"
 import { fetchProjectDetailPage } from "@/lib/project-detail-page-api"
 import { fetchProjectsPage } from "@/lib/projects-page-api"
+import { fetchBlogDetailPage } from "@/lib/blog-detail-page-api"
+import { fetchBlogPage } from "@/lib/blog-page-api"
 import type { NavPage, NavSection } from "@/types/cms"
 
 function getSpaceSlug(href: string) {
@@ -14,6 +16,11 @@ function getSpaceSlug(href: string) {
 
 function getProjectSlug(href: string) {
   const match = href.match(/^\/projects\/([^/?#]+)\/?$/)
+  return match?.[1]
+}
+
+function getBlogSlug(href: string) {
+  const match = href.match(/^\/blog\/([^/?#]+)\/?$/)
   return match?.[1]
 }
 
@@ -79,6 +86,39 @@ async function getSidebarNav(): Promise<NavSection[]> {
       projectDetailPages = []
     }
 
+    let blogDetailPages: NavPage[] = []
+    try {
+      const blogPage = await fetchBlogPage()
+      const articles = [
+        blogPage.sections.blogListing.featuredArticle,
+        ...blogPage.sections.blogListing.articles,
+      ]
+      const candidates = articles
+        .map((article): NavPage | null => {
+          const slug = article.blogSlug || getBlogSlug(article.href)
+          if (!slug) return null
+          return { slug: `blog-detail/${slug}`, label: article.title.en || slug }
+        })
+        .filter((page): page is NavPage => page !== null)
+      const verified = await Promise.all(
+        candidates.map(async (candidate) => {
+          try {
+            await fetchBlogDetailPage(
+              candidate.slug.slice("blog-detail/".length)
+            )
+            return candidate
+          } catch {
+            return null
+          }
+        })
+      )
+      blogDetailPages = verified.filter(
+        (page): page is NavPage => page !== null
+      )
+    } catch {
+      blogDetailPages = []
+    }
+
     const staticPages =
       pagesSection.children?.filter(
         (page) =>
@@ -104,6 +144,14 @@ async function getSidebarNav(): Promise<NavSection[]> {
         children: projectDetailPages,
       })
     }
+    dynamicSections.push({
+      label: "Blog",
+      icon: "FileText",
+      children: [
+        { slug: "blog", label: "Blog" },
+        ...blogDetailPages,
+      ],
+    })
 
     return sidebarNav.flatMap((section) => {
       if (section === pagesSection) {
