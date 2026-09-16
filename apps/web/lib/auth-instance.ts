@@ -5,7 +5,8 @@ import axios, {
 } from "axios"
 
 const configuredBaseUrl =
-  process.env.CMS_API_BASE_URL ?? "http://localhost:5500/api"
+  process.env.CMS_API_BASE_URL ??
+  "https://2gns9fe744.execute-api.ap-south-1.amazonaws.com/api"
 
 export const CMS_API_BASE_URL = configuredBaseUrl
   .replace(/\/+$/, "")
