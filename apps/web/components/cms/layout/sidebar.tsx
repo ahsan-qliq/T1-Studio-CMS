@@ -1,8 +1,78 @@
 import { SidebarNav } from "./sidebar-nav"
 import { SidebarUser } from "./sidebar-user"
 import { currentUser, sidebarNav } from "@/data/mock"
+import { fetchSpaceDetailPage } from "@/lib/space-detail-page-api"
+import { fetchSpacesPage } from "@/lib/spaces-page-api"
+import type { NavPage, NavSection } from "@/types/cms"
 
-export function Sidebar() {
+function getSpaceSlug(href: string) {
+  const match = href.match(/^\/spaces\/([^/?#]+)\/?$/)
+  return match?.[1]
+}
+
+async function getSidebarNav(): Promise<NavSection[]> {
+  const pagesSection = sidebarNav.find((section) => section.label === "Pages")
+  if (!pagesSection) return sidebarNav
+
+  try {
+    const spacesPage = await fetchSpacesPage()
+    const candidates = spacesPage.sections.featuredSpaces.spaces
+      .map((space): NavPage | null => {
+        const slug = getSpaceSlug(space.href)
+        if (!slug) return null
+
+        return {
+          slug: `space-detail/${slug}`,
+          label: space.title.en || slug,
+        }
+      })
+      .filter((page): page is NavPage => page !== null)
+
+    const detailPages = await Promise.all(
+      candidates.map(async (candidate) => {
+        try {
+          await fetchSpaceDetailPage(candidate.slug.slice("space-detail/".length))
+          return candidate
+        } catch {
+          return null
+        }
+      })
+    )
+
+    const staticPages = pagesSection.children?.filter(
+      (page) => !page.slug.startsWith("space-detail/")
+    ) ?? []
+
+    return sidebarNav.map((section) =>
+      section === pagesSection
+        ? {
+            ...section,
+            children: [
+              ...staticPages,
+              ...detailPages.filter(
+                (page): page is NavPage => page !== null
+              ),
+            ],
+          }
+        : section
+    )
+  } catch {
+    return sidebarNav.map((section) =>
+      section === pagesSection
+        ? {
+            ...section,
+            children: section.children?.filter(
+              (page) => !page.slug.startsWith("space-detail/")
+            ),
+          }
+        : section
+    )
+  }
+}
+
+export async function Sidebar() {
+  const navigation = await getSidebarNav()
+
   return (
     <aside
       aria-label="CMS sidebar"
@@ -27,7 +97,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <SidebarNav items={sidebarNav} />
+      <SidebarNav items={navigation} />
 
       {/* User */}
       <SidebarUser user={currentUser} />
