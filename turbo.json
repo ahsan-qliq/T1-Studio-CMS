@@ -1,7 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
-  "globalEnv": ["CMS_API_BASE_URL", "CMS_ACCESS_TOKEN", "NODE_ENV"],
+  "globalEnv": [
+    "CMS_API_BASE_URL",
+    "CMS_ACCESS_TOKEN",
+    "CMS_DEV_AUTH_BYPASS",
+    "NODE_ENV"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
