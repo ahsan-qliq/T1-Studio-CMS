@@ -227,7 +227,7 @@ function SignatureProjectsSection({ control }: { control: Control<HomePageSectio
                     render={({ field }) => (
                       <select
                         {...field}
-                        className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm"
+                        className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900"
                       >
                         {PROJECT_POSITIONS.map((p) => (
                           <option key={p} value={p}>{p}</option>

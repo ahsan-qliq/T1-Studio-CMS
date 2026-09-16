@@ -62,7 +62,7 @@ export function ProjectDetailForm({ initialData, onSave }: ProjectDetailFormProp
             control={control}
             name="status"
             render={({ field }) => (
-              <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm">
+              <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900">
                 <option value="draft">draft</option>
                 <option value="published">published</option>
               </select>
@@ -147,7 +147,7 @@ function OverviewSection({ control }: { control: F }) {
           control={control}
           name="sections.overview.imagePosition"
           render={({ field }) => (
-            <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm">
+            <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900">
               <option value="left">left</option>
               <option value="right">right</option>
             </select>
@@ -354,7 +354,7 @@ function RelatedProjectsSection({ control }: { control: F }) {
                     control={control}
                     name={`sections.relatedProjects.projects.${i}.position`}
                     render={({ field }) => (
-                      <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm">
+                      <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900">
                         {PROJECT_POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
                       </select>
                     )}
@@ -432,7 +432,7 @@ function ConsultationFieldCard({ control, index, onRemove }: { control: F; index
               control={control}
               name={`sections.consultation.fields.${index}.type`}
               render={({ field }) => (
-                <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm">
+                <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900">
                   {FIELD_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
               )}

@@ -60,7 +60,7 @@ export function ProjectsPageForm({ initialData, onSave }: ProjectsPageFormProps)
             control={control}
             name="status"
             render={({ field }) => (
-              <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm">
+              <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900">
                 <option value="draft">draft</option>
                 <option value="published">published</option>
               </select>
@@ -164,7 +164,7 @@ function ProjectsListSection({ control }: { control: F }) {
                     control={control}
                     name={`sections.projects.projects.${i}.position`}
                     render={({ field }) => (
-                      <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm">
+                      <select {...field} className="h-9 w-full rounded-md border border-zinc-200 px-2 text-sm text-zinc-900">
                         {PROJECT_POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
                       </select>
                     )}
