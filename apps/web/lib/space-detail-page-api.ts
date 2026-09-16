@@ -39,7 +39,7 @@ import type {
   SpaceDetailPageApiResponse,
 } from "@/types/api-space-detail-page"
 
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5000"
+const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:4000"
 
 /**
  * Fetches a Space Detail page by slug. The documented GET endpoint also

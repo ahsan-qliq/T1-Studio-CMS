@@ -6,10 +6,10 @@ import type {
 
 /**
  * Base URL of the backend CMS API. Override with an env var — the Next.js
- * dev server itself defaults to port 5000 too, so if your API is a separate
- * process also on 5000, point this at whatever port it actually runs on.
+ * dev server itself defaults to port 4000 too, so if your API is a separate
+ * process also on 4000, point this at whatever port it actually runs on.
  */
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5000"
+const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:4000"
 
 /** Fetches the home page exactly as the API returns it — no mapping. */
 export async function fetchRawHomePage(): Promise<HomePageApiData> {

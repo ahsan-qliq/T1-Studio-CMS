@@ -4,9 +4,9 @@ import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as SpaceDetailPageApiData
-    await saveSpaceDetailPage(body)
-    return NextResponse.json({ success: true })
+    const body = (await request.json()) as { data: SpaceDetailPageApiData; isNew: boolean }
+    const saved = await saveSpaceDetailPage(body.data, body.isNew)
+    return NextResponse.json({ success: true, data: saved })
   } catch (err) {
     console.error("[POST /api/save-space-detail-page]", err)
     return NextResponse.json(

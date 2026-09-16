@@ -1,6 +1,6 @@
 import type { ProjectsPageApiData, ProjectsPageApiResponse } from "@/types/api-projects-page"
 
-const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:5000"
+const API_BASE_URL = process.env.CMS_API_BASE_URL ?? "http://localhost:4000"
 
 /** Fetches the Projects page exactly as the API returns it — no mapping. */
 export async function fetchProjectsPage(): Promise<ProjectsPageApiData> {
