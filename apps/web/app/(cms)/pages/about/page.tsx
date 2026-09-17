@@ -4,6 +4,14 @@ import { createEmptyAboutPage } from "@/lib/about-page-defaults"
 
 export default async function AboutPage() {
   let initialData
-  try { initialData = await fetchAboutPage() } catch { initialData = createEmptyAboutPage() }
-  return <div className="mx-auto w-full px-6 py-6"><AboutPageFormClient initialData={initialData} /></div>
+  try {
+    initialData = await fetchAboutPage()
+  } catch {
+    initialData = createEmptyAboutPage()
+  }
+  return (
+    <div className="mx-auto w-full px-6 py-6">
+      <AboutPageFormClient initialData={initialData} />
+    </div>
+  )
 }

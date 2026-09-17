@@ -5,19 +5,16 @@ import { fetchLandingPage } from "@/lib/landing-page-api"
 import { createEmptyLandingPage } from "@/lib/landing-page-defaults"
 
 export default async function LandingDubaiPage() {
+  let data
   try {
-    const data = await fetchLandingPage("landing-dubai")
-
-    return (
-      <div className="mx-auto w-full px-6 py-6">
-        <LandingPageFormClient initialData={data} />
-      </div>
-    )
+    data = await fetchLandingPage("landing-dubai")
   } catch {
-    return (
-      <div className="mx-auto w-full px-6 py-6">
-        <LandingPageFormClient initialData={createEmptyLandingPage()} />
-      </div>
-    )
+    data = createEmptyLandingPage()
   }
+
+  return (
+    <div className="mx-auto w-full px-6 py-6">
+      <LandingPageFormClient initialData={data} />
+    </div>
+  )
 }

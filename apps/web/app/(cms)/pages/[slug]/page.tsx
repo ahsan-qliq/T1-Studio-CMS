@@ -38,54 +38,45 @@ export default async function PageEditorPage({ params }: PageEditorPageProps) {
   const { slug } = await params
 
   if (slug === "home") {
+    let data
     try {
-      const data = await fetchRawHomePage()
-      return (
-        <div className="mx-auto w-full px-6 py-6">
-          <HomePageFormClient initialData={data} />
-        </div>
-      )
+      data = await fetchRawHomePage()
     } catch {
-      return (
-        <div className="mx-auto w-full px-6 py-6">
-          <HomePageFormClient initialData={createEmptyHomePage()} />
-        </div>
-      )
+      data = createEmptyHomePage()
     }
+    return (
+      <div className="mx-auto w-full px-6 py-6">
+        <HomePageFormClient initialData={data} />
+      </div>
+    )
   }
 
   if (slug === "spaces") {
+    let data
     try {
-      const data = await fetchSpacesPage()
-      return (
-        <div className="mx-auto w-full px-6 py-6">
-          <SpacesPageFormClient initialData={data} />
-        </div>
-      )
+      data = await fetchSpacesPage()
     } catch {
-      return (
-        <div className="mx-auto w-full px-6 py-6">
-          <SpacesPageFormClient initialData={createEmptySpacesPage()} />
-        </div>
-      )
+      data = createEmptySpacesPage()
     }
+    return (
+      <div className="mx-auto w-full px-6 py-6">
+        <SpacesPageFormClient initialData={data} />
+      </div>
+    )
   }
 
   if (slug === "projects") {
+    let data
     try {
-      const data = await fetchProjectsPage()
-      return (
-        <div className="mx-auto w-full px-6 py-6">
-          <ProjectsPageFormClient initialData={data} />
-        </div>
-      )
+      data = await fetchProjectsPage()
     } catch {
-      return (
-        <div className="mx-auto w-full px-6 py-6">
-          <ProjectsPageFormClient initialData={createEmptyProjectsPage()} />
-        </div>
-      )
+      data = createEmptyProjectsPage()
     }
+    return (
+      <div className="mx-auto w-full px-6 py-6">
+        <ProjectsPageFormClient initialData={data} />
+      </div>
+    )
   }
 
   notFound()
