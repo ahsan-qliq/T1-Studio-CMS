@@ -1,24 +1,26 @@
-import type {
-  HomePageApiData,
-  HomePageSections,
-} from "@/types/api-home-page"
-import { cmsApiJson, cmsApiFetch } from "./cms-api-client"
+import type { HomePageApiData } from "@/types/api-home-page"
+import { cmsApiFetch, cmsApiJson } from "./cms-api-client"
 
-/** Fetches the home page exactly as the API returns it — no mapping. */
-export async function fetchRawHomePage(): Promise<HomePageApiData> {
+export function fetchHomePage() {
   return cmsApiJson<HomePageApiData>("/home-page?slug=home")
 }
 
-/**
- * Saves only the edited sections using the documented singleton PATCH endpoint.
- */
-export async function saveHomePage(
-  sections: HomePageSections,
-  exists = true
-): Promise<void> {
-  await cmsApiFetch(`/home-page${exists ? "?slug=home" : ""}`, {
-    method: exists ? "PATCH" : "POST",
-    headers: { "Content-Type": "application/json" },
-    data: { sections },
-  })
+export function saveHomePage(data: HomePageApiData) {
+  const save = async () => {
+    let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
+    if (!data._id) {
+      try {
+        await fetchHomePage()
+        method = "PATCH"
+      } catch {
+        method = "POST"
+      }
+    }
+    return cmsApiFetch(`/home-page${method === "PATCH" ? "?slug=home" : ""}`, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      data,
+    })
+  }
+  return save()
 }
