@@ -1,13 +1,35 @@
 import type { BlogDetailPageApiData } from "@/types/api-blog-detail-page"
 import { cmsApiFetch, cmsApiJson } from "./cms-api-client"
+
 export function fetchBlogDetailPage(slug: string) {
   return cmsApiJson<BlogDetailPageApiData>(
     `/blog-detail-page?slug=${encodeURIComponent(slug)}`
   )
 }
-export function fetchAllBlogDetailPages() {
-  return cmsApiJson<BlogDetailPageApiData[]>("/blog-detail-page")
+
+/**
+ * Fetches ALL Blog Detail pages.
+ *
+ * Used by the CMS sidebar to populate the Blog dropdown.
+ */
+export async function fetchAllBlogDetailPages(): Promise<
+  BlogDetailPageApiData[]
+> {
+  const response = await cmsApiJson<
+    | BlogDetailPageApiData[]
+    | {
+        data?: BlogDetailPageApiData[]
+        pages?: BlogDetailPageApiData[]
+      }
+  >("/blog-detail-page")
+
+  if (Array.isArray(response)) {
+    return response
+  }
+
+  return response.data ?? response.pages ?? []
 }
+
 export async function saveBlogDetailPage(
   data: BlogDetailPageApiData,
   isNew?: boolean

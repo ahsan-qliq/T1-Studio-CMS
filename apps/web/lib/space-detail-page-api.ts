@@ -17,6 +17,29 @@ export async function fetchSpaceDetailPage(
 }
 
 /**
+ * Fetches ALL Space Detail pages.
+ *
+ * Used by the CMS sidebar to populate the Spaces dropdown.
+ */
+export async function fetchAllSpaceDetailPages(): Promise<
+  SpaceDetailPageApiData[]
+> {
+  const response = await cmsApiJson<
+    | SpaceDetailPageApiData[]
+    | {
+        data?: SpaceDetailPageApiData[]
+        pages?: SpaceDetailPageApiData[]
+      }
+  >("/space-detail-page")
+
+  if (Array.isArray(response)) {
+    return response
+  }
+
+  return response.data ?? response.pages ?? []
+}
+
+/**
  * Saves a Space Detail page. Uses PATCH when the record already has an _id
  * (an update), POST when it doesn't (first-time creation).
  */
@@ -25,9 +48,19 @@ export async function saveSpaceDetailPage(
   isNew?: boolean
 ): Promise<SpaceDetailPageApiData> {
   const slug = data.slug.trim()
-  const validSpaceTypes = ["kitchen", "wardrobe", "living-room", "bedroom", "bathroom", "home-office", "outdoor-living", "bespoke-joinery"]
+  const validSpaceTypes = [
+    "kitchen",
+    "wardrobe",
+    "living-room",
+    "bedroom",
+    "bathroom",
+    "home-office",
+    "outdoor-living",
+    "bespoke-joinery",
+  ]
   if (!slug) throw new Error("Space slug is required.")
-  if (!validSpaceTypes.includes(data.spaceType)) throw new Error("Select a valid space type.")
+  if (!validSpaceTypes.includes(data.spaceType))
+    throw new Error("Select a valid space type.")
   let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
   if (isNew && !data._id) {
     try {
@@ -44,7 +77,12 @@ export async function saveSpaceDetailPage(
     data: { ...data, slug },
   })
   const payload = response.data as { data?: SpaceDetailPageApiData }
-  return payload.data ?? { ...data, ...(method === "PATCH" ? {} : { _id: data._id }) }
+  return (
+    payload.data ?? {
+      ...data,
+      ...(method === "PATCH" ? {} : { _id: data._id }),
+    }
+  )
 }
 
 export function createSpaceDetailPage(

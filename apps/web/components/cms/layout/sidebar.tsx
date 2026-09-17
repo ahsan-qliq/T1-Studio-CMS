@@ -1,143 +1,127 @@
 import { SidebarNav } from "./sidebar-nav"
 import { SidebarUser } from "./sidebar-user"
+
 import { currentUser, sidebarNav } from "@/data/mock"
 import { getAuthenticatedUser } from "@/lib/auth"
-import { fetchSpaceDetailPage } from "@/lib/space-detail-page-api"
-import { fetchSpacesPage } from "@/lib/spaces-page-api"
-import { fetchProjectDetailPage } from "@/lib/project-detail-page-api"
-import { fetchProjectsPage } from "@/lib/projects-page-api"
-import { fetchBlogDetailPage } from "@/lib/blog-detail-page-api"
-import { fetchBlogPage } from "@/lib/blog-page-api"
+
+import { fetchAllSpaceDetailPages } from "@/lib/space-detail-page-api"
+import { fetchAllProjectDetailPages } from "@/lib/project-detail-page-api"
+
+import { fetchAllBlogDetailPages } from "@/lib/blog-detail-page-api"
+
 import type { NavPage, NavSection } from "@/types/cms"
 
-function getSpaceSlug(href: string) {
-  const match = href.match(/^\/spaces\/([^/?#]+)\/?$/)
-  return match?.[1]
-}
-
-function getProjectSlug(href: string) {
-  const match = href.match(/^\/projects\/([^/?#]+)\/?$/)
-  return match?.[1]
-}
-
-function getBlogSlug(href: string) {
-  const match = href.match(/^\/blog\/([^/?#]+)\/?$/)
-  return match?.[1]
-}
-
+/**
+ * Build sidebar navigation
+ */
 async function getSidebarNav(): Promise<NavSection[]> {
   const pagesSection = sidebarNav.find((section) => section.label === "Pages")
-  if (!pagesSection) return sidebarNav
+
+  if (!pagesSection) {
+    return sidebarNav
+  }
 
   try {
-    const spacesPage = await fetchSpacesPage()
-    const candidates = spacesPage.sections.featuredSpaces.spaces
-      .map((space): NavPage | null => {
-        const slug = getSpaceSlug(space.href)
-        if (!slug) return null
-
-        return {
-          slug: `space-detail/${slug}`,
-          label: space.title.en || slug,
-        }
-      })
-      .filter((page): page is NavPage => page !== null)
-
-    const detailPages = await Promise.all(
-      candidates.map(async (candidate) => {
-        try {
-          await fetchSpaceDetailPage(candidate.slug.slice("space-detail/".length))
-          return candidate
-        } catch {
-          return null
-        }
-      })
-    )
-
-    let projectDetailPages: NavPage[] = []
-    try {
-      const projectsPage = await fetchProjectsPage()
-      const projectCandidates = projectsPage.sections.projects.projects
-        .map((project): NavPage | null => {
-          const slug = getProjectSlug(project.href)
-          if (!slug) return null
-          return {
-            slug: `project-detail/${slug}`,
-            label: project.title.en || slug,
-          }
-        })
-        .filter((page): page is NavPage => page !== null)
-
-      const verifiedProjects = await Promise.all(
-        projectCandidates.map(async (candidate) => {
-          try {
-            await fetchProjectDetailPage(
-              candidate.slug.slice("project-detail/".length)
-            )
-            return candidate
-          } catch {
-            return null
-          }
-        })
-      )
-      projectDetailPages = verifiedProjects.filter(
-        (page): page is NavPage => page !== null
-      )
-    } catch {
-      projectDetailPages = []
-    }
-
-    let blogDetailPages: NavPage[] = []
-    try {
-      const blogPage = await fetchBlogPage()
-      const articles = [
-        blogPage.sections.blogListing.featuredArticle,
-        ...blogPage.sections.blogListing.articles,
-      ]
-      const candidates = articles
-        .map((article): NavPage | null => {
-          const slug = article.blogSlug || getBlogSlug(article.href)
-          if (!slug) return null
-          return { slug: `blog-detail/${slug}`, label: article.title.en || slug }
-        })
-        .filter((page): page is NavPage => page !== null)
-      const verified = await Promise.all(
-        candidates.map(async (candidate) => {
-          try {
-            await fetchBlogDetailPage(
-              candidate.slug.slice("blog-detail/".length)
-            )
-            return candidate
-          } catch {
-            return null
-          }
-        })
-      )
-      blogDetailPages = verified.filter(
-        (page): page is NavPage => page !== null
-      )
-    } catch {
-      blogDetailPages = []
-    }
-
+    /**
+     * STATIC PAGES
+     *
+     * Remove dynamic pages from the original mock navigation.
+     * Spaces, Projects and Blog are created dynamically below.
+     */
     const staticPages =
       pagesSection.children?.filter(
         (page) =>
           !page.slug.startsWith("space-detail/") &&
-          !page.slug.startsWith("project-detail/")
+          !page.slug.startsWith("project-detail/") &&
+          !page.slug.startsWith("blog-detail/")
       ) ?? []
 
-    const spacesChildren = detailPages.filter(
-      (page): page is NavPage => page !== null
-    )
+    /**
+     * FETCH DYNAMIC DATA
+     */
+    const [spacesResult, projectsResult, blogsResult] =
+      await Promise.allSettled([
+        fetchAllSpaceDetailPages(),
+        fetchAllProjectDetailPages(),
+        fetchAllBlogDetailPages(),
+      ])
+
+    /**
+     * ==========================================
+     * SPACES
+     * ==========================================
+     */
+    let spaceDetailPages: NavPage[] = []
+
+    if (spacesResult.status === "fulfilled") {
+      const spaces = spacesResult.value ?? []
+
+      spaceDetailPages = spaces
+        .filter((space) => Boolean(space.slug))
+        .map((space) => ({
+          slug: `space-detail/${space.slug}`,
+          label: space.pageName || space.slug,
+        }))
+    }
+
+    /**
+     * ==========================================
+     * PROJECTS
+     * ==========================================
+     */
+    let projectDetailPages: NavPage[] = []
+
+    if (projectsResult.status === "fulfilled") {
+      const projects = projectsResult.value ?? []
+
+      projectDetailPages = projects
+        .filter((project) => Boolean(project.slug))
+        .map((project) => ({
+          slug: `project-detail/${project.slug}`,
+          label: project.pageName || project.slug,
+        }))
+    }
+
+    /**
+     * ==========================================
+     * BLOG
+     * ==========================================
+     */
+
+    let blogDetailPages: NavPage[] = []
+
+    if (blogsResult.status === "fulfilled") {
+      const blogs = blogsResult.value ?? []
+
+      blogDetailPages = blogs
+        .filter((blog) => Boolean(blog.slug))
+        .map((blog) => ({
+          slug: `blog-detail/${blog.slug}`,
+          label: blog.title?.en || blog.slug,
+        }))
+    }
+
+    /**
+     * ==========================================
+     * CREATE DROPDOWN SECTIONS
+     * ==========================================
+     */
     const dynamicSections: NavSection[] = []
-    if (spacesChildren.length > 0) {
+
+    /**
+     * SPACES DROPDOWN
+     */
+    if (spaceDetailPages.length > 0) {
       dynamicSections.push({
         label: "Spaces",
         icon: "Home",
-        children: spacesChildren,
+        children: spaceDetailPages,
       })
     }
+
+    /**
+     * PROJECTS DROPDOWN
+     */
     if (projectDetailPages.length > 0) {
       dynamicSections.push({
         label: "Projects",
@@ -145,25 +129,75 @@ async function getSidebarNav(): Promise<NavSection[]> {
         children: projectDetailPages,
       })
     }
+
+    /**
+     * BLOG DROPDOWN
+     */
     dynamicSections.push({
       label: "Blog",
       icon: "FileText",
       children: [
-        { slug: "blog", label: "Blog" },
+        {
+          slug: "blog",
+          label: "Blog",
+        },
         ...blogDetailPages,
       ],
     })
 
+    /**
+     * ==========================================
+     * FINAL SIDEBAR
+     * ==========================================
+     */
     return sidebarNav.flatMap((section) => {
+      /**
+       * Replace Pages children with:
+       *
+       * Static Pages
+       * Spaces
+       * Projects
+       * Blog
+       */
       if (section === pagesSection) {
-        return [{ ...section, children: staticPages }, ...dynamicSections]
+        return [
+          {
+            ...section,
+            children: staticPages,
+          },
+          ...dynamicSections,
+        ]
       }
+
+      /**
+       * Remove old static Projects section
+       * when dynamic Projects exists.
+       */
       if (section.label === "Projects" && projectDetailPages.length > 0) {
         return []
       }
+
+      /**
+       * Remove old static Spaces section
+       * when dynamic Spaces exists.
+       */
+      if (section.label === "Spaces" && spaceDetailPages.length > 0) {
+        return []
+      }
+
+      /**
+       * Remove old static Blog section.
+       */
+      if (section.label === "Blog") {
+        return []
+      }
+
       return [section]
     })
   } catch {
+    /**
+     * Fallback if API fails.
+     */
     return sidebarNav.map((section) =>
       section === pagesSection
         ? {
@@ -171,7 +205,8 @@ async function getSidebarNav(): Promise<NavSection[]> {
             children: section.children?.filter(
               (page) =>
                 !page.slug.startsWith("space-detail/") &&
-                !page.slug.startsWith("project-detail/")
+                !page.slug.startsWith("project-detail/") &&
+                !page.slug.startsWith("blog-detail/")
             ),
           }
         : section
@@ -179,14 +214,26 @@ async function getSidebarNav(): Promise<NavSection[]> {
   }
 }
 
+/**
+ * Sidebar Component
+ */
 export async function Sidebar() {
   const navigation = await getSidebarNav()
+
   const authenticatedUser = await getAuthenticatedUser()
+
   const sidebarUser = authenticatedUser
     ? {
-        name: authenticatedUser.name || authenticatedUser.email || currentUser.name,
+        name:
+          authenticatedUser.name || authenticatedUser.email || currentUser.name,
+
         role: authenticatedUser.role || currentUser.role,
-        avatarInitials: (authenticatedUser.name || authenticatedUser.email || currentUser.name)
+
+        avatarInitials: (
+          authenticatedUser.name ||
+          authenticatedUser.email ||
+          currentUser.name
+        )
           .split(/\s+/)
           .map((part) => part[0])
           .join("")
@@ -209,9 +256,13 @@ export async function Sidebar() {
           >
             T1
           </div>
+
           <div>
-            <p className="text-xs font-bold tracking-wide text-white">T1 Studio</p>
-            <p className="text-[9px] uppercase tracking-widest text-zinc-500">
+            <p className="text-xs font-bold tracking-wide text-white">
+              T1 Studio
+            </p>
+
+            <p className="text-[9px] tracking-widest text-zinc-500 uppercase">
               Spaces People Belong In
             </p>
           </div>
