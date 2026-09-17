@@ -68,13 +68,10 @@ export interface BlogDetailPageApiData {
   _id?: string
 
   slug: string
-
   category: string
 
   title: Localized
-
   excerpt: Localized
-
   categoryLabel: Localized
 
   tags: {
@@ -129,12 +126,16 @@ export interface BlogDetailPageApiData {
   seo: {
     metaTitle: Localized
     metaDescription: Localized
+
     keywords: {
       en: string[]
       ar: string[]
     }
+
     canonicalUrl: string
+
     ogImage: BlogDetailImage
+
     noIndex: boolean
     noFollow: boolean
   }

@@ -1,17 +1,21 @@
-import type { BlogDetailPageApiData } from "@/types/api-blog-detail-page"
 import type { Localized } from "@/types/api-home-page"
+import type {
+  BlogAuthor,
+  BlogDetailImage,
+  BlogDetailPageApiData,
+} from "@/types/api-blog-detail-page"
 
 const localized = (): Localized => ({
   en: "",
   ar: "",
 })
 
-const image = () => ({
+const image = (): BlogDetailImage => ({
   src: "",
   alt: localized(),
 })
 
-const author = () => ({
+const author = (): BlogAuthor => ({
   name: localized(),
   designation: localized(),
   bio: localized(),
@@ -22,13 +26,10 @@ const author = () => ({
 export function createEmptyBlogDetailPage(): BlogDetailPageApiData {
   return {
     slug: "",
-
     category: "",
 
     title: localized(),
-
     excerpt: localized(),
-
     categoryLabel: localized(),
 
     tags: {
@@ -82,7 +83,6 @@ export function createEmptyBlogDetailPage(): BlogDetailPageApiData {
 
     seo: {
       metaTitle: localized(),
-
       metaDescription: localized(),
 
       keywords: {
@@ -95,7 +95,6 @@ export function createEmptyBlogDetailPage(): BlogDetailPageApiData {
       ogImage: image(),
 
       noIndex: false,
-
       noFollow: false,
     },
   }
