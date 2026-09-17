@@ -1,22 +1,130 @@
-import type { ContactPageApiData, ContactSection } from "@/types/api-contact-page"
+import type { ContactPageApiData, ContactImage } from "@/types/api-contact-page"
 
-const l = () => ({ en: "", ar: "" })
-const i = () => ({ url: "", key: "", alt: l() })
-const b = () => ({ label: l(), href: "", openInNewTab: false })
-const s = (order: number): ContactSection => ({ isVisible: true, order, eyebrow: l(), heading: l(), description: l() })
+const l = () => ({
+  en: "",
+  ar: "",
+})
+
+const image = (): ContactImage => ({
+  src: "",
+  alt: l(),
+})
+
+const section = (order: number) => ({
+  isVisible: true,
+  order,
+})
 
 export function createEmptyContactPage(): ContactPageApiData {
   return {
-    pageName: "Contact Us",
+    pageName: "Contact",
     slug: "contact",
     status: "draft",
+
     sections: {
-      hero: { ...s(1), backgroundImage: i(), mobileImage: i(), primaryButton: b(), overlayOpacity: 40 },
-      contactInfo: { ...s(2), items: [] },
-      contactForm: { ...s(3), image: i(), tabs: [], fields: [], submitButtonLabel: l(), successMessage: l(), errorMessage: l() },
-      location: { ...s(4), locations: [], mapEmbedUrl: "", mapZoom: 14, button: b() },
-      faq: { ...s(5), faqs: [] },
+      /* =========================================================
+         HERO
+      ========================================================= */
+
+      hero: {
+        ...section(1),
+
+        eyebrow: l(),
+
+        heading: l(),
+
+        description: l(),
+
+        backgroundImage: image(),
+
+        overlayOpacity: 0.5,
+      },
+
+      /* =========================================================
+         CONTACT INFORMATION
+      ========================================================= */
+
+      contactInfo: {
+        ...section(2),
+
+        items: [],
+      },
+
+      /* =========================================================
+         CONTACT FORM
+      ========================================================= */
+
+      contactForm: {
+        ...section(3),
+
+        eyebrow: l(),
+
+        heading: l(),
+
+        description: l(),
+
+        image: image(),
+
+        tabs: [],
+
+        formFields: [],
+
+        submitButtonLabel: l(),
+
+        successMessage: l(),
+
+        errorMessage: l(),
+      },
+
+      /* =========================================================
+         LOCATION
+      ========================================================= */
+
+      location: {
+        ...section(4),
+
+        mapLocations: [],
+
+        mapEmbedUrl: "",
+
+        mapZoom: {
+          min: 10,
+          max: 18,
+        },
+      },
+
+      /* =========================================================
+         FAQ
+      ========================================================= */
+
+      faq: {
+        ...section(5),
+
+        items: [],
+      },
     },
-    seo: { metaTitle: l(), metaDescription: l(), keywords: { en: [], ar: [] }, canonicalUrl: "", ogImage: i(), noIndex: false, noFollow: false },
+
+    /* =========================================================
+       SEO
+    ========================================================= */
+
+    seo: {
+      metaTitle: l(),
+
+      metaDescription: l(),
+
+      keywords: {
+        en: [],
+        ar: [],
+      },
+
+      canonicalUrl: "",
+
+      ogImage: image(),
+
+      noIndex: false,
+
+      noFollow: false,
+    },
   }
 }

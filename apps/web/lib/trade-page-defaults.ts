@@ -1,19 +1,151 @@
-import type { TradePageApiData, TradeSection } from "@/types/api-trade-page"
-const l = () => ({ en: "", ar: "" })
-const i = () => ({ url: "", key: "", alt: l() })
-const b = () => ({ label: l(), href: "", openInNewTab: false })
-const s = (order: number): TradeSection => ({ isVisible: true, order, eyebrow: l(), heading: l(), description: l() })
+import type {
+  TradePageApiData,
+  TradePageSections,
+} from "@/types/api-trade-page"
+
+const localized = () => ({
+  en: "",
+  ar: "",
+})
+
+const image = () => ({
+  url: "",
+  key: "",
+  alt: localized(),
+})
+
+const button = () => ({
+  label: localized(),
+  href: "",
+  openInNewTab: false,
+})
+
+const id = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
+
 export function createEmptyTradePage(): TradePageApiData {
-  const sections = {
-    hero: { ...s(1), backgroundImage: i(), mobileImage: i(), primaryButton: b(), secondaryButton: b(), overlayOpacity: 40 },
-    logos: s(2), whoWeWorkWith: { ...s(3), button: b() }, journey: s(4), stats: s(5),
-    projects: { ...s(6), button: b() }, benefits: s(7), partnershipServices: s(8),
-    industryServices: s(9), resources: { ...s(10), button: b() },
-    supplierCTA: { ...s(11), image: i(), button: b() }, designTips: { ...s(12), button: b() },
-    referral: { ...s(13), image: i(), button: b() }, consultation: { ...s(14), image: i() }, faq: s(15),
+  const sections: TradePageSections = {
+    hero: {
+      isVisible: true,
+      order: 1,
+      eyebrow: localized(),
+      heading: localized(),
+      description: localized(),
+      backgroundImage: image(),
+      overlayOpacity: 0.5,
+      primaryButton: button(),
+    },
+
+    logos: {
+      isVisible: true,
+      order: 2,
+      items: [],
+    },
+
+    whoWeWorkWith: {
+      isVisible: true,
+      order: 3,
+      items: [],
+    },
+
+    journey: {
+      isVisible: true,
+      order: 4,
+      items: [],
+    },
+
+    stats: {
+      isVisible: true,
+      order: 5,
+      items: [],
+    },
+
+    projects: {
+      isVisible: true,
+      order: 6,
+      items: [],
+    },
+
+    benefits: {
+      isVisible: true,
+      order: 7,
+      items: [],
+    },
+
+    partnershipServices: {
+      isVisible: true,
+      order: 8,
+      items: [],
+    },
+
+    industryServices: {
+      isVisible: true,
+      order: 9,
+      items: [],
+    },
+
+    resources: {
+      isVisible: true,
+      order: 10,
+      items: [],
+    },
+
+    supplierCTA: {
+      isVisible: true,
+      order: 11,
+      eyebrow: localized(),
+      heading: localized(),
+      description: localized(),
+      image: image(),
+      benefits: [],
+      button: button(),
+    },
+
+    designTips: {
+      isVisible: true,
+      order: 12,
+      items: [],
+    },
+
+    referral: {
+      isVisible: true,
+      order: 13,
+      items: [],
+    },
+
+    consultation: {
+      isVisible: true,
+      order: 14,
+      eyebrow: localized(),
+      heading: localized(),
+      description: localized(),
+      formFields: [],
+      submitButtonLabel: localized(),
+    },
+
+    faq: {
+      isVisible: true,
+      order: 15,
+      items: [],
+    },
   }
+
   return {
-    pageName: "Trade", slug: "trade", status: "draft", sections,
-    seo: { metaTitle: l(), metaDescription: l(), keywords: { en: [], ar: [] }, canonicalUrl: "", ogImage: i(), noIndex: false, noFollow: false },
+    pageName: "Trade",
+    slug: "trade",
+    status: "draft",
+    sections,
+
+    seo: {
+      metaTitle: localized(),
+      metaDescription: localized(),
+      keywords: {
+        en: [],
+        ar: [],
+      },
+      canonicalUrl: "",
+      ogImage: image(),
+      noIndex: false,
+      noFollow: false,
+    },
   }
 }
