@@ -828,7 +828,7 @@ function RepeaterHeader({
       </div>
 
       <div className="shrink-0">
-        <AddItemButton onClick={onAdd}>Add</AddItemButton>
+        <AddItemButton label="Add" onClick={onAdd} />
       </div>
     </div>
   )

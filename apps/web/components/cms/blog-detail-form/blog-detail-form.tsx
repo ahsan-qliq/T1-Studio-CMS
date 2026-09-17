@@ -302,8 +302,8 @@ function BlockEditor({
   })
 
   useEffect(() => {
-    const subscription = control._subjects.values.subscribe({
-      next: (values: any) => {
+    const subscription = control._subjects.state.subscribe({
+      next: ({ values }: any) => {
         const block = values?.sections?.articleContent?.blocks?.[index]
 
         if (block?.type) {

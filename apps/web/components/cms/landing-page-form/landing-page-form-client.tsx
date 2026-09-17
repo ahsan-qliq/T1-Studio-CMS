@@ -8,6 +8,7 @@ import {
   useFieldArray,
   useForm,
   type Control,
+  type FieldPath,
 } from "react-hook-form"
 
 import { useState } from "react"
@@ -1014,13 +1015,14 @@ function FormFieldItem({
 
           <Controller
             control={control}
-            name={`${name}.type`}
+            name={`${name}.type` as FieldPath<LandingPageApiData>}
             render={({ field }) => (
               <div className="space-y-1.5">
                 <Label>Type</Label>
 
                 <select
                   {...field}
+                  value={field.value as string}
                   className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2 text-sm text-zinc-900"
                 >
                   <option value="text">Text</option>

@@ -10,6 +10,12 @@ const image = (): ContactImage => ({
   alt: l(),
 })
 
+const apiImage = () => ({
+  url: "",
+  key: "",
+  alt: l(),
+})
+
 const section = (order: number) => ({
   isVisible: true,
   order,
@@ -120,7 +126,7 @@ export function createEmptyContactPage(): ContactPageApiData {
 
       canonicalUrl: "",
 
-      ogImage: image(),
+      ogImage: apiImage(),
 
       noIndex: false,
 

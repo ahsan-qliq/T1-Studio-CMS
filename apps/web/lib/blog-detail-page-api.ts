@@ -8,13 +8,25 @@ export function fetchBlogDetailPage(slug: string) {
 export function fetchAllBlogDetailPages() {
   return cmsApiJson<BlogDetailPageApiData[]>("/blog-detail-page")
 }
-export function saveBlogDetailPage(data: BlogDetailPageApiData) {
+export async function saveBlogDetailPage(
+  data: BlogDetailPageApiData,
+  isNew?: boolean
+) {
   const slug = data.slug.trim()
   if (!slug) throw new Error("Blog slug is required.")
   if (!data.category.trim()) throw new Error("Blog category is required.")
-  const query = data._id ? `?slug=${encodeURIComponent(slug)}` : ""
+  let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
+  if (isNew && !data._id) {
+    try {
+      await fetchBlogDetailPage(slug)
+      method = "PATCH"
+    } catch {
+      method = "POST"
+    }
+  }
+  const query = method === "PATCH" ? `?slug=${encodeURIComponent(slug)}` : ""
   return cmsApiFetch(`/blog-detail-page${query}`, {
-    method: data._id ? "PATCH" : "POST",
+    method,
     headers: { "Content-Type": "application/json" },
     data: { ...data, slug },
   })
