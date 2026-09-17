@@ -1,8 +1,33 @@
-import type { ApiButton, ApiImage, Localized } from "./api-home-page"
-import type { SeoData } from "./api-spaces-page"
+import type { Localized } from "./api-home-page"
 
-export interface BlogItem {
-  _id?: string
+export interface BlogImage {
+  src: string
+  alt: Localized
+}
+
+export interface BlogButton {
+  label: Localized
+  href: string
+  openInNewTab: boolean
+}
+
+export interface BlogCategory {
+  key: string
+  label: Localized
+}
+
+export interface BlogFeaturedArticle {
+  blogSlug: string
+  title: Localized
+  excerpt: Localized
+  categoryKey: string
+  image: BlogImage
+  href: string
+  featured: boolean
+  isVisible: boolean
+}
+
+export interface BlogArticle {
   blogSlug: string
   title: Localized
   excerpt: Localized
@@ -10,23 +35,74 @@ export interface BlogItem {
   categoryKey: string
   author: Localized
   readTime: Localized
-  publishedDate: string | null
-  image: ApiImage
+  publishedDate: string
+  image: BlogImage
   href: string
   featured: boolean
   isVisible: boolean
 }
 
+export interface BlogPartnershipItem {
+  icon: string
+  title: Localized
+  description: Localized
+}
+
+export interface BlogFaqItem {
+  question: Localized
+  answer: Localized
+  isVisible: boolean
+}
+
 export interface BlogPageApiData {
   _id?: string
-  pageName: string
+
   slug: string
+  pageName: string
   status: string
+
   sections: {
-    hero: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; backgroundImage: ApiImage; mobileImage: ApiImage; primaryButton: ApiButton; overlayOpacity: number }
-    blogListing: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; categories: { _id?: string; key: string; label: Localized; isVisible: boolean }[]; featuredArticle: BlogItem; articles: BlogItem[]; enableCategoryFilter: boolean; enableLoadMore: boolean; initialDisplayCount: number; loadMoreCount: number; loadMoreButton: ApiButton }
-    partnership: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; image: ApiImage; steps: { _id?: string; icon: string; title: Localized; description: Localized; isVisible: boolean }[]; button: ApiButton }
-    faq: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; faqs: { _id?: string; question: Localized; answer: Localized; isVisible: boolean }[] }
+    hero: {
+      eyebrow: Localized
+      heading: Localized
+      description: Localized
+      backgroundImage: BlogImage
+      overlayOpacity: number
+      primaryButton: BlogButton
+    }
+
+    blogListing: {
+      enableCategoryFilter: boolean
+      enableLoadMore: boolean
+      initialDisplayCount: number
+      loadMoreCount: number
+
+      categories: BlogCategory[]
+
+      featuredArticle: BlogFeaturedArticle
+
+      articles: BlogArticle[]
+    }
+
+    partnership: {
+      items: BlogPartnershipItem[]
+    }
+
+    faq: {
+      items: BlogFaqItem[]
+    }
   }
-  seo: SeoData
+
+  seo: {
+    metaTitle: Localized
+    metaDescription: Localized
+    keywords: {
+      en: string[]
+      ar: string[]
+    }
+    canonicalUrl: string
+    ogImage: BlogImage
+    noIndex: boolean
+    noFollow: boolean
+  }
 }

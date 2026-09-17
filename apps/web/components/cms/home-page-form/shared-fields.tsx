@@ -964,7 +964,9 @@ export function ImageField({
               onChange={(event) => {
                 const file = event.target.files?.[0]
                 if (!file) return
-                if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+                if (
+                  !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+                ) {
                   alert("Please upload a JPG, PNG or WEBP image.")
                   event.target.value = ""
                   return
@@ -976,7 +978,8 @@ export function ImageField({
                 }
                 const reader = new FileReader()
                 reader.onload = () => {
-                  if (typeof reader.result === "string") field.onChange(reader.result)
+                  if (typeof reader.result === "string")
+                    field.onChange(reader.result)
                 }
                 reader.readAsDataURL(file)
               }}
@@ -997,7 +1000,9 @@ export function ImageField({
                 </span>
               )}
               <span className="text-xs text-zinc-600">
-                {field.value ? "Click to replace image" : "Click to upload image"}
+                {field.value
+                  ? "Click to replace image"
+                  : "Click to upload image"}
                 <span className="mt-1 block text-[11px] text-zinc-400">
                   JPG, PNG or WEBP · Max 5MB
                 </span>
@@ -1009,7 +1014,9 @@ export function ImageField({
                 className="text-xs text-red-600 hover:text-red-700"
                 onClick={() => {
                   field.onChange("")
-                  const input = document.getElementById(inputId) as HTMLInputElement | null
+                  const input = document.getElementById(
+                    inputId
+                  ) as HTMLInputElement | null
                   if (input) input.value = ""
                 }}
               >
@@ -1125,52 +1132,57 @@ export function SectionAccordion({
 }: {
   title: string
   order: number
-  control: HomePageControl
-  visibleName: string
+  control: any
+  visibleName?: string
   defaultOpen?: boolean
   children: React.ReactNode
 }) {
   const [open, setOpen] = useState(defaultOpen)
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-transparent">
+    <div className="rounded-lg border border-zinc-200 bg-white">
       <div className="flex items-center gap-3 px-4 py-3">
         <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-xs font-semibold text-zinc-600">
           {String(order).padStart(2, "0")}
         </span>
-        <Button
+
+        <button
           type="button"
           onClick={() => setOpen((o) => !o)}
-          variant="ghost"
-          className="h-auto flex-1 justify-between gap-2 !bg-transparent px-0 text-left hover:!bg-transparent aria-expanded:!bg-transparent"
+          className="flex flex-1 items-center justify-between gap-2 text-left"
         >
           <span className="text-sm font-semibold text-zinc-900">{title}</span>
+
           <ChevronDown
-            className={`size-4 text-zinc-400 transition-transform ${open ? "rotate-180" : ""}`}
+            className={`size-4 text-zinc-400 transition-transform ${
+              open ? "rotate-180" : ""
+            }`}
             aria-hidden
           />
-        </Button>
-        <Controller
-          control={control}
-          name={visibleName as HomePagePath}
-          render={({ field }) => (
-            <Button
-              type="button"
-              onClick={() => field.onChange(!field.value)}
-              aria-label={field.value ? "Hide section" : "Show section"}
-              variant="ghost"
-              size="icon-sm"
-              className="text-zinc-500 hover:!bg-zinc-100"
-            >
-              {field.value ? (
-                <Eye className="size-4" />
-              ) : (
-                <EyeOff className="size-4" />
-              )}
-            </Button>
-          )}
-        />
+        </button>
+
+        {visibleName && (
+          <Controller
+            control={control}
+            name={visibleName}
+            render={({ field }) => (
+              <button
+                type="button"
+                onClick={() => field.onChange(!field.value)}
+                aria-label={field.value ? "Hide section" : "Show section"}
+                className="shrink-0 rounded p-1 text-zinc-500 hover:bg-zinc-100"
+              >
+                {field.value ? (
+                  <Eye className="size-4" />
+                ) : (
+                  <EyeOff className="size-4" />
+                )}
+              </button>
+            )}
+          />
+        )}
       </div>
+
       {open && (
         <div className="space-y-4 border-t border-zinc-100 px-4 py-4">
           {children}

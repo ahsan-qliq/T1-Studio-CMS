@@ -1,21 +1,162 @@
-import type { ApiButton, ApiImage, Localized } from "./api-home-page"
-import type { SeoData } from "./api-spaces-page"
+export type Localized = {
+  en: string
+  ar: string
+}
 
-export interface LandingPageApiData {
-  _id?: string
-  pageName: string
-  slug: string
-  status: string
-  sections: {
-    hero: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; backgroundImage: ApiImage; mobileImage: ApiImage; primaryButton: ApiButton; form: { heading: Localized; description: Localized; fields: unknown[]; submitButtonLabel: Localized; successMessage: Localized }; overlayOpacity: number }
-    stats: { isVisible: boolean; order: number; heading: Localized; stats: unknown[] }
-    intro: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; secondaryDescription: Localized; image: ApiImage; imagePosition: "left" | "right"; button: ApiButton }
-    projects: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; projects: unknown[]; button: ApiButton }
-    process: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; steps: unknown[] }
-    benefits: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; items: unknown[]; button: ApiButton }
-    testimonials: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; testimonials: unknown[]; autoplay: boolean; showNavigation: boolean }
-    faq: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; faqs: unknown[] }
-    consultation: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; image: ApiImage; tabs: unknown[]; fields: unknown[]; submitButtonLabel: Localized; successMessage: Localized }
+export type LandingImage = {
+  src: string
+  alt: Localized
+}
+
+export type LandingButton = {
+  label: Localized
+  href: string
+  openInNewTab: boolean
+}
+
+export type LandingFormField = {
+  name: string
+  type: string
+  label: Localized
+  placeholder?: Localized
+  required: boolean
+}
+
+export type LandingHeroForm = {
+  heading: Localized
+  description: Localized
+  fields: LandingFormField[]
+  submitButtonLabel: Localized
+  successMessage: Localized
+}
+
+export type LandingHero = {
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+  backgroundImage: LandingImage
+  overlayOpacity: number
+  form: LandingHeroForm
+}
+
+export type LandingStat = {
+  value: string
+  label: Localized
+  description: Localized
+  isVisible: boolean
+}
+
+export type LandingStats = {
+  items: LandingStat[]
+}
+
+export type LandingIntro = {
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+  secondaryDescription: Localized
+  image: LandingImage
+  imagePosition: string
+  button: LandingButton
+}
+
+export type LandingProject = {
+  projectSlug: string
+  title: Localized
+  location: Localized
+  description: Localized
+  image: LandingImage
+  href: string
+  position: string
+}
+
+export type LandingProjects = {
+  items: LandingProject[]
+}
+
+export type LandingProcessItem = {
+  number: string
+  icon: string
+  title: Localized
+  description: Localized
+}
+
+export type LandingProcess = {
+  items: LandingProcessItem[]
+}
+
+export type LandingBenefit = {
+  icon: string
+  title: Localized
+  description: Localized
+}
+
+export type LandingBenefits = {
+  items: LandingBenefit[]
+}
+
+export type LandingTestimonial = {
+  clientName: Localized
+  designation: Localized
+  testimonial: Localized
+  image: LandingImage
+}
+
+export type LandingTestimonials = {
+  items: LandingTestimonial[]
+  autoplay: boolean
+  showNavigation: boolean
+}
+
+export type LandingFaq = {
+  question: Localized
+  answer: Localized
+  isVisible: boolean
+}
+
+export type LandingFaqSection = {
+  items: LandingFaq[]
+}
+
+export type LandingConsultation = {
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+  formFields: LandingFormField[]
+  submitButtonLabel: Localized
+  successMessage: Localized
+}
+
+export type LandingSections = {
+  hero: LandingHero
+  stats: LandingStats
+  intro: LandingIntro
+  projects: LandingProjects
+  process: LandingProcess
+  benefits: LandingBenefits
+  testimonials: LandingTestimonials
+  faq: LandingFaqSection
+  consultation: LandingConsultation
+}
+
+export type LandingSeo = {
+  metaTitle: Localized
+  metaDescription: Localized
+  keywords: {
+    en: string[]
+    ar: string[]
   }
-  seo: SeoData
+  canonicalUrl: string
+  ogImage: LandingImage
+  noIndex: boolean
+  noFollow: boolean
+}
+
+export type LandingPageApiData = {
+  _id?: string
+  slug: string
+  pageName: string
+  status: "draft" | "published"
+  sections: LandingSections
+  seo: LandingSeo
 }
