@@ -1,49 +1,141 @@
-import type { ApiButton, ApiImage, Localized } from "./api-home-page"
-import type { SeoData } from "./api-spaces-page"
+import type { Localized } from "./api-home-page"
+
+export interface BlogDetailImage {
+  src: string
+  alt: Localized
+}
 
 export interface BlogAuthor {
   name: Localized
   designation: Localized
   bio: Localized
-  image: ApiImage
+  image: BlogDetailImage
   linkedinUrl: string
-  websiteUrl: string
 }
 
-export interface BlogContentBlock {
-  _id?: string
-  type: "heading" | "paragraph" | "image" | "gallery" | "quote" | "list" | "button" | "divider"
+export interface BlogHeadingBlock {
+  type: "heading"
   level: number
   heading: Localized
+}
+
+export interface BlogParagraphBlock {
+  type: "paragraph"
   content: Localized
-  image?: ApiImage
+}
+
+export interface BlogImageBlock {
+  type: "image"
+  image: BlogDetailImage
   caption: Localized
-  images: ApiImage[]
+}
+
+export interface BlogListBlock {
+  type: "list"
   listStyle: "bullet" | "number"
   listItems: Localized[]
-  button?: ApiButton
-  isVisible: boolean
+}
+
+export interface BlogQuoteBlock {
+  type: "quote"
+  content: Localized
+}
+
+export type BlogContentBlock =
+  | BlogHeadingBlock
+  | BlogParagraphBlock
+  | BlogImageBlock
+  | BlogListBlock
+  | BlogQuoteBlock
+
+export interface BlogConsultationFormField {
+  name: string
+  type: string
+  label: Localized
+  required: boolean
+}
+
+export interface BlogRelatedArticle {
+  blogSlug: string
+  title: Localized
+  category: Localized
+  readTime: Localized
+  image: BlogDetailImage
+  href: string
 }
 
 export interface BlogDetailPageApiData {
   _id?: string
-  title: Localized
+
   slug: string
-  excerpt: Localized
+
   category: string
+
+  title: Localized
+
+  excerpt: Localized
+
   categoryLabel: Localized
-  tags: { en: string[]; ar: string[] }
-  author: BlogAuthor
-  readTime: Localized
-  featuredImage: ApiImage
-  status: "draft" | "published" | "archived"
-  isFeatured: boolean
-  sections: {
-    hero: { isVisible: boolean; order: number; eyebrow: Localized; title: Localized; excerpt: Localized; backgroundImage: ApiImage; mobileImage: ApiImage; overlayOpacity: number }
-    articleContent: { isVisible: boolean; order: number; intro: Localized; blocks: BlogContentBlock[] }
-    consultation: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; image: ApiImage; fields: { _id?: string; name: string; label: Localized; placeholder: Localized; type: string; required: boolean; options: { value: string; label: Localized }[] }[]; submitButtonLabel: Localized; successMessage: Localized }
-    relatedArticles: { isVisible: boolean; order: number; eyebrow: Localized; heading: Localized; description: Localized; articles: { _id?: string; blogSlug: string; title: Localized; category: Localized; readTime: Localized; image: ApiImage; href: string; isVisible: boolean }[]; button: ApiButton }
-    authorInfo: { isVisible: boolean; order: number; heading: Localized; author: BlogAuthor }
+
+  tags: {
+    en: string[]
+    ar: string[]
   }
-  seo: SeoData
+
+  author: BlogAuthor
+
+  readTime: Localized
+
+  featuredImage: BlogDetailImage
+
+  status: "draft" | "published" | "archived"
+
+  isFeatured: boolean
+
+  publishedAt: string
+
+  sections: {
+    hero: {
+      eyebrow: Localized
+      title: Localized
+      excerpt: Localized
+      backgroundImage: BlogDetailImage
+      overlayOpacity: number
+    }
+
+    articleContent: {
+      intro: Localized
+      blocks: BlogContentBlock[]
+    }
+
+    consultation: {
+      eyebrow: Localized
+      heading: Localized
+      description: Localized
+      image: BlogDetailImage
+      formFields: BlogConsultationFormField[]
+      submitButtonLabel: Localized
+    }
+
+    relatedArticles: {
+      items: BlogRelatedArticle[]
+    }
+
+    authorInfo: {
+      author: BlogAuthor
+    }
+  }
+
+  seo: {
+    metaTitle: Localized
+    metaDescription: Localized
+    keywords: {
+      en: string[]
+      ar: string[]
+    }
+    canonicalUrl: string
+    ogImage: BlogDetailImage
+    noIndex: boolean
+    noFollow: boolean
+  }
 }

@@ -1,20 +1,102 @@
 import type { BlogDetailPageApiData } from "@/types/api-blog-detail-page"
-import type { ApiImage, Localized } from "@/types/api-home-page"
-const l = (): Localized => ({ en: "", ar: "" })
-const i = (): ApiImage => ({ url: "", key: "", alt: l() })
-const b = () => ({ label: l(), href: "", openInNewTab: false })
-const author = () => ({ name: l(), designation: l(), bio: l(), image: i(), linkedinUrl: "", websiteUrl: "" })
-const s = (order: number) => ({ isVisible: true, order })
+import type { Localized } from "@/types/api-home-page"
+
+const localized = (): Localized => ({
+  en: "",
+  ar: "",
+})
+
+const image = () => ({
+  src: "",
+  alt: localized(),
+})
+
+const author = () => ({
+  name: localized(),
+  designation: localized(),
+  bio: localized(),
+  image: image(),
+  linkedinUrl: "",
+})
+
 export function createEmptyBlogDetailPage(): BlogDetailPageApiData {
   return {
-    title: l(), slug: "", excerpt: l(), category: "", categoryLabel: l(), tags: { en: [], ar: [] }, author: author(), readTime: l(), featuredImage: i(), status: "draft", isFeatured: false,
-    sections: {
-      hero: { ...s(1), eyebrow: l(), title: l(), excerpt: l(), backgroundImage: i(), mobileImage: i(), overlayOpacity: 40 },
-      articleContent: { ...s(2), intro: l(), blocks: [] },
-      consultation: { ...s(3), eyebrow: l(), heading: l(), description: l(), image: i(), fields: [], submitButtonLabel: l(), successMessage: l() },
-      relatedArticles: { ...s(4), eyebrow: l(), heading: l(), description: l(), articles: [], button: b() },
-      authorInfo: { ...s(5), heading: l(), author: author() },
+    slug: "",
+
+    category: "",
+
+    title: localized(),
+
+    excerpt: localized(),
+
+    categoryLabel: localized(),
+
+    tags: {
+      en: [],
+      ar: [],
     },
-    seo: { metaTitle: l(), metaDescription: l(), keywords: { en: [], ar: [] }, canonicalUrl: "", ogImage: i(), noIndex: false, noFollow: false },
+
+    author: author(),
+
+    readTime: localized(),
+
+    featuredImage: image(),
+
+    status: "draft",
+
+    isFeatured: false,
+
+    publishedAt: "",
+
+    sections: {
+      hero: {
+        eyebrow: localized(),
+        title: localized(),
+        excerpt: localized(),
+        backgroundImage: image(),
+        overlayOpacity: 0.4,
+      },
+
+      articleContent: {
+        intro: localized(),
+        blocks: [],
+      },
+
+      consultation: {
+        eyebrow: localized(),
+        heading: localized(),
+        description: localized(),
+        image: image(),
+        formFields: [],
+        submitButtonLabel: localized(),
+      },
+
+      relatedArticles: {
+        items: [],
+      },
+
+      authorInfo: {
+        author: author(),
+      },
+    },
+
+    seo: {
+      metaTitle: localized(),
+
+      metaDescription: localized(),
+
+      keywords: {
+        en: [],
+        ar: [],
+      },
+
+      canonicalUrl: "",
+
+      ogImage: image(),
+
+      noIndex: false,
+
+      noFollow: false,
+    },
   }
 }

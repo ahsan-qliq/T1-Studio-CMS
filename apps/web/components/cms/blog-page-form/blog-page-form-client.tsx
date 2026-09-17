@@ -25,8 +25,6 @@ import { SeoFields } from "../form-shared/seo-field"
 
 import type { BlogPageApiData } from "@/types/api-blog-page"
 
-const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
-
 /* ============================================================
    MAIN FORM
 ============================================================ */
@@ -59,6 +57,8 @@ export function BlogPageFormClient({
       if (!response.ok) {
         throw new Error(await response.text())
       }
+
+      alert("Blog page saved successfully")
     } catch (error) {
       console.error(error)
       alert("Failed to save Blog page")
@@ -100,7 +100,6 @@ export function BlogPageFormClient({
                 className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2 text-sm text-zinc-900"
               >
                 <option value="draft">draft</option>
-
                 <option value="published">published</option>
               </select>
             </div>
@@ -234,6 +233,44 @@ function BlogListingSection({
     control,
     name: "sections.blogListing.articles",
   })
+
+  const addNewBlog = () => {
+    appendArticle({
+      blogSlug: "",
+      title: {
+        en: "",
+        ar: "",
+      },
+      excerpt: {
+        en: "",
+        ar: "",
+      },
+      category: {
+        en: "",
+        ar: "",
+      },
+      categoryKey: "",
+      author: {
+        en: "",
+        ar: "",
+      },
+      readTime: {
+        en: "",
+        ar: "",
+      },
+      publishedDate: "",
+      image: {
+        src: "",
+        alt: {
+          en: "",
+          ar: "",
+        },
+      },
+      href: "",
+      featured: false,
+      isVisible: true,
+    })
+  }
 
   return (
     <SectionAccordion
@@ -407,15 +444,35 @@ function BlogListingSection({
       </div>
 
       {/* =====================================================
-          ARTICLES
+          BLOGS
       ===================================================== */}
 
-      <div className="space-y-3 border-t border-zinc-200 pt-4">
-        <div>
-          <h3 className="text-sm font-semibold text-zinc-900">Articles</h3>
+      <div className="space-y-4 border-t border-zinc-200 pt-4">
+        {/* HEADER + NEW BLOG BUTTON */}
 
-          <p className="text-xs text-zinc-500">Add and manage blog articles.</p>
+        <div className="flex flex-col items-center justify-between gap-4">
+          <div className="w-full">
+            <h3 className="text-sm font-semibold text-zinc-900">Blogs</h3>
+
+            <p className="text-xs text-zinc-500">
+              Add and manage blog articles.
+            </p>
+          </div>
+
+          <AddItemButton label="Add New Blog" onClick={addNewBlog} />
         </div>
+
+        {/* BLOG ITEMS */}
+
+        {articleFields.length === 0 && (
+          <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
+            <p className="text-sm text-zinc-500">No blogs added yet.</p>
+
+            <p className="mt-1 text-xs text-zinc-400">
+              Click &quot;Add New Blog&quot; to create your first blog.
+            </p>
+          </div>
+        )}
 
         {articleFields.map((field, index) => (
           <div
@@ -424,7 +481,15 @@ function BlogListingSection({
           >
             <div className="flex items-start gap-3">
               <div className="flex-1 space-y-4">
-                {/* Basic */}
+                {/* BLOG HEADER */}
+
+                <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+                  <h4 className="text-sm font-semibold text-zinc-800">
+                    Blog {index + 1}
+                  </h4>
+                </div>
+
+                {/* BASIC */}
 
                 <div className="grid grid-cols-3 gap-3">
                   <PlainField
@@ -449,7 +514,7 @@ function BlogListingSection({
                   />
                 </div>
 
-                {/* Title */}
+                {/* TITLE */}
 
                 <LocalizedField
                   control={control}
@@ -457,7 +522,7 @@ function BlogListingSection({
                   label="Title"
                 />
 
-                {/* Excerpt */}
+                {/* EXCERPT */}
 
                 <LocalizedField
                   control={control}
@@ -466,7 +531,7 @@ function BlogListingSection({
                   multiline
                 />
 
-                {/* Category */}
+                {/* CATEGORY */}
 
                 <LocalizedField
                   control={control}
@@ -474,7 +539,7 @@ function BlogListingSection({
                   label="Category"
                 />
 
-                {/* Author */}
+                {/* AUTHOR */}
 
                 <LocalizedField
                   control={control}
@@ -482,7 +547,7 @@ function BlogListingSection({
                   label="Author"
                 />
 
-                {/* Read Time */}
+                {/* READ TIME */}
 
                 <LocalizedField
                   control={control}
@@ -490,7 +555,7 @@ function BlogListingSection({
                   label="Read Time"
                 />
 
-                {/* Published Date */}
+                {/* PUBLISHED DATE */}
 
                 <PlainField
                   control={control}
@@ -499,7 +564,7 @@ function BlogListingSection({
                   type="date"
                 />
 
-                {/* Image */}
+                {/* IMAGE */}
 
                 <BlogImageField
                   control={control}
@@ -507,7 +572,7 @@ function BlogListingSection({
                   label="Article Image"
                 />
 
-                {/* Flags */}
+                {/* FLAGS */}
 
                 <div className="grid grid-cols-2 gap-4">
                   <BoolField
@@ -524,51 +589,12 @@ function BlogListingSection({
                 </div>
               </div>
 
+              {/* DELETE BLOG */}
+
               <DeleteItemButton onClick={() => removeArticle(index)} />
             </div>
           </div>
         ))}
-
-        <AddItemButton
-          label="Add Article"
-          onClick={() =>
-            appendArticle({
-              blogSlug: "",
-              title: {
-                en: "",
-                ar: "",
-              },
-              excerpt: {
-                en: "",
-                ar: "",
-              },
-              category: {
-                en: "",
-                ar: "",
-              },
-              categoryKey: "",
-              author: {
-                en: "",
-                ar: "",
-              },
-              readTime: {
-                en: "",
-                ar: "",
-              },
-              publishedDate: "",
-              image: {
-                src: "",
-                alt: {
-                  en: "",
-                  ar: "",
-                },
-              },
-              href: "",
-              featured: false,
-              isVisible: true,
-            })
-          }
-        />
       </div>
     </SectionAccordion>
   )
