@@ -665,24 +665,16 @@ function LocationSection({
         {/* MAP SETTINGS */}
 
         <div className="w-full space-y-4 border-t border-zinc-200 pt-5">
-          <PlainField
-            control={control}
-            name="sections.location.mapEmbedUrl"
-            label="Map Embed URL"
-          />
-
           <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
             <PlainField
               control={control}
-              name="sections.location.mapZoom.min"
-              label="Minimum Zoom"
-              type="number"
+              name="sections.location.mapEmbedUrl"
+              label="Map Embed URL"
             />
-
             <PlainField
               control={control}
-              name="sections.location.mapZoom.max"
-              label="Maximum Zoom"
+              name="sections.location.mapZoom"
+              label="Minimum Zoom"
               type="number"
             />
           </div>
