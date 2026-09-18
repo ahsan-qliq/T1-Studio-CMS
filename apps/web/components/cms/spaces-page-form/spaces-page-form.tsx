@@ -95,7 +95,7 @@ export function SpacesPageForm({ initialData, onSave }: SpacesPageFormProps) {
           href="/pages/space-detail/new"
           className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
         >
-          Add new space
+          Add New Space
         </Link>
       </div>
 
@@ -112,7 +112,8 @@ export function SpacesPageForm({ initialData, onSave }: SpacesPageFormProps) {
       <SeoFields control={control} namePrefix="seo" />
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
-        <Button type="submit"
+        <Button
+          type="submit"
           disabled={saving}
           className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
         >

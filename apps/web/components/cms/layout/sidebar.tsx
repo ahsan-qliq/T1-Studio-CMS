@@ -28,13 +28,7 @@ async function getSidebarNav(): Promise<NavSection[]> {
      * Remove dynamic pages from the original mock navigation.
      * Spaces, Projects and Blog are created dynamically below.
      */
-    const staticPages =
-      pagesSection.children?.filter(
-        (page) =>
-          !page.slug.startsWith("space-detail/") &&
-          !page.slug.startsWith("project-detail/") &&
-          !page.slug.startsWith("blog-detail/")
-      ) ?? []
+    const staticPages = pagesSection.children ?? []
 
     /**
      * FETCH DYNAMIC DATA

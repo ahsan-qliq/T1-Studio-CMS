@@ -11,7 +11,7 @@ import {
   useForm,
   type Control,
 } from "react-hook-form"
-
+import Link from "next/link"
 import {
   LocalizedField,
   PlainField,
@@ -105,6 +105,12 @@ export function BlogPageFormClient({
             </div>
           )}
         />
+        <Link
+          href="/pages/blog-detail/new"
+          className="rounded-md border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+        >
+          Add New Blog
+        </Link>
       </div>
 
       {/* =====================================================
