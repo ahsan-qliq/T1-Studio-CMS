@@ -17,6 +17,7 @@ import {
   LocalizedField,
   PlainField,
   BoolField,
+  ImageField,
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
@@ -40,7 +41,11 @@ interface BlogDetailFormProps {
 
 const emptyLocalized = (): Localized => ({ en: "", ar: "" })
 
-const emptyImage = () => ({ src: "", alt: emptyLocalized() })
+const emptyImage = () => ({
+  url: "",
+  key: "",
+  alt: emptyLocalized(),
+})
 
 const emptyBlock = (type: BlogContentBlock["type"]): BlogContentBlock => {
   switch (type) {
@@ -55,35 +60,6 @@ const emptyBlock = (type: BlogContentBlock["type"]): BlogContentBlock => {
     case "quote":
       return { type: "quote", content: emptyLocalized() }
   }
-}
-
-/**
- * Image sub-object field for the blog-detail data shape (`{ src, alt }`).
- * Mirrors BlogImageField in blog-page-form — the sibling form that shares
- * the same `src`-based image type — rather than the `home-page-form`
- * ImageField, which is built around the `{ url, key, alt }` shape.
- */
-function BlogDetailImageField({
-  control,
-  name,
-  label,
-}: {
-  control: F
-  name: string
-  label: string
-}) {
-  return (
-    <div className="space-y-3 rounded-md border border-zinc-100 bg-zinc-50/60 p-3">
-      <p className="text-xs font-medium text-zinc-600">{label}</p>
-      <PlainField
-        control={control}
-        name={`${name}.src`}
-        label="Image URL"
-        placeholder="https://cdn.example.com/image.jpg"
-      />
-      <LocalizedField control={control} name={`${name}.alt`} label="Alt Text" />
-    </div>
-  )
 }
 
 /** Comma-separated tag editor for a plain string[] field like tags.en */
@@ -207,7 +183,7 @@ function BlockEditor({
 
         {blockType === "image" && (
           <>
-            <BlogDetailImageField
+            <ImageField
               control={control}
               name={`sections.articleContent.blocks.${index}.image`}
               label="Content Image"
@@ -425,7 +401,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
           />
         </div>
 
-        <BlogDetailImageField
+        <ImageField
           control={control}
           name="featuredImage"
           label="Featured Image"
@@ -449,10 +425,10 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
           label="Bio"
           multiline
         />
-        <BlogDetailImageField
+        <ImageField
           control={control}
-          name="author.image"
-          label="Author Image"
+          name="sections.hero.backgroundImage"
+          label="Background Image"
         />
         <PlainField
           control={control}
@@ -479,7 +455,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
           label="Excerpt"
           multiline
         />
-        <BlogDetailImageField
+        <ImageField
           control={control}
           name="sections.hero.backgroundImage"
           label="Background Image"
@@ -568,7 +544,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
           label="Description"
           multiline
         />
-        <BlogDetailImageField
+        <ImageField
           control={control}
           name="sections.consultation.image"
           label="Consultation Image"
@@ -682,7 +658,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
                   label="Link URL"
                   placeholder="/blog/example"
                 />
-                <BlogDetailImageField
+                <ImageField
                   control={control}
                   name={`sections.relatedArticles.items.${index}.image`}
                   label="Article Image"
@@ -724,7 +700,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
           label="Bio"
           multiline
         />
-        <BlogDetailImageField
+        <ImageField
           control={control}
           name="sections.authorInfo.author.image"
           label="Author Image"
@@ -740,7 +716,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
         control={control}
         namePrefix="seo"
         renderOgImage={({ control, name, label }) => (
-          <BlogDetailImageField control={control} name={name} label={label} />
+          <ImageField control={control} name={name} label={label} />
         )}
       />
 

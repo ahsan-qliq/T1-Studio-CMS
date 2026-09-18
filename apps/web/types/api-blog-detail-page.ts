@@ -1,7 +1,8 @@
 import type { Localized } from "./api-home-page"
 
 export interface BlogDetailImage {
-  src: string
+  url: string
+  key: string
   alt: Localized
 }
 

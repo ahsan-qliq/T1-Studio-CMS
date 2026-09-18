@@ -8,127 +8,154 @@ interface PresignedUploadResponse {
   data?: {
     uploadUrl: string
     key: string
+    url?: string
+    publicUrl?: string
   }
   message?: string
 }
 
-/**
- * Uploads an image directly to S3 using a presigned PUT URL.
- *
- * Flow:
- *
- * 1. POST fileName + contentType to our API.
- * 2. API returns a presigned S3 upload URL + object key.
- * 3. PUT the actual file directly to S3.
- * 4. Return both the public URL and S3 key.
- *
- * The key is important because the CMS backend uses it when
- * generating the CloudFront image URL.
- */
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"]
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024
+
 export async function uploadImage(file: File): Promise<UploadedImage> {
   if (!file) {
     throw new Error("No image selected.")
   }
 
-  const allowedTypes = ["image/jpeg", "image/png", "image/webp"]
-
-  if (!allowedTypes.includes(file.type)) {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     throw new Error("Please upload a JPG, PNG or WEBP image.")
   }
 
-  const maxFileSize = 5 * 1024 * 1024
-
-  if (file.size > maxFileSize) {
+  if (file.size > MAX_FILE_SIZE) {
     throw new Error("Image must be smaller than 5MB.")
   }
 
   /*
-   * Step 1:
-   * Ask our backend for a presigned S3 upload URL.
+   * =========================================================
+   * STEP 1
+   * Ask our Next.js API for a presigned S3 URL.
+   * =========================================================
    */
 
   const presignedResponse = await fetch("/api/uploads/presigned-url", {
     method: "POST",
+
     headers: {
       "Content-Type": "application/json",
     },
+
     credentials: "include",
+
+    cache: "no-store",
+
     body: JSON.stringify({
       fileName: file.name,
       contentType: file.type,
     }),
   })
 
-  let presignedResult: PresignedUploadResponse
+  let result: PresignedUploadResponse
 
   try {
-    presignedResult =
-      (await presignedResponse.json()) as PresignedUploadResponse
+    result = (await presignedResponse.json()) as PresignedUploadResponse
   } catch {
     throw new Error(
       `Upload API returned an invalid response (${presignedResponse.status}).`
     )
   }
 
-  if (
-    !presignedResponse.ok ||
-    !presignedResult.success ||
-    !presignedResult.data?.uploadUrl ||
-    !presignedResult.data?.key
-  ) {
+  if (!presignedResponse.ok) {
     throw new Error(
-      presignedResult.message ||
+      result?.message ||
         `Failed to get upload URL (${presignedResponse.status}).`
     )
   }
 
-  const { uploadUrl, key } = presignedResult.data
+  if (!result.success || !result.data?.uploadUrl || !result.data?.key) {
+    throw new Error(
+      result?.message || "Upload API did not return uploadUrl and key."
+    )
+  }
+
+  const { uploadUrl, key, publicUrl, url: returnedUrl } = result.data
 
   /*
-   * Step 2:
-   * Upload the actual file directly to S3.
+   * =========================================================
+   * STEP 2
+   * Upload file directly to S3.
+   * =========================================================
    *
-   * The Content-Type must match the contentType that was
-   * supplied when generating the presigned URL.
+   * IMPORTANT:
+   * Content-Type MUST be exactly the same value used when
+   * generating the presigned URL.
    */
-  const uploadResponse = await fetch(uploadUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": file.type,
-    },
-    body: file,
-  })
+
+  let uploadResponse: Response
+
+  try {
+    uploadResponse = await fetch(uploadUrl, {
+      method: "PUT",
+
+      headers: {
+        "Content-Type": file.type,
+      },
+
+      body: file,
+    })
+  } catch (error) {
+    console.error("S3 upload request failed:", error)
+
+    throw new Error(
+      "Could not connect to image storage. Check the S3 bucket CORS configuration."
+    )
+  }
 
   if (!uploadResponse.ok) {
+    let storageMessage = ""
+
+    try {
+      storageMessage = await uploadResponse.text()
+    } catch {
+      // Ignore response parsing errors.
+    }
+
+    console.error("S3 upload failed:", {
+      status: uploadResponse.status,
+      statusText: uploadResponse.statusText,
+      response: storageMessage,
+    })
+
+    throw new Error(`Image upload to S3 failed (${uploadResponse.status}).`)
+  }
+
+  /*
+   * =========================================================
+   * STEP 3
+   * Determine the non-presigned URL.
+   * =========================================================
+   *
+   * The important value for MongoDB is `key`.
+   *
+   * If the backend gives us a public URL, use it.
+   * Otherwise remove the query string from the presigned URL.
+   */
+
+  const url = publicUrl || returnedUrl || uploadUrl.split("?")[0]
+
+  if (!url) {
     throw new Error(
-      `Failed to upload image to storage (${uploadResponse.status}).`
+      "Image uploaded successfully, but no image URL was returned."
     )
   }
 
   /*
-   * Remove the presigned query string.
-   *
-   * Example:
-   *
-   * https://bucket.s3.amazonaws.com/uploads/abc.jpg?X-Amz-...
-   *
-   * becomes:
-   *
-   * https://bucket.s3.amazonaws.com/uploads/abc.jpg
+   * =========================================================
+   * STEP 4
+   * Return BOTH URL and S3 key.
+   * =========================================================
    */
-  const url = uploadUrl.split("?")[0]
 
-  if (!url) {
-    throw new Error("Failed to determine uploaded image URL.")
-  }
-
-  /*
-   * IMPORTANT:
-   * Return BOTH url and key.
-   *
-   * The form stores both values and cms-api-client.ts
-   * sends both values to the CMS API.
-   */
   return {
     url,
     key,

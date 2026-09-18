@@ -925,9 +925,7 @@ export function PlainField({
 }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-sm font-medium">
-        {label}
-      </Label>
+      <Label className="text-sm font-medium">{label}</Label>
 
       <Controller
         control={control}
@@ -937,18 +935,12 @@ export function PlainField({
             {...field}
             type={type}
             required={required}
-            value={
-              field.value == null
-                ? ""
-                : String(field.value)
-            }
+            value={field.value == null ? "" : String(field.value)}
             onChange={(e) => {
               const value = e.target.value
 
               if (type === "number") {
-                field.onChange(
-                  value === "" ? undefined : Number(value)
-                )
+                field.onChange(value === "" ? undefined : Number(value))
               } else {
                 field.onChange(value)
               }
@@ -1000,43 +992,56 @@ export function ImageField({
   label: string
 }) {
   const inputId = `image-upload-${name.replace(/[^a-zA-Z0-9]/g, "-")}`
+
   const [isUploading, setIsUploading] = useState(false)
 
   return (
     <div className="space-y-2 rounded-md border border-zinc-100 bg-zinc-50/60 p-3">
       <p className="text-xs font-medium text-zinc-600">{label}</p>
+
       <Controller
         control={control}
         name={name as HomePagePath}
         render={({ field }) => {
-          const imageValue = field.value as
-            | { url?: string; key?: string }
-            | undefined
+          const imageValue =
+            (field.value as
+              | {
+                  url?: string
+                  key?: string
+                  alt?: {
+                    en?: string
+                    ar?: string
+                  }
+                }
+              | undefined) ?? {}
 
           const handleFileChange = async (
             event: React.ChangeEvent<HTMLInputElement>
           ) => {
             const file = event.target.files?.[0]
-            if (!file) return
-            if (
-              !["image/jpeg", "image/png", "image/webp"].includes(file.type)
-            ) {
-              alert("Please upload a JPG, PNG or WEBP image.")
-              event.target.value = ""
-              return
-            }
-            if (file.size > 5 * 1024 * 1024) {
-              alert("Image must be smaller than 5MB.")
-              event.target.value = ""
+
+            if (!file) {
               return
             }
 
             setIsUploading(true)
+
             try {
               const { url, key } = await uploadImage(file)
-              field.onChange({ ...imageValue, url, key })
+
+              /*
+               * IMPORTANT:
+               * Keep the existing alt text while replacing
+               * only the uploaded image information.
+               */
+              field.onChange({
+                ...imageValue,
+                url,
+                key,
+              })
             } catch (error) {
               console.error("Image upload failed:", error)
+
               alert(
                 error instanceof Error
                   ? error.message
@@ -1044,7 +1049,27 @@ export function ImageField({
               )
             } finally {
               setIsUploading(false)
+
+              /*
+               * Allow selecting the same file again.
+               */
               event.target.value = ""
+            }
+          }
+
+          const removeImage = () => {
+            field.onChange({
+              ...imageValue,
+              url: "",
+              key: "",
+            })
+
+            const input = document.getElementById(
+              inputId
+            ) as HTMLInputElement | null
+
+            if (input) {
+              input.value = ""
             }
           }
 
@@ -1058,6 +1083,7 @@ export function ImageField({
                 disabled={isUploading}
                 onChange={handleFileChange}
               />
+
               <label
                 htmlFor={inputId}
                 className={`flex items-center gap-3 rounded-md border border-dashed border-zinc-300 bg-white p-3 transition ${
@@ -1066,7 +1092,7 @@ export function ImageField({
                     : "cursor-pointer hover:border-zinc-500"
                 }`}
               >
-                {imageValue?.url ? (
+                {imageValue.url ? (
                   <img
                     src={imageValue.url}
                     alt={label}
@@ -1077,42 +1103,47 @@ export function ImageField({
                     Upload
                   </span>
                 )}
+
                 <span className="text-xs text-zinc-600">
                   {isUploading
                     ? "Uploading…"
-                    : imageValue?.url
+                    : imageValue.url
                       ? "Click to replace image"
                       : "Click to upload image"}
+
                   <span className="mt-1 block text-[11px] text-zinc-400">
                     JPG, PNG or WEBP · Max 5MB
                   </span>
                 </span>
               </label>
-              {imageValue?.url && !isUploading && (
+
+              {imageValue.url && !isUploading && (
                 <button
                   type="button"
                   className="text-xs text-red-600 hover:text-red-700"
-                  onClick={() => {
-                    field.onChange({ ...imageValue, url: "", key: "" })
-                    const input = document.getElementById(
-                      inputId
-                    ) as HTMLInputElement | null
-                    if (input) input.value = ""
-                  }}
+                  onClick={removeImage}
                 >
                   Remove image
                 </button>
               )}
+
               <PlainField
                 control={control}
                 name={`${name}.url`}
                 label="Image URL"
                 placeholder="https://..."
               />
+
+              {imageValue.key && (
+                <p className="text-[10px] break-all text-zinc-400">
+                  S3 key: {imageValue.key}
+                </p>
+              )}
             </div>
           )
         }}
       />
+
       <LocalizedField control={control} name={`${name}.alt`} label="Alt Text" />
     </div>
   )

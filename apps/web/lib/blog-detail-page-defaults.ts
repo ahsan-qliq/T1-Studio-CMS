@@ -11,7 +11,8 @@ const localized = (): Localized => ({
 })
 
 const image = (): BlogDetailImage => ({
-  src: "",
+  url: "",
+  key: "",
   alt: localized(),
 })
 
