@@ -112,13 +112,27 @@ function KeywordsInput({
 /**
  * SEO block shared by any page-level form. `namePrefix` is the form path
  * to the seo object, e.g. "seo".
+ *
+ * `ogImage` defaults to the `{ url, key, alt }` shape used by most page
+ * forms (rendered with the standard `ImageField`). A handful of forms
+ * (blog, blog-detail, landing) store their images as `{ src, alt }`
+ * instead — those pass `renderOgImage` with their own image field
+ * component so the field actually binds to the right property instead of
+ * silently reading/writing a `.url` key that doesn't exist on their data.
  */
 export function SeoFields({
   control,
   namePrefix = "seo",
+  renderOgImage,
 }: {
   control: any
   namePrefix?: string
+  /** Override for the OG Image field, for forms whose image shape isn't `{ url, key, alt }`. */
+  renderOgImage?: (props: {
+    control: any
+    name: string
+    label: string
+  }) => React.ReactNode
 }) {
   return (
     <div className="space-y-4 rounded-lg border border-zinc-200 bg-white p-4">
@@ -152,11 +166,19 @@ export function SeoFields({
         label="Canonical URL"
         placeholder="https://..."
       />
-      <ImageField
-        control={control}
-        name={`${namePrefix}.ogImage`}
-        label="OG Image"
-      />
+      {renderOgImage ? (
+        renderOgImage({
+          control,
+          name: `${namePrefix}.ogImage`,
+          label: "OG Image",
+        })
+      ) : (
+        <ImageField
+          control={control}
+          name={`${namePrefix}.ogImage`}
+          label="OG Image"
+        />
+      )}
       <div className="grid grid-cols-2 gap-4">
         <BoolField
           control={control}

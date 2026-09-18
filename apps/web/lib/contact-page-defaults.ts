@@ -1,16 +1,12 @@
-import type { ContactPageApiData, ContactImage } from "@/types/api-contact-page"
+import type { ContactPageApiData } from "@/types/api-contact-page"
+import type { ApiImage } from "@/types/api-home-page"
 
 const l = () => ({
   en: "",
   ar: "",
 })
 
-const image = (): ContactImage => ({
-  src: "",
-  alt: l(),
-})
-
-const apiImage = () => ({
+const image = (): ApiImage => ({
   url: "",
   key: "",
   alt: l(),
@@ -93,10 +89,7 @@ export function createEmptyContactPage(): ContactPageApiData {
 
         mapEmbedUrl: "",
 
-        mapZoom: {
-          min: 10,
-          max: 18,
-        },
+        mapZoom: 10,
       },
 
       /* =========================================================
@@ -126,7 +119,7 @@ export function createEmptyContactPage(): ContactPageApiData {
 
       canonicalUrl: "",
 
-      ogImage: apiImage(),
+      ogImage: image(),
 
       noIndex: false,
 

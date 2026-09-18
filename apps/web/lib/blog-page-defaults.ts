@@ -3,20 +3,20 @@ import type {
   BlogCategory,
   BlogFaqItem,
   BlogFeaturedArticle,
-  BlogImage,
   BlogPageApiData,
   BlogPartnershipItem,
 } from "@/types/api-blog-page"
 
-import type { Localized } from "@/types/api-home-page"
+import type { ApiImage, Localized } from "@/types/api-home-page"
 
 const localized = (): Localized => ({
   en: "",
   ar: "",
 })
 
-const image = (): BlogImage => ({
-  src: "",
+const image = (): ApiImage => ({
+  url: "",
+  key: "",
   alt: localized(),
 })
 

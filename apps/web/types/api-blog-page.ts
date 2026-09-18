@@ -1,9 +1,4 @@
-import type { Localized } from "./api-home-page"
-
-export interface BlogImage {
-  src: string
-  alt: Localized
-}
+import type { ApiImage, Localized } from "./api-home-page"
 
 export interface BlogButton {
   label: Localized
@@ -21,7 +16,7 @@ export interface BlogFeaturedArticle {
   title: Localized
   excerpt: Localized
   categoryKey: string
-  image: BlogImage
+  image: ApiImage
   href: string
   featured: boolean
   isVisible: boolean
@@ -36,7 +31,7 @@ export interface BlogArticle {
   author: Localized
   readTime: Localized
   publishedDate: string
-  image: BlogImage
+  image: ApiImage
   href: string
   featured: boolean
   isVisible: boolean
@@ -66,7 +61,7 @@ export interface BlogPageApiData {
       eyebrow: Localized
       heading: Localized
       description: Localized
-      backgroundImage: BlogImage
+      backgroundImage: ApiImage
       overlayOpacity: number
       primaryButton: BlogButton
     }
@@ -101,7 +96,7 @@ export interface BlogPageApiData {
       ar: string[]
     }
     canonicalUrl: string
-    ogImage: BlogImage
+    ogImage: ApiImage
     noIndex: boolean
     noFollow: boolean
   }

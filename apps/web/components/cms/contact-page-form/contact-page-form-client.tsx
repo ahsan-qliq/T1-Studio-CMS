@@ -17,6 +17,7 @@ import {
   LocalizedField,
   PlainField,
   BoolField,
+  ImageField,
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
@@ -33,11 +34,6 @@ import type { ContactPageApiData } from "@/types/api-contact-page"
 const l = () => ({
   en: "",
   ar: "",
-})
-
-const image = () => ({
-  src: "",
-  alt: l(),
 })
 
 /* =========================================================
@@ -198,7 +194,7 @@ function HeroSection({ control }: { control: Control<ContactPageApiData> }) {
           multiline
         />
 
-        <ImageFields
+        <ImageField
           control={control}
           name="sections.hero.backgroundImage"
           label="Background Image"
@@ -380,7 +376,7 @@ function ContactFormSection({
           multiline
         />
 
-        <ImageFields
+        <ImageField
           control={control}
           name="sections.contactForm.image"
           label="Form Image"
@@ -768,35 +764,6 @@ function FaqSection({ control }: { control: Control<ContactPageApiData> }) {
         )}
       </div>
     </SectionAccordion>
-  )
-}
-
-/* =========================================================
-   IMAGE FIELDS
-========================================================= */
-
-function ImageFields({
-  control,
-  name,
-  label,
-}: {
-  control: Control<ContactPageApiData>
-  name: string
-  label: string
-}) {
-  return (
-    <div className="w-full space-y-4 rounded-lg border border-zinc-200 bg-zinc-50 p-5">
-      <Label className="text-sm font-semibold text-zinc-900">{label}</Label>
-
-      <PlainField
-        control={control}
-        name={`${name}.src`}
-        label="Image URL"
-        placeholder="https://..."
-      />
-
-      <LocalizedField control={control} name={`${name}.alt`} label="Alt Text" />
-    </div>
   )
 }
 

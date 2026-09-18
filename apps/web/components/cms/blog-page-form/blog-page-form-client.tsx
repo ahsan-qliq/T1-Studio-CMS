@@ -16,6 +16,7 @@ import {
   LocalizedField,
   PlainField,
   BoolField,
+  ImageField,
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
@@ -191,7 +192,7 @@ function HeroSection({ control }: { control: Control<BlogPageApiData> }) {
         multiline
       />
 
-      <BlogImageField
+      <ImageField
         control={control}
         name="sections.hero.backgroundImage"
         label="Background Image"
@@ -266,7 +267,8 @@ function BlogListingSection({
       },
       publishedDate: "",
       image: {
-        src: "",
+        url: "",
+        key: "",
         alt: {
           en: "",
           ar: "",
@@ -426,7 +428,7 @@ function BlogListingSection({
               multiline
             />
 
-            <BlogImageField
+            <ImageField
               control={control}
               name="sections.blogListing.featuredArticle.image"
               label="Featured Image"
@@ -572,7 +574,7 @@ function BlogListingSection({
 
                 {/* IMAGE */}
 
-                <BlogImageField
+                <ImageField
                   control={control}
                   name={`sections.blogListing.articles.${index}.image`}
                   label="Article Image"
@@ -741,35 +743,6 @@ function FaqSection({ control }: { control: Control<BlogPageApiData> }) {
         }
       />
     </SectionAccordion>
-  )
-}
-
-/* ============================================================
-   BLOG IMAGE FIELD
-============================================================ */
-
-function BlogImageField({
-  control,
-  name,
-  label,
-}: {
-  control: Control<BlogPageApiData>
-  name: string
-  label: string
-}) {
-  return (
-    <div className="space-y-3 rounded-md border border-zinc-100 bg-zinc-50/60 p-3">
-      <p className="text-xs font-medium text-zinc-600">{label}</p>
-
-      <PlainField
-        control={control}
-        name={`${name}.src`}
-        label="Image URL"
-        placeholder="https://cdn.example.com/image.jpg"
-      />
-
-      <LocalizedField control={control} name={`${name}.alt`} label="Alt Text" />
-    </div>
   )
 }
 

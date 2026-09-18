@@ -18,6 +18,7 @@ import {
   PlainField,
   BoolField,
   ButtonField,
+  ImageField,
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
@@ -217,7 +218,7 @@ function HeroSection({ control }: { control: Control<LandingPageApiData> }) {
           multiline
         />
 
-        <LandingImageField
+        <ImageField
           control={control}
           name="sections.hero.backgroundImage"
           label="Background Image"
@@ -423,7 +424,7 @@ function IntroSection({ control }: { control: Control<LandingPageApiData> }) {
           multiline
         />
 
-        <LandingImageField
+        <ImageField
           control={control}
           name="sections.intro.image"
           label="Image"
@@ -486,7 +487,8 @@ function ProjectsSection({
               ar: "",
             },
             image: {
-              src: "",
+              url: "",
+              key: "",
               alt: {
                 en: "",
                 ar: "",
@@ -541,7 +543,7 @@ function ProjectsSection({
                 multiline
               />
 
-              <LandingImageField
+              <ImageField
                 control={control}
                 name={`sections.projects.items.${index}.image`}
                 label="Project Image"
@@ -759,7 +761,8 @@ function TestimonialsSection({
                 ar: "",
               },
               image: {
-                src: "",
+                url: "",
+                key: "",
                 alt: {
                   en: "",
                   ar: "",
@@ -798,7 +801,7 @@ function TestimonialsSection({
                   multiline
                 />
 
-                <LandingImageField
+                <ImageField
                   control={control}
                   name={`sections.testimonials.items.${index}.image`}
                   label="Client Image"
@@ -1060,41 +1063,6 @@ function FormFieldItem({
           label="Required"
         />
       </div>
-    </div>
-  )
-}
-
-/* =========================================================
-   LANDING IMAGE FIELD
-========================================================= */
-
-function LandingImageField({
-  control,
-  name,
-  label,
-}: {
-  control: Control<LandingPageApiData>
-  name: string
-  label: string
-}) {
-  return (
-    <div className="w-full space-y-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-      <div>
-        <p className="text-sm font-semibold text-zinc-900">{label}</p>
-
-        <p className="mt-1 text-xs text-zinc-500">
-          Image object uses `src` and bilingual `alt`.
-        </p>
-      </div>
-
-      <PlainField
-        control={control}
-        name={`${name}.src`}
-        label="Image URL"
-        placeholder="https://cdn.example.com/image.jpg"
-      />
-
-      <LocalizedField control={control} name={`${name}.alt`} label="Alt Text" />
     </div>
   )
 }

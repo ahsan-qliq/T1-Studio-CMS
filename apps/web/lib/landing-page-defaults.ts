@@ -1,17 +1,18 @@
 import type {
   LandingPageApiData,
   Localized,
-  LandingImage,
   LandingButton,
 } from "@/types/api-landing-page"
+import type { ApiImage } from "@/types/api-home-page"
 
 const l = (): Localized => ({
   en: "",
   ar: "",
 })
 
-const image = (): LandingImage => ({
-  src: "",
+const image = (): ApiImage => ({
+  url: "",
+  key: "",
   alt: l(),
 })
 

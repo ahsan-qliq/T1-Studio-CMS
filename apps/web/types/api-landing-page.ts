@@ -1,11 +1,8 @@
+import type { ApiImage } from "./api-home-page"
+
 export type Localized = {
   en: string
   ar: string
-}
-
-export type LandingImage = {
-  src: string
-  alt: Localized
 }
 
 export type LandingButton = {
@@ -34,7 +31,7 @@ export type LandingHero = {
   eyebrow: Localized
   heading: Localized
   description: Localized
-  backgroundImage: LandingImage
+  backgroundImage: ApiImage
   overlayOpacity: number
   form: LandingHeroForm
 }
@@ -55,7 +52,7 @@ export type LandingIntro = {
   heading: Localized
   description: Localized
   secondaryDescription: Localized
-  image: LandingImage
+  image: ApiImage
   imagePosition: string
   button: LandingButton
 }
@@ -65,7 +62,7 @@ export type LandingProject = {
   title: Localized
   location: Localized
   description: Localized
-  image: LandingImage
+  image: ApiImage
   href: string
   position: string
 }
@@ -99,7 +96,7 @@ export type LandingTestimonial = {
   clientName: Localized
   designation: Localized
   testimonial: Localized
-  image: LandingImage
+  image: ApiImage
 }
 
 export type LandingTestimonials = {
@@ -147,7 +144,7 @@ export type LandingSeo = {
     ar: string[]
   }
   canonicalUrl: string
-  ogImage: LandingImage
+  ogImage: ApiImage
   noIndex: boolean
   noFollow: boolean
 }

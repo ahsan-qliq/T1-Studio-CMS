@@ -1,14 +1,5 @@
-import type { Localized } from "./api-home-page"
+import type { ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
-
-/* =========================================================
-   IMAGE
-========================================================= */
-
-export interface ContactImage {
-  src: string
-  alt: Localized
-}
 
 /* =========================================================
    HERO
@@ -22,7 +13,7 @@ export interface ContactHeroSection {
   heading: Localized
   description: Localized
 
-  backgroundImage: ContactImage
+  backgroundImage: ApiImage
 
   overlayOpacity: number
 }
@@ -94,7 +85,7 @@ export interface ContactFormSection {
 
   description: Localized
 
-  image: ContactImage
+  image: ApiImage
 
   tabs: ContactFormTab[]
 
