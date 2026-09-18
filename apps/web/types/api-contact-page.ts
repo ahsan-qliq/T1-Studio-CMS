@@ -126,10 +126,7 @@ export interface ContactLocationSection {
 
   mapEmbedUrl: string
 
-  mapZoom: {
-    min: number
-    max: number
-  }
+  mapZoom: number
 }
 
 /* =========================================================
