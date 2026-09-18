@@ -92,47 +92,6 @@ export function LocalizedField({
   )
 }
 
-/** A single plain (non-bilingual) text field, e.g. a URL or a number. */
-// export function PlainField({
-//   control,
-//   name,
-//   label,
-//   placeholder,
-//   type = "text",
-//   required = false,
-// }: {
-//   control: HomePageControl
-//   name: string
-//   label: string
-//   placeholder?: string
-//   type?: string
-//   required?: boolean
-// }) {
-//   return (
-//     <div className="space-y-1.5">
-//       <Label className="text-sm font-medium">{label}</Label>
-//       <Controller
-//         control={control}
-//         name={name as HomePagePath}
-//         render={({ field }) => (
-//           <Input
-//             {...field}
-//             type={type}
-//             required={required}
-//             value={
-//               typeof field.value === "string"
-//                 ? field.value
-//                 : field.value == null
-//                   ? ""
-//                   : String(field.value)
-//             }
-//             placeholder={placeholder}
-//           />
-//         )}
-//       />
-//     </div>
-//   )
-// }
 export function PlainField({
   control,
   name,
