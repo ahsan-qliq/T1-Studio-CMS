@@ -9,70 +9,50 @@ export function BlogDetailFormClient({
 }: {
   initialData: BlogDetailPageApiData
 }) {
-  const [data, setData] =
-    useState<BlogDetailPageApiData>(initialData)
+  const [data, setData] = useState<BlogDetailPageApiData>(initialData)
 
-  const handleSave = async (
-    values: BlogDetailPageApiData
-  ): Promise<BlogDetailPageApiData | void> => {
+  const handleSave = async (values: BlogDetailPageApiData): Promise<void> => {
     try {
       const isNew = !values?._id
 
-      // --------------------------------
-      // SAVE
-      // --------------------------------
-      const response = await fetch(
-        "/api/save-blog-detail-page",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            data: values,
-            isNew,
-          }),
-        }
-      )
+      // Save
+      const response = await fetch("/api/save-blog-detail-page", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: values,
+          isNew,
+        }),
+      })
 
       const json = await response.json()
 
       if (!response.ok || json?.success === false) {
         console.error("Blog save failed:", json)
 
-        alert(
-          json?.message ||
-            "Failed to save Blog detail page."
-        )
+        alert(json?.message || "Failed to save Blog detail page.")
 
         return
       }
 
-      // Update immediately with saved response
+      // Update state with saved response
       if (json?.data) {
         setData(json.data)
       }
 
-      // --------------------------------
-      // GET SLUG
-      // --------------------------------
+      // Get slug
       const slug = values.slug?.trim()
 
       if (!slug) {
-        console.error(
-          "Blog slug is missing after save."
-        )
-
+        console.error("Blog slug is missing after save.")
         return
       }
 
-      // --------------------------------
-      // REFETCH FRESH DATA
-      // --------------------------------
+      // Refetch freshly saved page
       const fresh = await fetch(
-        `/api/save-blog-detail-page?slug=${encodeURIComponent(
-          slug
-        )}`,
+        `/api/save-blog-detail-page?slug=${encodeURIComponent(slug)}`,
         {
           method: "GET",
           cache: "no-store",
@@ -82,40 +62,24 @@ export function BlogDetailFormClient({
       if (!fresh.ok) {
         const errorText = await fresh.text()
 
-        console.error(
-          "Failed to refetch Blog detail:",
-          fresh.status,
-          errorText
-        )
+        console.error("Failed to refetch Blog detail:", fresh.status, errorText)
 
         return
       }
 
       const freshJson = await fresh.json()
 
-      const freshData =
-        freshJson.data ?? freshJson
+      const freshData = freshJson.data ?? freshJson
 
       if (freshData) {
         setData(freshData)
-        return freshData
       }
     } catch (error) {
-      console.error(
-        "Blog save error:",
-        error
-      )
+      console.error("Blog save error:", error)
 
-      alert(
-        "Failed to save Blog detail page."
-      )
+      alert("Failed to save Blog detail page.")
     }
   }
 
-  return (
-    <BlogDetailForm
-      initialData={data}
-      onSave={handleSave}
-    />
-  )
+  return <BlogDetailForm initialData={data} onSave={handleSave} />
 }
