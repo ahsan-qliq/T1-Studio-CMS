@@ -2,10 +2,7 @@ import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
 import { cmsApiJson, cmsApiFetch } from "./cms-api-client"
 
 /**
- * Fetches a Space Detail page by slug. The documented GET endpoint also
- * accepts a `lang` param — this deliberately omits it since the editor
- * needs both EN and AR at once. If your backend requires `lang` and
- * returns only one language per request, this needs two merged requests.
+ * Fetch a Space Detail page by slug.
  */
 export async function fetchSpaceDetailPage(
   slug: string
@@ -17,7 +14,7 @@ export async function fetchSpaceDetailPage(
 }
 
 /**
- * Fetches ALL Space Detail pages.
+ * Fetch ALL Space Detail pages.
  *
  * Used by the CMS sidebar to populate the Spaces dropdown.
  */
@@ -40,14 +37,17 @@ export async function fetchAllSpaceDetailPages(): Promise<
 }
 
 /**
- * Saves a Space Detail page. Uses PATCH when the record already has an _id
- * (an update), POST when it doesn't (first-time creation).
+ * Saves a Space Detail page.
+ *
+ * PATCH = existing page
+ * POST = new page
  */
 export async function saveSpaceDetailPage(
   data: SpaceDetailPageApiData,
   isNew?: boolean
 ): Promise<SpaceDetailPageApiData> {
   const slug = data.slug.trim()
+
   const validSpaceTypes = [
     "kitchen",
     "wardrobe",
@@ -58,25 +58,47 @@ export async function saveSpaceDetailPage(
     "outdoor-living",
     "bespoke-joinery",
   ]
-  if (!slug) throw new Error("Space slug is required.")
-  if (!validSpaceTypes.includes(data.spaceType))
+
+  if (!slug) {
+    throw new Error("Space slug is required.")
+  }
+
+  if (!validSpaceTypes.includes(data.spaceType)) {
     throw new Error("Select a valid space type.")
+  }
+
   let method: "POST" | "PATCH" = data._id ? "PATCH" : "POST"
+
+  // Handle explicitly-created records that don't have _id yet
   if (isNew && !data._id) {
     try {
       await fetchSpaceDetailPage(slug)
+
+      // Existing slug → update
       method = "PATCH"
     } catch {
+      // No existing slug → create
       method = "POST"
     }
   }
+
   const query = method === "PATCH" ? `?slug=${encodeURIComponent(slug)}` : ""
+
   const response = await cmsApiFetch(`/space-detail-page${query}`, {
     method,
-    headers: { "Content-Type": "application/json" },
-    data: { ...data, slug },
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {
+      ...data,
+      slug,
+    },
   })
-  const payload = response.data as { data?: SpaceDetailPageApiData }
+
+  const payload = response.data as {
+    data?: SpaceDetailPageApiData
+  }
+
   return (
     payload.data ?? {
       ...data,
@@ -88,5 +110,5 @@ export async function saveSpaceDetailPage(
 export function createSpaceDetailPage(
   data: SpaceDetailPageApiData
 ): Promise<SpaceDetailPageApiData> {
-  return saveSpaceDetailPage(data, true) as Promise<SpaceDetailPageApiData>
+  return saveSpaceDetailPage(data, true)
 }

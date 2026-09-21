@@ -42,7 +42,9 @@ type F = Control<ProjectsPageApiData>
 
 interface ProjectsPageFormProps {
   initialData: ProjectsPageApiData
-  onSave: (data: ProjectsPageApiData) => void | Promise<void>
+  onSave: (
+    data: ProjectsPageApiData
+  ) => void | ProjectsPageApiData | Promise<void | ProjectsPageApiData>
 }
 
 export function ProjectsPageForm({
@@ -50,13 +52,16 @@ export function ProjectsPageForm({
   onSave,
 }: ProjectsPageFormProps) {
   const form = useForm<ProjectsPageApiData>({ defaultValues: initialData })
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
   const [saving, setSaving] = useState(false)
 
   const submit = handleSubmit(async (values) => {
     setSaving(true)
     try {
-      await onSave(values)
+      const fresh = await onSave(values)
+      if (fresh) {
+        reset(fresh)
+      }
     } finally {
       setSaving(false)
     }

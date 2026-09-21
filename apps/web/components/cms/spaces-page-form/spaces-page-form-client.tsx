@@ -2,35 +2,63 @@
 
 import { useState } from "react"
 import { SpacesPageForm } from "./spaces-page-form"
-import { createEmptySpacesPage } from "@/lib/page-defaults"
 import type { SpacesPageApiData } from "@/types/api-spaces-page"
 
 export function SpacesPageFormClient({
   initialData,
 }: {
-  initialData: SpacesPageApiData | null
+  initialData: SpacesPageApiData
 }) {
-  // `data` tracks the current record so that once a first save creates it
-  // (and returns a real _id), subsequent saves correctly go through PATCH
-  // instead of POSTing a duplicate.
-  const [data, setData] = useState<SpacesPageApiData>(
-    initialData ?? createEmptySpacesPage()
-  )
+  const [data, setData] = useState<SpacesPageApiData>(initialData)
 
-  const handleSave = async (values: SpacesPageApiData) => {
-    const isNew = !data._id
-    const res = await fetch("/api/save-spaces-page", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: values, isNew }),
-    })
-    const json = await res.json()
-    if (!res.ok || !json.success) {
-      alert("Failed to save. Check the console for details.")
-      console.error("Save failed:", json)
-      return
+  const handleSave = async (
+    values: SpacesPageApiData
+  ): Promise<SpacesPageApiData | void> => {
+    try {
+      const isNew = !data?._id
+
+      // Keep the API's expected request structure
+      const res = await fetch("/api/save-spaces-page", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: values,
+          isNew,
+        }),
+      })
+
+      const json = await res.json()
+
+      if (!res.ok || json?.success === false) {
+        console.error("Save failed:", json)
+        alert(json?.message || "Failed to save.")
+        return
+      }
+
+      // Refetch the latest saved data
+      const fresh = await fetch("/api/save-spaces-page", {
+        method: "GET",
+        cache: "no-store",
+      })
+
+      if (!fresh.ok) {
+        console.error("Failed to refetch spaces page")
+        return
+      }
+
+      const freshJson = await fresh.json()
+      const freshData = freshJson.data ?? freshJson
+
+      if (freshData) {
+        setData(freshData)
+        return freshData
+      }
+    } catch (error) {
+      console.error("Save failed:", error)
+      alert("Something went wrong while saving.")
     }
-    setData(json.data)
   }
 
   return <SpacesPageForm initialData={data} onSave={handleSave} />

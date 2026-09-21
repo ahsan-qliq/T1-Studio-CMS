@@ -39,18 +39,21 @@ type F = Control<SpaceDetailPageApiData>
 
 interface SpaceDetailFormProps {
   initialData: SpaceDetailPageApiData
-  onSave: (data: SpaceDetailPageApiData) => void | Promise<void>
+  onSave: (
+    data: SpaceDetailPageApiData
+  ) => void | SpaceDetailPageApiData | Promise<void | SpaceDetailPageApiData>
 }
 
 export function SpaceDetailForm({ initialData, onSave }: SpaceDetailFormProps) {
   const form = useForm<SpaceDetailPageApiData>({ defaultValues: initialData })
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
   const [saving, setSaving] = useState(false)
 
   const submit = handleSubmit(async (values) => {
     setSaving(true)
     try {
-      await onSave(values)
+      const fresh = await onSave(values)
+      if (fresh) reset(fresh)
     } finally {
       setSaving(false)
     }
