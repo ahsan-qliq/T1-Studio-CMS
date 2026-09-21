@@ -5,11 +5,17 @@ import { SpacesPageForm } from "./spaces-page-form"
 import { createEmptySpacesPage } from "@/lib/page-defaults"
 import type { SpacesPageApiData } from "@/types/api-spaces-page"
 
-export function SpacesPageFormClient({ initialData }: { initialData: SpacesPageApiData | null }) {
+export function SpacesPageFormClient({
+  initialData,
+}: {
+  initialData: SpacesPageApiData | null
+}) {
   // `data` tracks the current record so that once a first save creates it
   // (and returns a real _id), subsequent saves correctly go through PATCH
   // instead of POSTing a duplicate.
-  const [data, setData] = useState<SpacesPageApiData>(initialData ?? createEmptySpacesPage())
+  const [data, setData] = useState<SpacesPageApiData>(
+    initialData ?? createEmptySpacesPage()
+  )
 
   const handleSave = async (values: SpacesPageApiData) => {
     const isNew = !data._id

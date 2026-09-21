@@ -25,10 +25,7 @@ import {
 
 import { SeoFields } from "../form-shared/seo-field"
 
-import type {
-  TradePageApiData,
-  TradePageSections,
-} from "@/types/api-trade-page"
+import type { TradePageApiData } from "@/types/api-trade-page"
 
 const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
 
@@ -41,7 +38,7 @@ export function TradePageFormClient({
     defaultValues: initialData,
   })
 
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
 
   const [saving, setSaving] = useState(false)
 
@@ -59,6 +56,17 @@ export function TradePageFormClient({
 
       if (!response.ok) {
         throw new Error(await response.text())
+      }
+      // Re-fetch the freshly saved page so the form reflects exactly what
+      // the backend now has (e.g. CDN URLs the backend fills in from the
+      // uploaded image's S3 key).
+      try {
+        const fresh = await fetch("/api/save-trade-page")
+        if (fresh.ok) {
+          reset((await fresh.json()) as TradePageApiData)
+        }
+      } catch (error) {
+        console.error("Failed to refresh Trade page after save:", error)
       }
     } finally {
       setSaving(false)

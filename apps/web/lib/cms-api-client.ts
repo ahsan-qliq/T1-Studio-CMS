@@ -29,12 +29,12 @@ import { createCmsAuthInstance } from "./auth-instance"
  *   }
  * }
  */
-function toApiValue(value: unknown): unknown {
+function toApiValue(value: unknown, opts?: { skipAliases?: boolean }): unknown {
   /*
    * Handle arrays recursively.
    */
   if (Array.isArray(value)) {
-    return value.map(toApiValue)
+    return value.map((entry) => toApiValue(entry, opts))
   }
 
   /*
@@ -82,23 +82,35 @@ function toApiValue(value: unknown): unknown {
           }
         : {}),
 
-      alt: toApiValue(object.alt),
+      alt: toApiValue(object.alt, opts),
     }
   }
 
   /*
    * Frontend field names that are converted to the
    * generic `items` structure expected by the API.
+   *
+   * This translation only applies to the older per-section CMS
+   * page types (spaces, project detail, space detail, inspiration,
+   * etc). Newer page types (Home, Projects list, Project Detail's
+   * sibling pages) mirror the API response 1:1 field-for-field and
+   * must skip this — otherwise a field that happens to share a name
+   * with one of these aliases (e.g. `spaces`, `projects`, `steps`)
+   * gets silently renamed to `items` on save, and since the reverse
+   * mapping below doesn't recognize every parent section name, the
+   * array comes back empty on the next load.
    */
-  const aliases: Record<string, string> = {
-    images: "items",
-    materials: "items",
-    brands: "items",
-    projects: "items",
-    steps: "items",
-    faqs: "items",
-    spaces: "items",
-  }
+  const aliases: Record<string, string> = opts?.skipAliases
+    ? {}
+    : {
+        images: "items",
+        materials: "items",
+        brands: "items",
+        projects: "items",
+        steps: "items",
+        faqs: "items",
+        spaces: "items",
+      }
 
   return Object.fromEntries(
     Object.entries(object)
@@ -114,7 +126,7 @@ function toApiValue(value: unknown): unknown {
             entry.startsWith("tmp-")
           )
       )
-      .map(([key, entry]) => [aliases[key] ?? key, toApiValue(entry)])
+      .map(([key, entry]) => [aliases[key] ?? key, toApiValue(entry, opts)])
   )
 }
 
@@ -137,12 +149,16 @@ function toApiValue(value: unknown): unknown {
  *   alt: {...}
  * }
  */
-function fromApiValue(value: unknown, parentKey?: string): unknown {
+function fromApiValue(
+  value: unknown,
+  parentKey?: string,
+  opts?: { skipAliases?: boolean }
+): unknown {
   /*
    * Handle arrays recursively.
    */
   if (Array.isArray(value)) {
-    return value.map((entry) => fromApiValue(entry))
+    return value.map((entry) => fromApiValue(entry, undefined, opts))
   }
 
   /*
@@ -189,25 +205,33 @@ function fromApiValue(value: unknown, parentKey?: string): unknown {
        */
       key: typeof object.key === "string" ? object.key : "",
 
-      alt: fromApiValue(object.alt),
+      alt: fromApiValue(object.alt, undefined, opts),
     }
   }
 
   /*
    * Convert backend collection names back into
    * the names expected by the frontend forms.
+   *
+   * See the matching note in toApiValue: this only applies to the
+   * older per-section CMS page types. Newer 1:1 page types (Home,
+   * etc.) pass skipAliases so a field the frontend genuinely calls
+   * `items` (e.g. inside `whyChooseT1.columns[i].items`) is never
+   * mistakenly renamed.
    */
-  const aliases: Record<string, string> = {
-    gallery: "images",
-    materials: "materials",
-    brands: "brands",
-    relatedProjects: "projects",
-    journey: "steps",
-    faq: "faqs",
-    relatedSpaces: "spaces",
-    projects: "projects",
-    process: "steps",
-  }
+  const aliases: Record<string, string> = opts?.skipAliases
+    ? {}
+    : {
+        gallery: "images",
+        materials: "materials",
+        brands: "brands",
+        relatedProjects: "projects",
+        journey: "steps",
+        faq: "faqs",
+        relatedSpaces: "spaces",
+        projects: "projects",
+        process: "steps",
+      }
 
   return Object.fromEntries(
     Object.entries(object).map(([key, entry]) => [
@@ -215,7 +239,7 @@ function fromApiValue(value: unknown, parentKey?: string): unknown {
         ? aliases[parentKey ?? ""]
         : key,
 
-      fromApiValue(entry, key),
+      fromApiValue(entry, key, opts),
     ])
   )
 }
@@ -246,7 +270,8 @@ function getMessage(response: AxiosResponse): string {
  */
 export async function cmsApiFetch(
   path: string,
-  init?: AxiosRequestConfig
+  init?: AxiosRequestConfig,
+  opts?: { skipAliases?: boolean }
 ): Promise<AxiosResponse> {
   const { accessToken } = await getAuthTokens()
 
@@ -262,7 +287,7 @@ export async function cmsApiFetch(
     /*
      * Only transform data when data actually exists.
      */
-    data: init?.data === undefined ? undefined : toApiValue(init.data),
+    data: init?.data === undefined ? undefined : toApiValue(init.data, opts),
 
     /*
      * We handle status codes ourselves so that
@@ -288,9 +313,10 @@ export async function cmsApiFetch(
  */
 export async function cmsApiJson<T>(
   path: string,
-  init?: AxiosRequestConfig
+  init?: AxiosRequestConfig,
+  opts?: { skipAliases?: boolean }
 ): Promise<T> {
-  const response = await cmsApiFetch(path, init)
+  const response = await cmsApiFetch(path, init, opts)
 
   const payload = response.data as {
     success?: boolean
@@ -306,5 +332,5 @@ export async function cmsApiJson<T>(
    * Transform API image objects back into
    * the frontend image structure.
    */
-  return fromApiValue(payload.data) as T
+  return fromApiValue(payload.data, undefined, opts) as T
 }

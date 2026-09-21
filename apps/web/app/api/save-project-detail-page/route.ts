@@ -10,7 +10,10 @@ export async function POST(request: Request) {
   } catch (err) {
     console.error("[POST /api/save-project-detail-page]", err)
     return NextResponse.json(
-      { success: false, message: err instanceof Error ? err.message : "Unknown error" },
+      {
+        success: false,
+        message: err instanceof Error ? err.message : "Unknown error",
+      },
       { status: 500 }
     )
   }

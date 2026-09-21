@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { saveHomePage } from "@/lib/home-page-api"
+import { saveHomePage, fetchHomePage } from "@/lib/home-page-api"
 
 import type { HomePageApiData } from "@/types/api-home-page"
 
@@ -55,6 +55,27 @@ export async function POST(request: Request) {
         success: false,
         message:
           err instanceof Error ? err.message : "Failed to save Home page",
+      },
+      {
+        status: 500,
+      }
+    )
+  }
+}
+
+export async function GET() {
+  try {
+    const data = await fetchHomePage()
+
+    return NextResponse.json(data)
+  } catch (err) {
+    console.error("[GET /api/save-home-page]", err)
+
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          err instanceof Error ? err.message : "Failed to fetch Home page",
       },
       {
         status: 500,

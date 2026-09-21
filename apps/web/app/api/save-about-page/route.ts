@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { saveAboutPage } from "@/lib/about-page-api"
+import { saveAboutPage, fetchAboutPage } from "@/lib/about-page-api"
 import type { AboutPageApiData } from "@/types/api-about-page"
 
 export async function POST(request: Request) {
@@ -12,6 +12,23 @@ export async function POST(request: Request) {
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to save About page",
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function GET() {
+  try {
+    const data = await fetchAboutPage()
+    return NextResponse.json(data)
+  } catch (error) {
+    console.error("[GET /api/save-about-page]", error)
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to fetch About page",
       },
       { status: 500 }
     )

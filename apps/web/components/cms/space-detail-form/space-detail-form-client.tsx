@@ -4,7 +4,11 @@ import { useState } from "react"
 import { SpaceDetailForm } from "./space-detail-form"
 import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
 
-export function SpaceDetailFormClient({ initialData }: { initialData: SpaceDetailPageApiData }) {
+export function SpaceDetailFormClient({
+  initialData,
+}: {
+  initialData: SpaceDetailPageApiData
+}) {
   // `data` tracks the current record so that once a first save creates it
   // (and returns a real _id), subsequent saves correctly go through PATCH
   // instead of POSTing a duplicate.

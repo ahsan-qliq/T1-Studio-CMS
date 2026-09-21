@@ -49,7 +49,7 @@ export function ContactPageFormClient({
     defaultValues: initialData,
   })
 
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
 
   const [saving, setSaving] = useState(false)
 
@@ -67,6 +67,17 @@ export function ContactPageFormClient({
 
       if (!response.ok) {
         throw new Error(await response.text())
+      }
+      // Re-fetch the freshly saved page so the form reflects exactly what
+      // the backend now has (e.g. CDN URLs the backend fills in from the
+      // uploaded image's S3 key).
+      try {
+        const fresh = await fetch("/api/save-contact-page")
+        if (fresh.ok) {
+          reset((await fresh.json()) as ContactPageApiData)
+        }
+      } catch (error) {
+        console.error("Failed to refresh contact page after save:", error)
       }
     } finally {
       setSaving(false)

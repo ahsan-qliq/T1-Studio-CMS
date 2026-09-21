@@ -9,13 +9,19 @@ import { Label } from "@workspace/ui/components/label"
 import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
 
 const slugify = (s: string) =>
-  s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+  s
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
 
 interface SpaceDetailPagesManagerProps {
   pages: SpaceDetailPageApiData[]
 }
 
-export function SpaceDetailPagesManager({ pages }: SpaceDetailPagesManagerProps) {
+export function SpaceDetailPagesManager({
+  pages,
+}: SpaceDetailPagesManagerProps) {
   const router = useRouter()
   const [adding, setAdding] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -71,10 +77,12 @@ export function SpaceDetailPagesManager({ pages }: SpaceDetailPagesManagerProps)
     <div className="rounded-lg border border-zinc-200 bg-white">
       <div className="flex items-center justify-between gap-3 px-4 py-3">
         <div>
-          <h2 className="text-sm font-semibold text-zinc-900">Space Detail Pages</h2>
+          <h2 className="text-sm font-semibold text-zinc-900">
+            Space Detail Pages
+          </h2>
           <p className="text-xs text-zinc-500">
-            Individual pages like Kitchens, Wardrobes, etc. — each edited through the space
-            detail API.
+            Individual pages like Kitchens, Wardrobes, etc. — each edited
+            through the space detail API.
           </p>
         </div>
         {!adding && (
@@ -92,9 +100,14 @@ export function SpaceDetailPagesManager({ pages }: SpaceDetailPagesManagerProps)
       {pages.length > 0 && (
         <ul className="divide-y divide-zinc-100 border-t border-zinc-100">
           {pages.map((p) => (
-            <li key={p.slug} className="flex items-center justify-between gap-3 px-4 py-2.5">
+            <li
+              key={p.slug}
+              className="flex items-center justify-between gap-3 px-4 py-2.5"
+            >
               <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-zinc-900">{p.pageName}</p>
+                <p className="truncate text-sm font-medium text-zinc-900">
+                  {p.pageName}
+                </p>
                 <p className="truncate text-xs text-zinc-500">
                   {p.spaceType} · /{p.slug} · {p.status}
                 </p>
@@ -112,7 +125,8 @@ export function SpaceDetailPagesManager({ pages }: SpaceDetailPagesManagerProps)
 
       {pages.length === 0 && !adding && (
         <p className="border-t border-zinc-100 px-4 py-3 text-xs text-zinc-500">
-          No space detail pages yet — add one to get started (Kitchens, Wardrobes, Living Rooms...).
+          No space detail pages yet — add one to get started (Kitchens,
+          Wardrobes, Living Rooms...).
         </p>
       )}
 

@@ -35,7 +35,7 @@ export function WhyT1PageFormClient({
     defaultValues: initialData,
   })
 
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
   const [saving, setSaving] = useState(false)
 
   const submit = handleSubmit(async (data) => {
@@ -52,6 +52,17 @@ export function WhyT1PageFormClient({
 
       if (!response.ok) {
         throw new Error(await response.text())
+      }
+      // Re-fetch the freshly saved page so the form reflects exactly what
+      // the backend now has (e.g. CDN URLs the backend fills in from the
+      // uploaded image's S3 key).
+      try {
+        const fresh = await fetch("/api/save-why-t1-page")
+        if (fresh.ok) {
+          reset((await fresh.json()) as WhyT1PageApiData)
+        }
+      } catch (error) {
+        console.error("Failed to refresh Why T1 page after save:", error)
       }
     } finally {
       setSaving(false)

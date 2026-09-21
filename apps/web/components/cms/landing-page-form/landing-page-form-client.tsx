@@ -41,7 +41,7 @@ export function LandingPageFormClient({
     defaultValues: initialData,
   })
 
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
 
   const [saving, setSaving] = useState(false)
 
@@ -59,6 +59,17 @@ export function LandingPageFormClient({
 
       if (!response.ok) {
         throw new Error(await response.text())
+      }
+      // Re-fetch the freshly saved page so the form reflects exactly what
+      // the backend now has (e.g. CDN URLs the backend fills in from the
+      // uploaded image's S3 key).
+      try {
+        const fresh = await fetch("/api/save-landing-page")
+        if (fresh.ok) {
+          reset((await fresh.json()) as LandingPageApiData)
+        }
+      } catch (error) {
+        console.error("Failed to refresh landing page after save:", error)
       }
     } catch (error) {
       console.error("Failed to save landing page:", error)

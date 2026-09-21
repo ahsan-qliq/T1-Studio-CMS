@@ -3,7 +3,11 @@
 import { ProjectsPageForm } from "./projects-page-form"
 import type { ProjectsPageApiData } from "@/types/api-projects-page"
 
-export function ProjectsPageFormClient({ initialData }: { initialData: ProjectsPageApiData }) {
+export function ProjectsPageFormClient({
+  initialData,
+}: {
+  initialData: ProjectsPageApiData
+}) {
   const handleSave = async (data: ProjectsPageApiData) => {
     const res = await fetch("/api/save-projects-page", {
       method: "POST",

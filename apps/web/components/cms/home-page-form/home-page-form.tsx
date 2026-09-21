@@ -27,20 +27,23 @@ const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
 
 interface HomePageFormProps {
   initialData: HomePageApiData
-  onSave: (sections: HomePageSections) => void | Promise<void>
+  onSave: (
+    sections: HomePageSections
+  ) => void | HomePageSections | Promise<void | HomePageSections>
 }
 
 export function HomePageForm({ initialData, onSave }: HomePageFormProps) {
   const form = useForm<HomePageSections>({
     defaultValues: initialData.sections,
   })
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
   const [saving, setSaving] = useState(false)
 
   const submit = handleSubmit(async (values) => {
     setSaving(true)
     try {
-      await onSave(values)
+      const fresh = await onSave(values)
+      if (fresh) reset(fresh)
     } finally {
       setSaving(false)
     }

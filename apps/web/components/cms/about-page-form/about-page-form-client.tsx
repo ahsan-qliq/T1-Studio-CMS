@@ -42,7 +42,7 @@ export function AboutPageFormClient({
   initialData: AboutPageApiData
 }) {
   const form = useForm<AboutPageApiData>({ defaultValues: initialData })
-  const { control, handleSubmit, formState } = form
+  const { control, handleSubmit, formState, reset } = form
   const [saving, setSaving] = useState(false)
   const submit = handleSubmit(async (data) => {
     setSaving(true)
@@ -53,6 +53,17 @@ export function AboutPageFormClient({
         body: JSON.stringify(data),
       })
       if (!response.ok) throw new Error(await response.text())
+      // Re-fetch the freshly saved page so the form reflects exactly what
+      // the backend now has (e.g. CDN URLs the backend fills in from the
+      // uploaded image's S3 key).
+      try {
+        const fresh = await fetch("/api/save-about-page")
+        if (fresh.ok) {
+          reset((await fresh.json()) as AboutPageApiData)
+        }
+      } catch (error) {
+        console.error("Failed to refresh about page after save:", error)
+      }
     } finally {
       setSaving(false)
     }
