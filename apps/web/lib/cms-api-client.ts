@@ -1,123 +1,79 @@
-import type { AxiosRequestConfig, AxiosResponse } from "axios"
-
-import { getAuthTokens } from "./auth"
-import { createCmsAuthInstance } from "./auth-instance"
+import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios"
+import { getAuthTokens } from "@/lib/auth"
 
 /**
- * Convert frontend form values into the format expected
- * by the CMS API.
+ * Convert frontend CMS data to the exact API structure.
  *
- * Frontend image:
- *
- * {
- *   url: "...",
- *   key: "uploads/abc.jpg",
- *   alt: {
- *     en: "...",
- *     ar: "..."
- *   }
- * }
- *
- * API image:
- *
- * {
- *   src: "...",
- *   key: "uploads/abc.jpg",
- *   alt: {
- *     en: "...",
- *     ar: "..."
- *   }
- * }
+ * IMPORTANT:
+ * - No collection/field aliases are used.
+ * - Field names are preserved exactly as provided.
+ * - Frontend image shape: { url, key, alt }
+ * - API image shape:       { src, key, alt }
+ * - Temporary React field-array IDs (tmp-...) are removed.
  */
-function toApiValue(value: unknown, opts?: { skipAliases?: boolean }): unknown {
-  /*
-   * Handle arrays recursively.
-   */
+function toApiValue(value: unknown): unknown {
+  // Arrays are preserved exactly
   if (Array.isArray(value)) {
-    return value.map((entry) => toApiValue(entry, opts))
+    return value.map((entry) => toApiValue(entry))
   }
 
-  /*
-   * Primitive values can be returned as-is.
-   */
+  // Primitive values
   if (!value || typeof value !== "object") {
     return value
   }
 
   const object = value as Record<string, unknown>
 
-  /*
-   * IMAGE TRANSFORMATION
+  /**
+   * Frontend image:
    *
-   * Frontend:
    * {
-   *   url,
-   *   key,
-   *   alt
+   *   url: "",
+   *   key: "",
+   *   alt: {
+   *     en: "",
+   *     ar: ""
+   *   }
    * }
    *
-   * Backend:
+   * API:
+   *
    * {
-   *   src,
-   *   key,
-   *   alt
+   *   src: "",
+   *   key: "",
+   *   alt: {
+   *     en: "",
+   *     ar: ""
+   *   }
    * }
-   *
-   * IMPORTANT:
-   * The old code was dropping `key`.
-   *
-   * That meant the upload itself succeeded, but when
-   * the form was saved the S3 key was lost.
    */
   if ("url" in object && "alt" in object && typeof object.url === "string") {
     return {
       src: object.url,
-
-      /*
-       * Preserve the S3 key when it exists.
-       */
       ...(typeof object.key === "string" && object.key
         ? {
             key: object.key,
           }
         : {}),
-
-      alt: toApiValue(object.alt, opts),
+      alt: toApiValue(object.alt),
     }
   }
 
-  /*
-   * Frontend field names that are converted to the
-   * generic `items` structure expected by the API.
+  /**
+   * Preserve every field name exactly.
    *
-   * This translation only applies to the older per-section CMS
-   * page types (spaces, project detail, space detail, inspiration,
-   * etc). Newer page types (Home, Projects list, Project Detail's
-   * sibling pages) mirror the API response 1:1 field-for-field and
-   * must skip this — otherwise a field that happens to share a name
-   * with one of these aliases (e.g. `spaces`, `projects`, `steps`)
-   * gets silently renamed to `items` on save, and since the reverse
-   * mapping below doesn't recognize every parent section name, the
-   * array comes back empty on the next load.
+   * Examples:
+   * spaces  -> spaces
+   * projects -> projects
+   * steps -> steps
+   * faqs -> faqs
+   * gallery -> gallery
+   * items -> items
    */
-  const aliases: Record<string, string> = opts?.skipAliases
-    ? {}
-    : {
-        images: "items",
-        materials: "items",
-        brands: "items",
-        projects: "items",
-        steps: "items",
-        faqs: "items",
-        spaces: "items",
-      }
-
   return Object.fromEntries(
     Object.entries(object)
-      /*
-       * Temporary frontend IDs should never be sent
-       * to the backend.
-       */
+      // Remove only temporary frontend IDs.
+      // Keep real MongoDB _id values untouched.
       .filter(
         ([key, entry]) =>
           !(
@@ -126,66 +82,50 @@ function toApiValue(value: unknown, opts?: { skipAliases?: boolean }): unknown {
             entry.startsWith("tmp-")
           )
       )
-      .map(([key, entry]) => [aliases[key] ?? key, toApiValue(entry, opts)])
+      .map(([key, entry]) => [key, toApiValue(entry)])
   )
 }
 
 /**
- * Convert CMS API values back into the frontend form shape.
+ * Convert API CMS data back to the frontend structure.
  *
- * API:
- *
+ * API image:
  * {
- *   src: "...",
- *   key: "uploads/abc.jpg",
- *   alt: {...}
+ *   src: "",
+ *   key: "",
+ *   alt: {
+ *     en: "",
+ *     ar: ""
+ *   }
  * }
  *
- * Frontend:
- *
+ * Frontend image:
  * {
- *   url: "...",
- *   key: "uploads/abc.jpg",
- *   alt: {...}
+ *   url: "",
+ *   key: "",
+ *   alt: {
+ *     en: "",
+ *     ar: ""
+ *   }
  * }
+ *
+ * No collection aliases are applied.
  */
-function fromApiValue(
-  value: unknown,
-  parentKey?: string,
-  opts?: { skipAliases?: boolean }
-): unknown {
-  /*
-   * Handle arrays recursively.
-   */
+function fromApiValue(value: unknown): unknown {
+  // Preserve arrays
   if (Array.isArray(value)) {
-    return value.map((entry) => fromApiValue(entry, undefined, opts))
+    return value.map((entry) => fromApiValue(entry))
   }
 
-  /*
-   * Primitive values can be returned as-is.
-   */
+  // Primitive values
   if (!value || typeof value !== "object") {
     return value
   }
 
   const object = value as Record<string, unknown>
 
-  /*
-   * IMAGE TRANSFORMATION
-   *
-   * API:
-   * {
-   *   src,
-   *   key,
-   *   alt
-   * }
-   *
-   * Frontend:
-   * {
-   *   url,
-   *   key,
-   *   alt
-   * }
+  /**
+   * API image -> frontend image
    */
   if (
     "src" in object &&
@@ -195,83 +135,86 @@ function fromApiValue(
   ) {
     return {
       url: object.src,
-
-      /*
-       * Preserve the S3 key.
-       *
-       * If an older record doesn't have a key,
-       * return an empty string so the frontend
-       * image type remains consistent.
-       */
       key: typeof object.key === "string" ? object.key : "",
-
-      alt: fromApiValue(object.alt, undefined, opts),
+      alt: fromApiValue(object.alt),
     }
   }
 
-  /*
-   * Convert backend collection names back into
-   * the names expected by the frontend forms.
-   *
-   * See the matching note in toApiValue: this only applies to the
-   * older per-section CMS page types. Newer 1:1 page types (Home,
-   * etc.) pass skipAliases so a field the frontend genuinely calls
-   * `items` (e.g. inside `whyChooseT1.columns[i].items`) is never
-   * mistakenly renamed.
+  /**
+   * Preserve every API field name exactly.
    */
-  const aliases: Record<string, string> = opts?.skipAliases
-    ? {}
-    : {
-        gallery: "images",
-        materials: "materials",
-        brands: "brands",
-        relatedProjects: "projects",
-        journey: "steps",
-        faq: "faqs",
-        relatedSpaces: "spaces",
-        projects: "projects",
-        process: "steps",
-      }
-
   return Object.fromEntries(
-    Object.entries(object).map(([key, entry]) => [
-      aliases[parentKey ?? ""] && key === "items"
-        ? aliases[parentKey ?? ""]
-        : key,
-
-      fromApiValue(entry, key, opts),
-    ])
+    Object.entries(object).map(([key, entry]) => [key, fromApiValue(entry)])
   )
 }
 
 /**
- * Extract a useful error message from an Axios response.
+ * Extract a useful error message from the API response.
  */
 function getMessage(response: AxiosResponse): string {
-  const payload = response.data as
-    | {
-        message?: string
-      }
-    | undefined
+  const data = response?.data
 
-  return payload?.message ?? `CMS API request failed (${response.status})`
+  if (typeof data === "string" && data.trim()) {
+    return data
+  }
+
+  if (data && typeof data === "object") {
+    const message = (data as { message?: unknown }).message
+
+    if (typeof message === "string" && message.trim()) {
+      return message
+    }
+
+    const error = (data as { error?: unknown }).error
+
+    if (typeof error === "string" && error.trim()) {
+      return error
+    }
+
+    if (
+      error &&
+      typeof error === "object" &&
+      typeof (error as { message?: unknown }).message === "string"
+    ) {
+      return (error as { message: string }).message
+    }
+  }
+
+  return `CMS API request failed with status ${response?.status ?? "unknown"}`
+}
+
+/**
+ * Create authenticated CMS API client.
+ */
+function createCmsAuthInstance(accessToken?: string) {
+  const baseURL =
+    process.env.NEXT_PUBLIC_CMS_API_URL ||
+    process.env.CMS_API_URL ||
+    "https://2gns9fe744.execute-api.ap-south-1.amazonaws.com/api"
+
+  return axios.create({
+    baseURL,
+    headers: {
+      "Content-Type": "application/json",
+      ...(accessToken
+        ? {
+            Authorization: `Bearer ${accessToken}`,
+          }
+        : {}),
+    },
+  })
 }
 
 /**
  * Generic CMS API request.
  *
- * This:
- *
- * - gets the current auth token
- * - creates the authenticated Axios instance
- * - transforms frontend form data into API data
- * - performs the request
- * - throws an error for non-2xx responses
+ * IMPORTANT:
+ * There is intentionally NO skipAliases option anymore.
+ * The API field names are sent exactly as provided.
  */
 export async function cmsApiFetch(
   path: string,
-  init?: AxiosRequestConfig,
-  opts?: { skipAliases?: boolean }
+  init?: AxiosRequestConfig
 ): Promise<AxiosResponse> {
   const { accessToken } = await getAuthTokens()
 
@@ -284,15 +227,8 @@ export async function cmsApiFetch(
 
     url: path,
 
-    /*
-     * Only transform data when data actually exists.
-     */
-    data: init?.data === undefined ? undefined : toApiValue(init.data, opts),
+    data: init?.data === undefined ? undefined : toApiValue(init.data),
 
-    /*
-     * We handle status codes ourselves so that
-     * we can return the API's actual error message.
-     */
     validateStatus: () => true,
   })
 
@@ -304,19 +240,21 @@ export async function cmsApiFetch(
 }
 
 /**
- * CMS API helper for endpoints that return:
+ * CMS API request that returns the `data` property.
+ *
+ * API response expected:
  *
  * {
  *   success: true,
- *   data: ...
+ *   data: {...},
+ *   message: "..."
  * }
  */
 export async function cmsApiJson<T>(
   path: string,
-  init?: AxiosRequestConfig,
-  opts?: { skipAliases?: boolean }
+  init?: AxiosRequestConfig
 ): Promise<T> {
-  const response = await cmsApiFetch(path, init, opts)
+  const response = await cmsApiFetch(path, init)
 
   const payload = response.data as {
     success?: boolean
@@ -324,13 +262,9 @@ export async function cmsApiJson<T>(
     message?: string
   }
 
-  if (!payload.success || payload.data === undefined) {
+  if (payload.success === false || payload.data === undefined) {
     throw new Error(payload.message ?? "Unexpected CMS API response shape")
   }
 
-  /*
-   * Transform API image objects back into
-   * the frontend image structure.
-   */
-  return fromApiValue(payload.data, undefined, opts) as T
+  return fromApiValue(payload.data) as T
 }
