@@ -12,6 +12,12 @@ const image = (): ApiImage => ({
   alt: l(),
 })
 
+const button = () => ({
+  label: l(),
+  href: "",
+  openInNewTab: false,
+})
+
 const section = (order: number) => ({
   isVisible: true,
   order,
@@ -39,6 +45,10 @@ export function createEmptyContactPage(): ContactPageApiData {
 
         backgroundImage: image(),
 
+        mobileImage: image(),
+
+        primaryButton: button(),
+
         overlayOpacity: 0.5,
       },
 
@@ -48,6 +58,12 @@ export function createEmptyContactPage(): ContactPageApiData {
 
       contactInfo: {
         ...section(2),
+
+        eyebrow: l(),
+
+        heading: l(),
+
+        description: l(),
 
         items: [],
       },
@@ -69,7 +85,7 @@ export function createEmptyContactPage(): ContactPageApiData {
 
         tabs: [],
 
-        formFields: [],
+        fields: [],
 
         submitButtonLabel: l(),
 
@@ -85,11 +101,19 @@ export function createEmptyContactPage(): ContactPageApiData {
       location: {
         ...section(4),
 
-        mapLocations: [],
+        eyebrow: l(),
+
+        heading: l(),
+
+        description: l(),
+
+        locations: [],
 
         mapEmbedUrl: "",
 
         mapZoom: 10,
+
+        button: button(),
       },
 
       /* =========================================================
@@ -99,7 +123,13 @@ export function createEmptyContactPage(): ContactPageApiData {
       faq: {
         ...section(5),
 
-        items: [],
+        eyebrow: l(),
+
+        heading: l(),
+
+        description: l(),
+
+        faqs: [],
       },
     },
 

@@ -34,6 +34,7 @@ export function createEmptyInspirationPage(): InspirationPageApiData {
     heading: l(),
     description: l(),
     backgroundImage: i(),
+    mobileImage: i(),
     overlayOpacity: 0.45,
     primaryButton: b(),
   }
@@ -41,7 +42,11 @@ export function createEmptyInspirationPage(): InspirationPageApiData {
   const rooms: InspirationRooms = {
     isVisible: true,
     order: 2,
-    items: [],
+    eyebrow: l(),
+    heading: l(),
+    description: l(),
+    rooms: [],
+    button: b(),
     autoplay: true,
     showNavigation: true,
   }
@@ -49,13 +54,21 @@ export function createEmptyInspirationPage(): InspirationPageApiData {
   const showcase: InspirationShowcase = {
     isVisible: true,
     order: 3,
+    eyebrow: l(),
+    heading: l(),
+    description: l(),
     items: [],
+    autoplay: true,
+    showNavigation: true,
   }
 
   const materials: InspirationMaterials = {
     isVisible: true,
     order: 4,
-    items: [],
+    eyebrow: l(),
+    heading: l(),
+    description: l(),
+    materials: [],
     autoplay: false,
     showNavigation: true,
   }
@@ -74,13 +87,21 @@ export function createEmptyInspirationPage(): InspirationPageApiData {
   const designTips: InspirationDesignTips = {
     isVisible: true,
     order: 6,
-    items: [],
+    eyebrow: l(),
+    heading: l(),
+    description: l(),
+    articles: [],
+    button: b(),
   }
 
   const followJourney: InspirationFollowJourney = {
     isVisible: true,
     order: 7,
+    eyebrow: l(),
+    heading: l(),
+    description: l(),
     items: [],
+    button: b(),
     autoplay: true,
     showNavigation: false,
   }

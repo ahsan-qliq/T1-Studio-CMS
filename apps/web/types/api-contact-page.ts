@@ -1,4 +1,4 @@
-import type { ApiImage, Localized } from "./api-home-page"
+import type { ApiButton, ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
 
 /* =========================================================
@@ -14,6 +14,9 @@ export interface ContactHeroSection {
   description: Localized
 
   backgroundImage: ApiImage
+  mobileImage: ApiImage
+
+  primaryButton: ApiButton
 
   overlayOpacity: number
 }
@@ -38,11 +41,17 @@ export interface ContactInfoItem {
   openInNewTab?: boolean
 
   secondaryValue?: Localized
+
+  isVisible?: boolean
 }
 
 export interface ContactInfoSection {
   isVisible: boolean
   order: number
+
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
 
   items: ContactInfoItem[]
 }
@@ -59,6 +68,16 @@ export interface ContactFormTab {
   description: Localized
 
   value: string
+
+  isVisible?: boolean
+}
+
+export interface ContactFormFieldOption {
+  _id?: string
+
+  value: string
+
+  label: Localized
 }
 
 export interface ContactFormField {
@@ -73,6 +92,8 @@ export interface ContactFormField {
   placeholder: Localized
 
   required: boolean
+
+  options: ContactFormFieldOption[]
 }
 
 export interface ContactFormSection {
@@ -89,7 +110,7 @@ export interface ContactFormSection {
 
   tabs: ContactFormTab[]
 
-  formFields: ContactFormField[]
+  fields: ContactFormField[]
 
   submitButtonLabel: Localized
 
@@ -109,24 +130,34 @@ export interface ContactMapLocation {
 
   address: Localized
 
-  latitude: number
+  latitude: number | null
 
-  longitude: number
+  longitude: number | null
 
   googleMapsUrl: string
 
   phone: string
+
+  isVisible?: boolean
 }
 
 export interface ContactLocationSection {
   isVisible: boolean
   order: number
 
-  mapLocations: ContactMapLocation[]
+  eyebrow: Localized
+
+  heading: Localized
+
+  description: Localized
+
+  locations: ContactMapLocation[]
 
   mapEmbedUrl: string
 
   mapZoom: number
+
+  button: ApiButton
 }
 
 /* =========================================================
@@ -147,7 +178,13 @@ export interface ContactFaqSection {
   isVisible: boolean
   order: number
 
-  items: ContactFaqItem[]
+  eyebrow: Localized
+
+  heading: Localized
+
+  description: Localized
+
+  faqs: ContactFaqItem[]
 }
 
 /* =========================================================

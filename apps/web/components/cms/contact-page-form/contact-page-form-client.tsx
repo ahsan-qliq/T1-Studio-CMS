@@ -2,7 +2,6 @@
 
 import { Button } from "@workspace/ui/components/button"
 import { Label } from "@workspace/ui/components/label"
-import { Input } from "@workspace/ui/components/input"
 
 import {
   Controller,
@@ -18,6 +17,7 @@ import {
   PlainField,
   BoolField,
   ImageField,
+  ButtonField,
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
@@ -211,6 +211,18 @@ function HeroSection({ control }: { control: Control<ContactPageApiData> }) {
           label="Background Image"
         />
 
+        <ImageField
+          control={control}
+          name="sections.hero.mobileImage"
+          label="Mobile Image"
+        />
+
+        <ButtonField
+          control={control}
+          name="sections.hero.primaryButton"
+          label="Primary Button"
+        />
+
         <PlainField
           control={control}
           name="sections.hero.overlayOpacity"
@@ -245,6 +257,25 @@ function ContactInfoSection({
       defaultOpen
     >
       <div className="flex w-full flex-col gap-5">
+        <LocalizedField
+          control={control}
+          name="sections.contactInfo.eyebrow"
+          label="Eyebrow"
+        />
+
+        <LocalizedField
+          control={control}
+          name="sections.contactInfo.heading"
+          label="Heading"
+        />
+
+        <LocalizedField
+          control={control}
+          name="sections.contactInfo.description"
+          label="Description"
+          multiline
+        />
+
         {/* HEADER */}
 
         <RepeaterHeader
@@ -256,8 +287,10 @@ function ContactInfoSection({
               icon: "",
               title: l(),
               value: l(),
+              secondaryValue: l(),
               href: "",
               openInNewTab: false,
+              isVisible: true,
             })
           }
         />
@@ -305,6 +338,13 @@ function ContactInfoSection({
                   multiline
                 />
 
+                <LocalizedField
+                  control={control}
+                  name={`sections.contactInfo.items.${index}.secondaryValue`}
+                  label="Secondary Value"
+                  multiline
+                />
+
                 <PlainField
                   control={control}
                   name={`sections.contactInfo.items.${index}.href`}
@@ -312,18 +352,19 @@ function ContactInfoSection({
                   placeholder="tel:+971..."
                 />
 
-                <BoolField
-                  control={control}
-                  name={`sections.contactInfo.items.${index}.openInNewTab`}
-                  label="Open In New Tab"
-                />
+                <div className="flex items-center gap-6">
+                  <BoolField
+                    control={control}
+                    name={`sections.contactInfo.items.${index}.openInNewTab`}
+                    label="Open In New Tab"
+                  />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.contactInfo.items.${index}.secondaryValue`}
-                  label="Secondary Value"
-                  multiline
-                />
+                  <BoolField
+                    control={control}
+                    name={`sections.contactInfo.items.${index}.isVisible`}
+                    label="Visible"
+                  />
+                </div>
               </div>
             </div>
           ))}
@@ -353,7 +394,7 @@ function ContactFormSection({
 
   const fields = useFieldArray({
     control,
-    name: "sections.contactForm.formFields",
+    name: "sections.contactForm.fields",
   })
 
   return (
@@ -406,6 +447,7 @@ function ContactFormSection({
                 label: l(),
                 description: l(),
                 value: "",
+                isVisible: true,
               })
             }
           />
@@ -441,6 +483,12 @@ function ContactFormSection({
                     label="Value"
                     placeholder="new-project"
                   />
+
+                  <BoolField
+                    control={control}
+                    name={`sections.contactForm.tabs.${index}.isVisible`}
+                    label="Visible"
+                  />
                 </div>
               </div>
             ))}
@@ -466,6 +514,7 @@ function ContactFormSection({
                 label: l(),
                 placeholder: l(),
                 required: false,
+                options: [],
               })
             }
           />
@@ -485,14 +534,14 @@ function ContactFormSection({
                   <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
                     <PlainField
                       control={control}
-                      name={`sections.contactForm.formFields.${index}.name`}
+                      name={`sections.contactForm.fields.${index}.name`}
                       label="Name"
                       placeholder="name"
                     />
 
                     <Controller
                       control={control}
-                      name={`sections.contactForm.formFields.${index}.type`}
+                      name={`sections.contactForm.fields.${index}.type`}
                       render={({ field }) => (
                         <div className="space-y-1.5">
                           <Label>Type</Label>
@@ -503,7 +552,7 @@ function ContactFormSection({
                           >
                             <option value="text">Text</option>
                             <option value="email">Email</option>
-                            <option value="tel">Telephone</option>
+                            <option value="phone">Phone</option>
                             <option value="textarea">Textarea</option>
                             <option value="number">Number</option>
                             <option value="select">Select</option>
@@ -515,20 +564,25 @@ function ContactFormSection({
 
                   <LocalizedField
                     control={control}
-                    name={`sections.contactForm.formFields.${index}.label`}
+                    name={`sections.contactForm.fields.${index}.label`}
                     label="Label"
                   />
 
                   <LocalizedField
                     control={control}
-                    name={`sections.contactForm.formFields.${index}.placeholder`}
+                    name={`sections.contactForm.fields.${index}.placeholder`}
                     label="Placeholder"
                   />
 
                   <BoolField
                     control={control}
-                    name={`sections.contactForm.formFields.${index}.required`}
+                    name={`sections.contactForm.fields.${index}.required`}
                     label="Required"
+                  />
+
+                  <FormFieldOptionsEditor
+                    control={control}
+                    fieldIndex={index}
                   />
                 </div>
               </div>
@@ -571,6 +625,68 @@ function ContactFormSection({
 }
 
 /* =========================================================
+   FORM FIELD OPTIONS (nested repeater — used for "select" fields)
+========================================================= */
+
+function FormFieldOptionsEditor({
+  control,
+  fieldIndex,
+}: {
+  control: Control<ContactPageApiData>
+  fieldIndex: number
+}) {
+  const options = useFieldArray({
+    control,
+    name: `sections.contactForm.fields.${fieldIndex}.options`,
+  })
+
+  return (
+    <div className="space-y-3 rounded-md border border-zinc-200 bg-white p-3">
+      <RepeaterHeader
+        title="Options"
+        description="Dropdown choices shown for a Select field."
+        onAdd={() =>
+          options.append({
+            value: "",
+            label: l(),
+          })
+        }
+      />
+
+      <div className="space-y-3">
+        {options.fields.map((option, optionIndex) => (
+          <div
+            key={option.id}
+            className="flex items-start gap-2 rounded-md border border-zinc-100 bg-zinc-50/60 p-3"
+          >
+            <div className="grid flex-1 grid-cols-1 gap-3 md:grid-cols-2">
+              <PlainField
+                control={control}
+                name={`sections.contactForm.fields.${fieldIndex}.options.${optionIndex}.value`}
+                label="Value"
+                placeholder="villa"
+              />
+
+              <LocalizedField
+                control={control}
+                name={`sections.contactForm.fields.${fieldIndex}.options.${optionIndex}.label`}
+                label="Label"
+              />
+            </div>
+
+            <DeleteItemButton onClick={() => options.remove(optionIndex)} />
+          </div>
+        ))}
+      </div>
+
+      {options.fields.length === 0 && (
+        <EmptyMessage text="No options added yet." />
+      )}
+    </div>
+  )
+}
+
+/* =========================================================
    LOCATION
 ========================================================= */
 
@@ -581,7 +697,7 @@ function LocationSection({
 }) {
   const locations = useFieldArray({
     control,
-    name: "sections.location.mapLocations",
+    name: "sections.location.locations",
   })
 
   return (
@@ -593,6 +709,25 @@ function LocationSection({
       defaultOpen
     >
       <div className="w-full space-y-5">
+        <LocalizedField
+          control={control}
+          name="sections.location.eyebrow"
+          label="Eyebrow"
+        />
+
+        <LocalizedField
+          control={control}
+          name="sections.location.heading"
+          label="Heading"
+        />
+
+        <LocalizedField
+          control={control}
+          name="sections.location.description"
+          label="Description"
+          multiline
+        />
+
         {/* LOCATIONS */}
 
         <div className="w-full space-y-4">
@@ -603,10 +738,11 @@ function LocationSection({
               locations.append({
                 name: l(),
                 address: l(),
-                latitude: 0,
-                longitude: 0,
+                latitude: null,
+                longitude: null,
                 googleMapsUrl: "",
                 phone: "",
+                isVisible: true,
               })
             }
           />
@@ -625,13 +761,13 @@ function LocationSection({
                 <div className="mt-5 space-y-4">
                   <LocalizedField
                     control={control}
-                    name={`sections.location.mapLocations.${index}.name`}
+                    name={`sections.location.locations.${index}.name`}
                     label="Name"
                   />
 
                   <LocalizedField
                     control={control}
-                    name={`sections.location.mapLocations.${index}.address`}
+                    name={`sections.location.locations.${index}.address`}
                     label="Address"
                     multiline
                   />
@@ -639,14 +775,14 @@ function LocationSection({
                   <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
                     <PlainField
                       control={control}
-                      name={`sections.location.mapLocations.${index}.latitude`}
+                      name={`sections.location.locations.${index}.latitude`}
                       label="Latitude"
                       type="number"
                     />
 
                     <PlainField
                       control={control}
-                      name={`sections.location.mapLocations.${index}.longitude`}
+                      name={`sections.location.locations.${index}.longitude`}
                       label="Longitude"
                       type="number"
                     />
@@ -654,14 +790,20 @@ function LocationSection({
 
                   <PlainField
                     control={control}
-                    name={`sections.location.mapLocations.${index}.googleMapsUrl`}
+                    name={`sections.location.locations.${index}.googleMapsUrl`}
                     label="Google Maps URL"
                   />
 
                   <PlainField
                     control={control}
-                    name={`sections.location.mapLocations.${index}.phone`}
+                    name={`sections.location.locations.${index}.phone`}
                     label="Phone"
+                  />
+
+                  <BoolField
+                    control={control}
+                    name={`sections.location.locations.${index}.isVisible`}
+                    label="Visible"
                   />
                 </div>
               </div>
@@ -689,6 +831,12 @@ function LocationSection({
               type="number"
             />
           </div>
+
+          <ButtonField
+            control={control}
+            name="sections.location.button"
+            label="Get Directions Button"
+          />
         </div>
       </div>
     </SectionAccordion>
@@ -702,7 +850,7 @@ function LocationSection({
 function FaqSection({ control }: { control: Control<ContactPageApiData> }) {
   const items = useFieldArray({
     control,
-    name: "sections.faq.items",
+    name: "sections.faq.faqs",
   })
 
   return (
@@ -714,6 +862,25 @@ function FaqSection({ control }: { control: Control<ContactPageApiData> }) {
       defaultOpen
     >
       <div className="w-full space-y-4">
+        <LocalizedField
+          control={control}
+          name="sections.faq.eyebrow"
+          label="Eyebrow"
+        />
+
+        <LocalizedField
+          control={control}
+          name="sections.faq.heading"
+          label="Heading"
+        />
+
+        <LocalizedField
+          control={control}
+          name="sections.faq.description"
+          label="Description"
+          multiline
+        />
+
         <RepeaterHeader
           title="Frequently Asked Questions"
           description="Add questions and answers for the Contact page."
@@ -740,21 +907,21 @@ function FaqSection({ control }: { control: Control<ContactPageApiData> }) {
               <div className="mt-5 space-y-4">
                 <LocalizedField
                   control={control}
-                  name={`sections.faq.items.${index}.question`}
+                  name={`sections.faq.faqs.${index}.question`}
                   label="Question"
                   multiline
                 />
 
                 <LocalizedField
                   control={control}
-                  name={`sections.faq.items.${index}.answer`}
+                  name={`sections.faq.faqs.${index}.answer`}
                   label="Answer"
                   multiline
                 />
 
                 <BoolField
                   control={control}
-                  name={`sections.faq.items.${index}.isVisible`}
+                  name={`sections.faq.faqs.${index}.isVisible`}
                   label="Visible"
                 />
               </div>

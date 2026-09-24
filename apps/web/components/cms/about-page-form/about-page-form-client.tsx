@@ -23,6 +23,7 @@ import {
 import { SeoFields } from "../form-shared/seo-field"
 import type { AboutPageApiData } from "@/types/api-about-page"
 
+// [section key, title, hasEyebrow]
 const sections: [string, string, boolean][] = [
   ["story", "Our Story", true],
   ["journey", "Our Journey", true],
@@ -164,6 +165,33 @@ export function AboutPageFormClient({
   )
 }
 
+function CheckField({
+  control,
+  name,
+  label,
+}: {
+  control: Control<AboutPageApiData>
+  name: string
+  label: string
+}) {
+  return (
+    <Controller
+      control={control}
+      name={name as never}
+      render={({ field }) => (
+        <label className="flex gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={!!field.value}
+            onChange={field.onChange}
+          />{" "}
+          {label}
+        </label>
+      )}
+    />
+  )
+}
+
 function AboutSectionForm({
   control,
   name,
@@ -192,37 +220,20 @@ function AboutSectionForm({
             label="Eyebrow"
           />
         )}
-        {name !== "journey" &&
-          name !== "philosophy" &&
-          name !== "values" &&
-          name !== "stats" &&
-          name !== "team" &&
-          name !== "showcase" &&
-          name !== "brands" &&
-          name !== "partnership" &&
-          name !== "faq" && (
-            <LocalizedField
-              control={control}
-              name={`sections.${name}.heading`}
-              label="Heading"
-            />
-          )}
-        {name !== "journey" &&
-          name !== "philosophy" &&
-          name !== "values" &&
-          name !== "stats" &&
-          name !== "team" &&
-          name !== "showcase" &&
-          name !== "brands" &&
-          name !== "partnership" &&
-          name !== "faq" && (
-            <LocalizedField
-              control={control}
-              name={`sections.${name}.description`}
-              label="Description"
-              multiline
-            />
-          )}
+        <LocalizedField
+          control={control}
+          name={`sections.${name}.heading`}
+          label="Heading"
+        />
+        {name !== "stats" && (
+          <LocalizedField
+            control={control}
+            name={`sections.${name}.description`}
+            label="Description"
+            multiline
+          />
+        )}
+
         {name === "story" && (
           <>
             <LocalizedField
@@ -249,108 +260,134 @@ function AboutSectionForm({
             />
           </>
         )}
+
         {name === "journey" && (
           <AboutArray
             control={control}
             path="sections.journey.items"
             kind="journey"
             label="Journey Items"
+            addLabel="Add Journey Item"
           />
         )}
+
         {name === "philosophy" && (
           <AboutArray
             control={control}
             path="sections.philosophy.items"
             kind="philosophy"
             label="Philosophy Items"
+            addLabel="Add Philosophy Item"
           />
         )}
+
         {name === "values" && (
           <AboutArray
             control={control}
-            path="sections.values.items"
+            path="sections.values.values"
             kind="values"
-            label="Values Items"
+            label="Values"
+            addLabel="Add Value"
           />
         )}
+
         {name === "stats" && (
           <AboutArray
             control={control}
-            path="sections.stats.items"
+            path="sections.stats.stats"
             kind="stats"
-            label="Stats Items"
+            label="Stats"
+            addLabel="Add Stat"
           />
         )}
+
         {name === "team" && (
           <>
             <AboutArray
               control={control}
-              path="sections.team.items"
+              path="sections.team.members"
               kind="team"
-              label="Team Items"
+              label="Team Members"
+              addLabel="Add Member"
             />
             <div className="grid gap-3 sm:grid-cols-2">
-              <Controller
+              <CheckField
                 control={control}
                 name="sections.team.autoplay"
-                render={({ field }) => (
-                  <label className="flex gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={!!field.value}
-                      onChange={field.onChange}
-                    />{" "}
-                    Autoplay
-                  </label>
-                )}
+                label="Autoplay"
               />
-              <Controller
+              <CheckField
                 control={control}
                 name="sections.team.showNavigation"
-                render={({ field }) => (
-                  <label className="flex gap-2 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={!!field.value}
-                      onChange={field.onChange}
-                    />{" "}
-                    Show navigation
-                  </label>
-                )}
+                label="Show navigation"
               />
             </div>
           </>
         )}
+
         {name === "showcase" && (
-          <AboutArray
-            control={control}
-            path="sections.showcase.items"
-            kind="showcase"
-            label="Showcase Items"
-          />
+          <>
+            <AboutArray
+              control={control}
+              path="sections.showcase.images"
+              kind="showcase"
+              label="Showcase Images"
+              addLabel="Add Image"
+            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <CheckField
+                control={control}
+                name="sections.showcase.autoplay"
+                label="Autoplay"
+              />
+              <CheckField
+                control={control}
+                name="sections.showcase.showNavigation"
+                label="Show navigation"
+              />
+            </div>
+          </>
         )}
+
         {name === "brands" && (
           <AboutArray
             control={control}
-            path="sections.brands.items"
+            path="sections.brands.brands"
             kind="brands"
-            label="Brand Items"
+            label="Brands"
+            addLabel="Add Brand"
           />
         )}
+
         {name === "partnership" && (
-          <AboutArray
-            control={control}
-            path="sections.partnership.items"
-            kind="partnership"
-            label="Partnership Items"
-          />
+          <>
+            <ImageField
+              control={control}
+              name="sections.partnership.image"
+              label="Partnership Image"
+            />
+            <AboutArray
+              control={control}
+              path="sections.partnership.steps"
+              kind="partnership"
+              label="Partnership Steps"
+              addLabel="Add Step"
+            />
+            <ButtonField
+              control={control}
+              name="sections.partnership.button"
+              label="Button"
+            />
+          </>
         )}
+
         {name === "faq" && (
           <AboutArray
             control={control}
-            path="sections.faq.items"
+            path="sections.faq.faqs"
             kind="faq"
-            label="FAQ Items"
+            label="FAQs"
+            addLabel="Add FAQ"
           />
         )}
       </div>
@@ -374,11 +411,13 @@ function AboutArray({
   path,
   kind,
   label,
+  addLabel,
 }: {
   control: Control<AboutPageApiData>
   path: string
   kind: AboutArrayKind
   label: string
+  addLabel: string
 }) {
   const { fields, append, remove } = useFieldArray({
     control: control as Control<any>,
@@ -394,9 +433,25 @@ function AboutArray({
       description: localized,
       isVisible: true,
     },
-    philosophy: { icon: "", title: localized, description: localized },
-    values: { title: localized, description: localized, image },
-    stats: { value: "", label: localized, description: localized },
+    philosophy: {
+      icon: "",
+      title: localized,
+      description: localized,
+      isVisible: true,
+    },
+    values: {
+      title: localized,
+      description: localized,
+      image,
+      href: "",
+      isVisible: true,
+    },
+    stats: {
+      value: "",
+      label: localized,
+      description: localized,
+      isVisible: true,
+    },
     team: {
       name: localized,
       designation: localized,
@@ -476,6 +531,11 @@ function AboutArray({
                     label="Description"
                     multiline
                   />
+                  <BoolField
+                    control={control}
+                    name={`${item}.isVisible`}
+                    label="Visible"
+                  />
                 </>
               )}
               {kind === "values" && (
@@ -495,6 +555,16 @@ function AboutArray({
                     control={control}
                     name={`${item}.image`}
                     label="Image"
+                  />
+                  <PlainField
+                    control={control}
+                    name={`${item}.href`}
+                    label="Link URL"
+                  />
+                  <BoolField
+                    control={control}
+                    name={`${item}.isVisible`}
+                    label="Visible"
                   />
                 </>
               )}
@@ -517,6 +587,11 @@ function AboutArray({
                     name={`${item}.description`}
                     label="Description"
                     multiline
+                  />
+                  <BoolField
+                    control={control}
+                    name={`${item}.isVisible`}
+                    label="Visible"
                   />
                 </>
               )}
@@ -652,10 +727,7 @@ function AboutArray({
           </div>
         )
       })}
-      <AddItemButton
-        label={`Add ${label.replace(/ Items$/, "").replace(/s$/, "")}`}
-        onClick={() => append(empty as never)}
-      />
+      <AddItemButton label={addLabel} onClick={() => append(empty as never)} />
     </div>
   )
 }

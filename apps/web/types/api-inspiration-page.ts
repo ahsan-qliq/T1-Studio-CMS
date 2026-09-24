@@ -39,6 +39,7 @@ export interface InspirationDesignTipItem {
   description: Localized
   readTime: Localized
   image: ApiImage
+  href: string
   isVisible?: boolean
 }
 
@@ -58,6 +59,7 @@ export interface InspirationHero {
   heading: Localized
   description: Localized
   backgroundImage: ApiImage
+  mobileImage: ApiImage
   overlayOpacity: number
   primaryButton: ApiButton
 }
@@ -65,7 +67,11 @@ export interface InspirationHero {
 export interface InspirationRooms {
   isVisible: boolean
   order: number
-  items: InspirationRoomItem[]
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+  rooms: InspirationRoomItem[]
+  button: ApiButton
   autoplay: boolean
   showNavigation: boolean
 }
@@ -73,13 +79,21 @@ export interface InspirationRooms {
 export interface InspirationShowcase {
   isVisible: boolean
   order: number
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
   items: InspirationShowcaseItem[]
+  autoplay: boolean
+  showNavigation: boolean
 }
 
 export interface InspirationMaterials {
   isVisible: boolean
   order: number
-  items: InspirationMaterialItem[]
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+  materials: InspirationMaterialItem[]
   autoplay: boolean
   showNavigation: boolean
 }
@@ -98,13 +112,21 @@ export interface InspirationCTA {
 export interface InspirationDesignTips {
   isVisible: boolean
   order: number
-  items: InspirationDesignTipItem[]
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+  articles: InspirationDesignTipItem[]
+  button: ApiButton
 }
 
 export interface InspirationFollowJourney {
   isVisible: boolean
   order: number
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
   items: InspirationJourneyItem[]
+  button: ApiButton
   autoplay: boolean
   showNavigation: boolean
 }

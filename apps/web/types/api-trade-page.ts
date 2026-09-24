@@ -20,13 +20,14 @@ export interface TradeWhoWeWorkWithItem {
   isVisible: boolean
 }
 
-export interface TradeJourneyItem {
+export interface TradeJourneyStep {
   _id?: string
-  icon: string
   number: string
+  icon: string
   title: Localized
   subtitle: Localized
   description: Localized
+  highlight: Localized
   isVisible: boolean
 }
 
@@ -43,9 +44,11 @@ export interface TradeProjectItem {
   projectSlug: string
   title: Localized
   location: Localized
-  category: string
+  category: Localized
   description: Localized
   image: ApiImage
+  href: string
+  position: string
   isVisible: boolean
 }
 
@@ -86,28 +89,23 @@ export interface TradeResourceItem {
   isVisible: boolean
 }
 
-export interface TradeSupplierBenefit {
-  _id?: string
-  en: string
-  ar: string
-}
-
 export interface TradeDesignTipItem {
   _id?: string
+  slug: string
   title: Localized
   category: Localized
-  description: Localized
   readTime: Localized
+  description: Localized
   image: ApiImage
+  href: string
   isVisible: boolean
 }
 
-export interface TradeReferralItem {
+export interface TradeReferralStep {
   _id?: string
   icon: string
   title: Localized
   description: Localized
-  isVisible: boolean
 }
 
 export interface TradeFormField {
@@ -126,109 +124,77 @@ export interface TradeFaqItem {
   isVisible: boolean
 }
 
+interface SectionHead {
+  isVisible: boolean
+  eyebrow: Localized
+  heading: Localized
+  description: Localized
+}
+
 export interface TradePageSections {
-  hero: {
-    isVisible: boolean
-    order: number
-    eyebrow: Localized
-    heading: Localized
-    description: Localized
+  hero: SectionHead & {
     backgroundImage: ApiImage
+    mobileImage: ApiImage
     overlayOpacity: number
     primaryButton: ApiButton
+    secondaryButton: ApiButton
   }
-
   logos: {
     isVisible: boolean
-    order: number
-    items: TradeLogoItem[]
-  }
-
-  whoWeWorkWith: {
-    isVisible: boolean
-    order: number
-    items: TradeWhoWeWorkWithItem[]
-  }
-
-  journey: {
-    isVisible: boolean
-    order: number
-    items: TradeJourneyItem[]
-  }
-
-  stats: {
-    isVisible: boolean
-    order: number
-    items: TradeStatsItem[]
-  }
-
-  projects: {
-    isVisible: boolean
-    order: number
-    items: TradeProjectItem[]
-  }
-
-  benefits: {
-    isVisible: boolean
-    order: number
-    items: TradeBenefitItem[]
-  }
-
-  partnershipServices: {
-    isVisible: boolean
-    order: number
-    items: TradePartnershipServiceItem[]
-  }
-
-  industryServices: {
-    isVisible: boolean
-    order: number
-    items: TradeIndustryServiceItem[]
-  }
-
-  resources: {
-    isVisible: boolean
-    order: number
-    items: TradeResourceItem[]
-  }
-
-  supplierCTA: {
-    isVisible: boolean
-    order: number
-    eyebrow: Localized
     heading: Localized
     description: Localized
+    logos: TradeLogoItem[]
+  }
+  whoWeWorkWith: SectionHead & {
+    items: TradeWhoWeWorkWithItem[]
+    button: ApiButton
+  }
+  journey: SectionHead & {
+    steps: TradeJourneyStep[]
+  }
+  stats: {
+    isVisible: boolean
+    heading: Localized
+    stats: TradeStatsItem[]
+  }
+  projects: SectionHead & {
+    projects: TradeProjectItem[]
+    button: ApiButton
+  }
+  benefits: SectionHead & {
+    items: TradeBenefitItem[]
+  }
+  partnershipServices: SectionHead & {
+    services: TradePartnershipServiceItem[]
+  }
+  industryServices: SectionHead & {
+    items: TradeIndustryServiceItem[]
+  }
+  resources: SectionHead & {
+    resources: TradeResourceItem[]
+    button: ApiButton
+  }
+  supplierCTA: SectionHead & {
     image: ApiImage
     benefits: Localized[]
     button: ApiButton
   }
-
-  designTips: {
-    isVisible: boolean
-    order: number
-    items: TradeDesignTipItem[]
+  designTips: SectionHead & {
+    articles: TradeDesignTipItem[]
+    button: ApiButton
   }
-
-  referral: {
-    isVisible: boolean
-    order: number
-    items: TradeReferralItem[]
+  referral: SectionHead & {
+    image: ApiImage
+    steps: TradeReferralStep[]
+    button: ApiButton
   }
-
-  consultation: {
-    isVisible: boolean
-    order: number
-    eyebrow: Localized
-    heading: Localized
-    description: Localized
-    formFields: TradeFormField[]
+  consultation: SectionHead & {
+    image: ApiImage
+    fields: TradeFormField[]
     submitButtonLabel: Localized
   }
-
-  faq: {
-    isVisible: boolean
-    order: number
-    items: TradeFaqItem[]
+  faq: SectionHead & {
+    faqs: TradeFaqItem[]
   }
 }
 

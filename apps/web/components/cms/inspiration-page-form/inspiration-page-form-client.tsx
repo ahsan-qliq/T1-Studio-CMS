@@ -181,6 +181,12 @@ function HeroSection({
         label="Background Image"
       />
 
+      <ImageField
+        control={control}
+        name="sections.hero.mobileImage"
+        label="Mobile Image"
+      />
+
       <ButtonField
         control={control}
         name="sections.hero.primaryButton"
@@ -209,7 +215,7 @@ function RoomsSection({
 }) {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "sections.rooms.items" as never,
+    name: "sections.rooms.rooms" as never,
   })
 
   return (
@@ -219,6 +225,25 @@ function RoomsSection({
       control={control}
       visibleName="sections.rooms.isVisible"
     >
+      <LocalizedField
+        control={control}
+        name="sections.rooms.eyebrow"
+        label="Eyebrow"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.rooms.heading"
+        label="Heading"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.rooms.description"
+        label="Description"
+        multiline
+      />
+
       <div className="space-y-3">
         {fields.map((field, index) => (
           <div
@@ -229,14 +254,14 @@ function RoomsSection({
               <div className="grid grid-cols-2 gap-3">
                 <PlainField
                   control={control}
-                  name={`sections.rooms.items.${index}.key`}
+                  name={`sections.rooms.rooms.${index}.key`}
                   label="Key"
                   placeholder="living-room"
                 />
 
                 <PlainField
                   control={control}
-                  name={`sections.rooms.items.${index}.href`}
+                  name={`sections.rooms.rooms.${index}.href`}
                   label="Link URL"
                   placeholder="/spaces/living-room"
                 />
@@ -244,19 +269,19 @@ function RoomsSection({
 
               <LocalizedField
                 control={control}
-                name={`sections.rooms.items.${index}.title`}
+                name={`sections.rooms.rooms.${index}.title`}
                 label="Title"
               />
 
               <ImageField
                 control={control}
-                name={`sections.rooms.items.${index}.image`}
+                name={`sections.rooms.rooms.${index}.image`}
                 label="Image"
               />
 
               <BoolField
                 control={control}
-                name={`sections.rooms.items.${index}.isVisible`}
+                name={`sections.rooms.rooms.${index}.isVisible`}
                 label="Visible"
               />
             </div>
@@ -288,6 +313,12 @@ function RoomsSection({
             isVisible: true,
           } as never)
         }
+      />
+
+      <ButtonField
+        control={control}
+        name="sections.rooms.button"
+        label="View All Rooms Button"
       />
 
       <div className="grid grid-cols-2 gap-3">
@@ -328,6 +359,25 @@ function ShowcaseSection({
       control={control}
       visibleName="sections.showcase.isVisible"
     >
+      <LocalizedField
+        control={control}
+        name="sections.showcase.eyebrow"
+        label="Eyebrow"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.showcase.heading"
+        label="Heading"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.showcase.description"
+        label="Description"
+        multiline
+      />
+
       <div className="space-y-3">
         {fields.map((field, index) => (
           <div
@@ -437,7 +487,7 @@ function MaterialsSection({
 }) {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "sections.materials.items" as never,
+    name: "sections.materials.materials" as never,
   })
 
   return (
@@ -447,6 +497,25 @@ function MaterialsSection({
       control={control}
       visibleName="sections.materials.isVisible"
     >
+      <LocalizedField
+        control={control}
+        name="sections.materials.eyebrow"
+        label="Eyebrow"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.materials.heading"
+        label="Heading"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.materials.description"
+        label="Description"
+        multiline
+      />
+
       <div className="space-y-3">
         {fields.map((field, index) => (
           <div
@@ -456,38 +525,38 @@ function MaterialsSection({
             <div className="flex-1 space-y-3">
               <LocalizedField
                 control={control}
-                name={`sections.materials.items.${index}.title`}
+                name={`sections.materials.materials.${index}.title`}
                 label="Title"
               />
 
               <LocalizedField
                 control={control}
-                name={`sections.materials.items.${index}.subtitle`}
+                name={`sections.materials.materials.${index}.subtitle`}
                 label="Subtitle"
               />
 
               <LocalizedField
                 control={control}
-                name={`sections.materials.items.${index}.description`}
+                name={`sections.materials.materials.${index}.description`}
                 label="Description"
                 multiline
               />
 
               <ImageField
                 control={control}
-                name={`sections.materials.items.${index}.image`}
+                name={`sections.materials.materials.${index}.image`}
                 label="Image"
               />
 
               <PlainField
                 control={control}
-                name={`sections.materials.items.${index}.href`}
+                name={`sections.materials.materials.${index}.href`}
                 label="Link URL"
               />
 
               <BoolField
                 control={control}
-                name={`sections.materials.items.${index}.isVisible`}
+                name={`sections.materials.materials.${index}.isVisible`}
                 label="Visible"
               />
             </div>
@@ -615,7 +684,7 @@ function DesignTipsSection({
 }) {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "sections.designTips.items" as never,
+    name: "sections.designTips.articles" as never,
   })
 
   return (
@@ -625,6 +694,25 @@ function DesignTipsSection({
       control={control}
       visibleName="sections.designTips.isVisible"
     >
+      <LocalizedField
+        control={control}
+        name="sections.designTips.eyebrow"
+        label="Eyebrow"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.designTips.heading"
+        label="Heading"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.designTips.description"
+        label="Description"
+        multiline
+      />
+
       <div className="space-y-3">
         {fields.map((field, index) => (
           <div
@@ -634,45 +722,52 @@ function DesignTipsSection({
             <div className="flex-1 space-y-3">
               <PlainField
                 control={control}
-                name={`sections.designTips.items.${index}.slug`}
+                name={`sections.designTips.articles.${index}.slug`}
                 label="Slug"
                 placeholder="top-kitchen-trends-2026"
               />
 
               <LocalizedField
                 control={control}
-                name={`sections.designTips.items.${index}.title`}
+                name={`sections.designTips.articles.${index}.title`}
                 label="Title"
               />
 
               <LocalizedField
                 control={control}
-                name={`sections.designTips.items.${index}.category`}
+                name={`sections.designTips.articles.${index}.category`}
                 label="Category"
               />
 
               <LocalizedField
                 control={control}
-                name={`sections.designTips.items.${index}.description`}
+                name={`sections.designTips.articles.${index}.description`}
                 label="Description"
                 multiline
               />
 
               <LocalizedField
                 control={control}
-                name={`sections.designTips.items.${index}.readTime`}
+                name={`sections.designTips.articles.${index}.readTime`}
                 label="Read Time"
               />
 
               <ImageField
                 control={control}
-                name={`sections.designTips.items.${index}.image`}
+                name={`sections.designTips.articles.${index}.image`}
                 label="Image"
+              />
+
+              <PlainField
+                control={control}
+                name={`sections.designTips.articles.${index}.href`}
+                label="Link URL"
+                placeholder="/design-tips/top-kitchen-trends-2026"
               />
 
               <BoolField
                 control={control}
-                name={`sections.designTips.items.${index}.isVisible`}
+                name={`sections.designTips.articles.${index}.isVisible`}
                 label="Visible"
               />
             </div>
@@ -712,9 +807,16 @@ function DesignTipsSection({
                 ar: "",
               },
             },
+            href: "",
             isVisible: true,
           } as never)
         }
+      />
+
+      <ButtonField
+        control={control}
+        name="sections.designTips.button"
+        label="Section Button"
       />
     </SectionAccordion>
   )
@@ -741,6 +843,25 @@ function FollowJourneySection({
       control={control}
       visibleName="sections.followJourney.isVisible"
     >
+      <LocalizedField
+        control={control}
+        name="sections.followJourney.eyebrow"
+        label="Eyebrow"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.followJourney.heading"
+        label="Heading"
+      />
+
+      <LocalizedField
+        control={control}
+        name="sections.followJourney.description"
+        label="Description"
+        multiline
+      />
+
       <div className="space-y-3">
         {fields.map((field, index) => (
           <div
@@ -810,6 +931,12 @@ function FollowJourneySection({
             isVisible: true,
           } as never)
         }
+      />
+
+      <ButtonField
+        control={control}
+        name="sections.followJourney.button"
+        label="Section Button"
       />
 
       <div className="grid grid-cols-2 gap-3">

@@ -10,7 +10,7 @@ import {
   type Control,
 } from "react-hook-form"
 
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 
 import {
   LocalizedField,
@@ -27,7 +27,11 @@ import { SeoFields } from "../form-shared/seo-field"
 
 import type { TradePageApiData } from "@/types/api-trade-page"
 
+type FormControl = Control<TradePageApiData>
+
 const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
+const l = () => ({ en: "", ar: "" })
+const img = () => ({ url: "", key: "", alt: l() })
 
 export function TradePageFormClient({
   initialData,
@@ -76,7 +80,6 @@ export function TradePageFormClient({
   return (
     <form onSubmit={submit} className="space-y-4 pb-24">
       {/* PAGE SETTINGS */}
-
       <div className="grid grid-cols-3 gap-3 rounded-lg border border-zinc-200 bg-white p-4">
         <PlainField control={control} name="pageName" label="Page Name" />
 
@@ -102,55 +105,23 @@ export function TradePageFormClient({
         />
       </div>
 
-      {/* HERO */}
-
       <HeroSection control={control} />
-
-      {/* ARRAY SECTIONS */}
-
       <LogosSection control={control} />
-
       <WhoWeWorkWithSection control={control} />
-
       <JourneySection control={control} />
-
       <StatsSection control={control} />
-
       <ProjectsSection control={control} />
-
       <BenefitsSection control={control} />
-
       <PartnershipServicesSection control={control} />
-
       <IndustryServicesSection control={control} />
-
       <ResourcesSection control={control} />
-
-      {/* SUPPLIER CTA */}
-
       <SupplierCTASection control={control} />
-
-      {/* DESIGN TIPS */}
-
       <DesignTipsSection control={control} />
-
-      {/* REFERRAL */}
-
       <ReferralSection control={control} />
-
-      {/* CONSULTATION */}
-
       <ConsultationSection control={control} />
-
-      {/* FAQ */}
-
       <FaqSection control={control} />
 
-      {/* SEO */}
-
       <SeoFields control={control} namePrefix="seo" />
-
-      {/* SAVE */}
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
         <Button
@@ -170,10 +141,95 @@ export function TradePageFormClient({
 }
 
 /* ============================================================
-   HERO
+   SHARED HELPERS
 ============================================================ */
 
-function HeroSection({ control }: { control: Control<TradePageApiData> }) {
+/** Eyebrow / heading / description block used at the top of most sections. */
+function Head({
+  control,
+  section,
+  eyebrow = true,
+  description = true,
+}: {
+  control: FormControl
+  section: string
+  eyebrow?: boolean
+  description?: boolean
+}) {
+  return (
+    <>
+      {eyebrow && (
+        <LocalizedField
+          control={control}
+          name={`sections.${section}.eyebrow`}
+          label="Eyebrow"
+        />
+      )}
+      <LocalizedField
+        control={control}
+        name={`sections.${section}.heading`}
+        label="Heading"
+      />
+      {description && (
+        <LocalizedField
+          control={control}
+          name={`sections.${section}.description`}
+          label="Description"
+          multiline
+        />
+      )}
+    </>
+  )
+}
+
+/** Generic repeatable list bound to a field-array path. */
+function ArrayEditor({
+  control,
+  path,
+  title,
+  addLabel,
+  empty,
+  render,
+}: {
+  control: FormControl
+  path: string
+  title: string
+  addLabel: string
+  empty: () => unknown
+  render: (item: string) => ReactNode
+}) {
+  const { fields, append, remove } = useFieldArray({
+    control: control as Control<any>,
+    name: path as never,
+  })
+
+  return (
+    <div className="space-y-3">
+      <Label>{title}</Label>
+
+      {fields.map((field, index) => (
+        <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-1 space-y-4">{render(`${path}.${index}`)}</div>
+
+            <DeleteItemButton onClick={() => remove(index)} />
+          </div>
+        </div>
+      ))}
+
+      <AddItemButton
+        label={addLabel}
+        onClick={() => append(empty() as never)}
+      />
+    </div>
+  )
+}
+
+/* ============================================================
+   1. HERO
+============================================================ */
+
+function HeroSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Hero"
@@ -187,53 +243,54 @@ function HeroSection({ control }: { control: Control<TradePageApiData> }) {
         name="sections.hero.eyebrow"
         label="Eyebrow"
       />
-
       <LocalizedField
         control={control}
         name="sections.hero.heading"
         label="Heading"
         multiline
       />
-
       <LocalizedField
         control={control}
         name="sections.hero.description"
         label="Description"
         multiline
       />
-
       <ImageField
         control={control}
         name="sections.hero.backgroundImage"
         label="Background Image"
       />
-
+      <ImageField
+        control={control}
+        name="sections.hero.mobileImage"
+        label="Mobile Image"
+      />
       <PlainField
         control={control}
         name="sections.hero.overlayOpacity"
         label="Overlay Opacity"
         type="number"
+        placeholder="40"
       />
-
       <ButtonField
         control={control}
         name="sections.hero.primaryButton"
         label="Primary Button"
+      />
+      <ButtonField
+        control={control}
+        name="sections.hero.secondaryButton"
+        label="Secondary Button"
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   LOGOS
+   2. LOGOS  (sections.logos.logos)
 ============================================================ */
 
-function LogosSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.logos.items",
-  })
-
+function LogosSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Partner / Brand Logos"
@@ -241,88 +298,60 @@ function LogosSection({ control }: { control: Control<TradePageApiData> }) {
       control={control}
       visibleName="sections.logos.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.logos.items.${index}.name`}
-                    label="Partner Name"
-                  />
+      <Head control={control} section="logos" eyebrow={false} />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.logos.items.${index}.href`}
-                    label="Website URL"
-                  />
-                </div>
-
-                <ImageField
-                  control={control}
-                  name={`sections.logos.items.${index}.logo`}
-                  label="Logo"
-                />
-
-                <BoolField
-                  control={control}
-                  name={`sections.logos.items.${index}.openInNewTab`}
-                  label="Open in New Tab"
-                />
-
-                <BoolField
-                  control={control}
-                  name={`sections.logos.items.${index}.isVisible`}
-                  label="Visible"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
+      <ArrayEditor
+        control={control}
+        path="sections.logos.logos"
+        title="Logos"
+        addLabel="Add Logo"
+        empty={() => ({
+          _id: tempId(),
+          name: "",
+          logo: img(),
+          href: "",
+          openInNewTab: true,
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <PlainField
+                control={control}
+                name={`${item}.name`}
+                label="Partner Name"
+              />
+              <PlainField
+                control={control}
+                name={`${item}.href`}
+                label="Website URL"
+              />
             </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Partner Logo"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            name: "",
-            logo: {
-              url: "",
-              key: "",
-              alt: {
-                en: "",
-                ar: "",
-              },
-            },
-            href: "",
-            openInNewTab: true,
-            isVisible: true,
-          })
-        }
+            <ImageField control={control} name={`${item}.logo`} label="Logo" />
+            <div className="grid grid-cols-2 gap-3">
+              <BoolField
+                control={control}
+                name={`${item}.openInNewTab`}
+                label="Open in New Tab"
+              />
+              <BoolField
+                control={control}
+                name={`${item}.isVisible`}
+                label="Visible"
+              />
+            </div>
+          </>
+        )}
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   WHO WE WORK WITH
+   3. WHO WE WORK WITH  (sections.whoWeWorkWith.items)
 ============================================================ */
 
-function WhoWeWorkWithSection({
-  control,
-}: {
-  control: Control<TradePageApiData>
-}) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.whoWeWorkWith.items",
-  })
-
+function WhoWeWorkWithSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Who We Work With"
@@ -330,196 +359,152 @@ function WhoWeWorkWithSection({
       control={control}
       visibleName="sections.whoWeWorkWith.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.whoWeWorkWith.items.${index}.key`}
-                    label="Key"
-                    placeholder="developer"
-                  />
+      <Head control={control} section="whoWeWorkWith" />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.whoWeWorkWith.items.${index}.href`}
-                    label="Link URL"
-                  />
-                </div>
+      <ArrayEditor
+        control={control}
+        path="sections.whoWeWorkWith.items"
+        title="Audience Cards"
+        addLabel="Add Audience"
+        empty={() => ({
+          _id: tempId(),
+          key: "",
+          title: l(),
+          description: l(),
+          image: img(),
+          href: "",
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <PlainField
+              control={control}
+              name={`${item}.key`}
+              label="Key"
+              placeholder="architects"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <ImageField
+              control={control}
+              name={`${item}.image`}
+              label="Image"
+            />
+            <PlainField
+              control={control}
+              name={`${item}.href`}
+              label="Link URL"
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
+      />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.whoWeWorkWith.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.whoWeWorkWith.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-
-                <ImageField
-                  control={control}
-                  name={`sections.whoWeWorkWith.items.${index}.image`}
-                  label="Image"
-                />
-
-                <BoolField
-                  control={control}
-                  name={`sections.whoWeWorkWith.items.${index}.isVisible`}
-                  label="Visible"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Audience"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            key: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            image: {
-              url: "",
-              key: "",
-              alt: {
-                en: "",
-                ar: "",
-              },
-            },
-            href: "",
-            isVisible: true,
-          })
-        }
+      <ButtonField
+        control={control}
+        name="sections.whoWeWorkWith.button"
+        label="Section Button"
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   JOURNEY
+   4. JOURNEY  (sections.journey.steps)
 ============================================================ */
 
-function JourneySection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.journey.items",
-  })
-
+function JourneySection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
-      title="Trade Journey / Process"
+      title="Project Journey"
       order={4}
       control={control}
       visibleName="sections.journey.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.journey.items.${index}.icon`}
-                    label="Icon"
-                    placeholder="handshake"
-                  />
+      <Head control={control} section="journey" />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.journey.items.${index}.number`}
-                    label="Number"
-                    placeholder="01"
-                  />
-
-                  <BoolField
-                    control={control}
-                    name={`sections.journey.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.journey.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.journey.items.${index}.subtitle`}
-                  label="Subtitle"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.journey.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
+      <ArrayEditor
+        control={control}
+        path="sections.journey.steps"
+        title="Journey Steps"
+        addLabel="Add Journey Step"
+        empty={() => ({
+          _id: tempId(),
+          number: "",
+          icon: "",
+          title: l(),
+          subtitle: l(),
+          description: l(),
+          highlight: l(),
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <PlainField
+                control={control}
+                name={`${item}.number`}
+                label="Number"
+                placeholder="01"
+              />
+              <PlainField
+                control={control}
+                name={`${item}.icon`}
+                label="Icon"
+              />
             </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Journey Step"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            icon: "",
-            number: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            subtitle: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            isVisible: true,
-          })
-        }
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.subtitle`}
+              label="Subtitle"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.highlight`}
+              label="Highlight"
+              multiline
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   STATS
+   5. STATS  (sections.stats.stats)
 ============================================================ */
 
-function StatsSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.stats.items",
-  })
-
+function StatsSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Stats"
@@ -527,270 +512,209 @@ function StatsSection({ control }: { control: Control<TradePageApiData> }) {
       control={control}
       visibleName="sections.stats.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.stats.items.${index}.value`}
-                    label="Value"
-                    placeholder="200+"
-                  />
+      <Head
+        control={control}
+        section="stats"
+        eyebrow={false}
+        description={false}
+      />
 
-                  <BoolField
-                    control={control}
-                    name={`sections.stats.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.stats.items.${index}.label`}
-                  label="Label"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.stats.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Statistic"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            value: "",
-            label: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            isVisible: true,
-          })
-        }
+      <ArrayEditor
+        control={control}
+        path="sections.stats.stats"
+        title="Stats"
+        addLabel="Add Stat"
+        empty={() => ({
+          _id: tempId(),
+          value: "",
+          label: l(),
+          description: l(),
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <PlainField
+              control={control}
+              name={`${item}.value`}
+              label="Value"
+              placeholder="88+ Years"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.label`}
+              label="Label"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   PROJECTS
+   6. PROJECTS  (sections.projects.projects)
 ============================================================ */
 
-function ProjectsSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.projects.items",
-  })
-
+function ProjectsSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
-      title="Featured / Commercial Projects"
+      title="Featured & Commercial Projects"
       order={6}
       control={control}
       visibleName="sections.projects.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.projects.items.${index}.projectSlug`}
-                    label="Project Slug"
-                  />
+      <Head control={control} section="projects" />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.projects.items.${index}.category`}
-                    label="Category"
-                  />
-
-                  <BoolField
-                    control={control}
-                    name={`sections.projects.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.projects.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.projects.items.${index}.location`}
-                  label="Location"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.projects.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-
-                <ImageField
-                  control={control}
-                  name={`sections.projects.items.${index}.image`}
-                  label="Project Image"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
+      <ArrayEditor
+        control={control}
+        path="sections.projects.projects"
+        title="Projects"
+        addLabel="Add Project"
+        empty={() => ({
+          _id: tempId(),
+          projectSlug: "",
+          title: l(),
+          location: l(),
+          category: l(),
+          description: l(),
+          image: img(),
+          href: "",
+          position: "top-left",
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <PlainField
+                control={control}
+                name={`${item}.projectSlug`}
+                label="Project Slug"
+                placeholder="jumeirah-gate-dubai"
+              />
+              <PlainField
+                control={control}
+                name={`${item}.position`}
+                label="Position"
+                placeholder="top-left"
+              />
             </div>
-          </div>
-        ))}
-      </div>
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.location`}
+              label="Location"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.category`}
+              label="Category"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <ImageField
+              control={control}
+              name={`${item}.image`}
+              label="Image"
+            />
+            <PlainField
+              control={control}
+              name={`${item}.href`}
+              label="Link URL"
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
+      />
 
-      <AddItemButton
-        label="Add Project"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            projectSlug: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            location: {
-              en: "",
-              ar: "",
-            },
-            category: "",
-            description: {
-              en: "",
-              ar: "",
-            },
-            image: {
-              url: "",
-              key: "",
-              alt: {
-                en: "",
-                ar: "",
-              },
-            },
-            isVisible: true,
-          })
-        }
+      <ButtonField
+        control={control}
+        name="sections.projects.button"
+        label="Section Button"
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   BENEFITS
+   7. BENEFITS  (sections.benefits.items)
 ============================================================ */
 
-function BenefitsSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.benefits.items",
-  })
-
+function BenefitsSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
-      title="Why Partner With T1"
+      title="Why Clients Choose T.ONE"
       order={7}
       control={control}
       visibleName="sections.benefits.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.benefits.items.${index}.icon`}
-                    label="Icon"
-                    placeholder="percent"
-                  />
+      <Head control={control} section="benefits" />
 
-                  <BoolField
-                    control={control}
-                    name={`sections.benefits.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.benefits.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.benefits.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Benefit"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            icon: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            isVisible: true,
-          })
-        }
+      <ArrayEditor
+        control={control}
+        path="sections.benefits.items"
+        title="Benefits"
+        addLabel="Add Benefit"
+        empty={() => ({
+          _id: tempId(),
+          icon: "",
+          title: l(),
+          description: l(),
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <PlainField control={control} name={`${item}.icon`} label="Icon" />
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   PARTNERSHIP SERVICES
+   8. PARTNERSHIP SERVICES  (sections.partnershipServices.services)
 ============================================================ */
 
-function PartnershipServicesSection({
-  control,
-}: {
-  control: Control<TradePageApiData>
-}) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.partnershipServices.items",
-  })
-
+function PartnershipServicesSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Partnership Services"
@@ -798,173 +722,115 @@ function PartnershipServicesSection({
       control={control}
       visibleName="sections.partnershipServices.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.partnershipServices.items.${index}.icon`}
-                    label="Icon"
-                  />
+      <Head control={control} section="partnershipServices" />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.partnershipServices.items.${index}.href`}
-                    label="Link URL"
-                  />
-
-                  <BoolField
-                    control={control}
-                    name={`sections.partnershipServices.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.partnershipServices.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.partnershipServices.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Partnership Service"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            icon: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            href: "",
-            isVisible: true,
-          })
-        }
+      <ArrayEditor
+        control={control}
+        path="sections.partnershipServices.services"
+        title="Services"
+        addLabel="Add Service"
+        empty={() => ({
+          _id: tempId(),
+          icon: "",
+          title: l(),
+          description: l(),
+          href: "",
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <PlainField control={control} name={`${item}.icon`} label="Icon" />
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <PlainField
+              control={control}
+              name={`${item}.href`}
+              label="Link URL"
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   INDUSTRY SERVICES
+   9. INDUSTRY SERVICES  (sections.industryServices.items)
 ============================================================ */
 
-function IndustryServicesSection({
-  control,
-}: {
-  control: Control<TradePageApiData>
-}) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.industryServices.items",
-  })
-
+function IndustryServicesSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
-      title="Industry / Trade Services"
+      title="Industry Specific Journey"
       order={9}
       control={control}
       visibleName="sections.industryServices.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.industryServices.items.${index}.icon`}
-                    label="Icon"
-                  />
+      <Head control={control} section="industryServices" />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.industryServices.items.${index}.href`}
-                    label="Link URL"
-                  />
-
-                  <BoolField
-                    control={control}
-                    name={`sections.industryServices.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.industryServices.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.industryServices.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Industry Service"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            icon: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            href: "",
-            isVisible: true,
-          })
-        }
+      <ArrayEditor
+        control={control}
+        path="sections.industryServices.items"
+        title="Items"
+        addLabel="Add Item"
+        empty={() => ({
+          _id: tempId(),
+          icon: "",
+          title: l(),
+          description: l(),
+          href: "",
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <PlainField control={control} name={`${item}.icon`} label="Icon" />
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <PlainField
+              control={control}
+              name={`${item}.href`}
+              label="Link URL"
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   RESOURCES
+   10. RESOURCES  (sections.resources.resources)
 ============================================================ */
 
-function ResourcesSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.resources.items",
-  })
-
+function ResourcesSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Resource Center"
@@ -972,107 +838,83 @@ function ResourcesSection({ control }: { control: Control<TradePageApiData> }) {
       control={control}
       visibleName="sections.resources.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.resources.items.${index}.type`}
-                    label="Type"
-                    placeholder="brochure"
-                  />
+      <Head control={control} section="resources" />
 
-                  <PlainField
-                    control={control}
-                    name={`sections.resources.items.${index}.icon`}
-                    label="Icon"
-                    placeholder="file"
-                  />
-
-                  <BoolField
-                    control={control}
-                    name={`sections.resources.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.resources.items.${index}.title`}
-                  label="Title"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.resources.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-
-                <PlainField
-                  control={control}
-                  name={`sections.resources.items.${index}.fileUrl`}
-                  label="File URL"
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.resources.items.${index}.buttonLabel`}
-                  label="Button Label"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
+      <ArrayEditor
+        control={control}
+        path="sections.resources.resources"
+        title="Resources"
+        addLabel="Add Resource"
+        empty={() => ({
+          _id: tempId(),
+          type: "brochure",
+          icon: "file",
+          title: l(),
+          description: l(),
+          fileUrl: "",
+          buttonLabel: l(),
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <div className="grid grid-cols-3 gap-3">
+              <PlainField
+                control={control}
+                name={`${item}.type`}
+                label="Type"
+                placeholder="brochure"
+              />
+              <PlainField
+                control={control}
+                name={`${item}.icon`}
+                label="Icon"
+                placeholder="file"
+              />
+              <BoolField
+                control={control}
+                name={`${item}.isVisible`}
+                label="Visible"
+              />
             </div>
-          </div>
-        ))}
-      </div>
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <PlainField
+              control={control}
+              name={`${item}.fileUrl`}
+              label="File URL"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.buttonLabel`}
+              label="Button Label"
+            />
+          </>
+        )}
+      />
 
-      <AddItemButton
-        label="Add Resource"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            type: "brochure",
-            icon: "file",
-            title: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            fileUrl: "",
-            buttonLabel: {
-              en: "",
-              ar: "",
-            },
-            isVisible: true,
-          })
-        }
+      <ButtonField
+        control={control}
+        name="sections.resources.button"
+        label="Section Button"
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   SUPPLIER CTA
+   11. SUPPLIER CTA  (sections.supplierCTA.benefits = Localized[])
 ============================================================ */
 
-function SupplierCTASection({
-  control,
-}: {
-  control: Control<TradePageApiData>
-}) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.supplierCTA.benefits",
-  })
-
+function SupplierCTASection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Preferred Supplier CTA"
@@ -1080,24 +922,7 @@ function SupplierCTASection({
       control={control}
       visibleName="sections.supplierCTA.isVisible"
     >
-      <LocalizedField
-        control={control}
-        name="sections.supplierCTA.eyebrow"
-        label="Eyebrow"
-      />
-
-      <LocalizedField
-        control={control}
-        name="sections.supplierCTA.heading"
-        label="Heading"
-      />
-
-      <LocalizedField
-        control={control}
-        name="sections.supplierCTA.description"
-        label="Description"
-        multiline
-      />
+      <Head control={control} section="supplierCTA" />
 
       <ImageField
         control={control}
@@ -1105,243 +930,171 @@ function SupplierCTASection({
         label="Image"
       />
 
+      <ArrayEditor
+        control={control}
+        path="sections.supplierCTA.benefits"
+        title="Benefits / Steps"
+        addLabel="Add Supplier Benefit"
+        empty={() => l()}
+        render={(item) => (
+          <LocalizedField control={control} name={item} label="Text" />
+        )}
+      />
+
       <ButtonField
         control={control}
         name="sections.supplierCTA.button"
         label="Button"
       />
-
-      <div className="space-y-3">
-        <Label>Benefits</Label>
-
-        {fields.map((field, index) => (
-          <div key={field.id} className="flex items-start gap-2">
-            <div className="flex-1">
-              <LocalizedField
-                control={control}
-                name={`sections.supplierCTA.benefits.${index}`}
-                label={`Benefit ${index + 1}`}
-              />
-            </div>
-
-            <DeleteItemButton onClick={() => remove(index)} />
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Supplier Benefit"
-        onClick={() =>
-          append({
-            en: "",
-            ar: "",
-          })
-        }
-      />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   DESIGN TIPS
+   12. DESIGN TIPS  (sections.designTips.articles)
 ============================================================ */
 
-function DesignTipsSection({
-  control,
-}: {
-  control: Control<TradePageApiData>
-}) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.designTips.items",
-  })
-
+function DesignTipsSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
-      title="Design Tips & Insights"
+      title="Design Tips"
       order={12}
       control={control}
       visibleName="sections.designTips.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <LocalizedField
-                  control={control}
-                  name={`sections.designTips.items.${index}.title`}
-                  label="Title"
-                />
+      <Head control={control} section="designTips" />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.designTips.items.${index}.category`}
-                  label="Category"
-                />
+      <ArrayEditor
+        control={control}
+        path="sections.designTips.articles"
+        title="Articles"
+        addLabel="Add Design Tip"
+        empty={() => ({
+          _id: tempId(),
+          slug: "",
+          title: l(),
+          category: l(),
+          readTime: l(),
+          description: l(),
+          image: img(),
+          href: "",
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <PlainField control={control} name={`${item}.slug`} label="Slug" />
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.category`}
+              label="Category"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.readTime`}
+              label="Read Time"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+            <ImageField
+              control={control}
+              name={`${item}.image`}
+              label="Image"
+            />
+            <PlainField
+              control={control}
+              name={`${item}.href`}
+              label="Article URL"
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
+      />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.designTips.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.designTips.items.${index}.readTime`}
-                  label="Read Time"
-                />
-
-                <ImageField
-                  control={control}
-                  name={`sections.designTips.items.${index}.image`}
-                  label="Image"
-                />
-
-                <BoolField
-                  control={control}
-                  name={`sections.designTips.items.${index}.isVisible`}
-                  label="Visible"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Design Tip"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            title: {
-              en: "",
-              ar: "",
-            },
-            category: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            readTime: {
-              en: "",
-              ar: "",
-            },
-            image: {
-              url: "",
-              key: "",
-              alt: {
-                en: "",
-                ar: "",
-              },
-            },
-            isVisible: true,
-          })
-        }
+      <ButtonField
+        control={control}
+        name="sections.designTips.button"
+        label="Section Button"
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   REFERRAL
+   13. REFERRAL  (sections.referral.steps)
 ============================================================ */
 
-function ReferralSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.referral.items",
-  })
-
+function ReferralSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
-      title="Referral Partnership"
+      title="Referral Program"
       order={13}
       control={control}
       visibleName="sections.referral.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.referral.items.${index}.icon`}
-                    label="Icon"
-                    placeholder="gift"
-                  />
+      <Head control={control} section="referral" />
 
-                  <BoolField
-                    control={control}
-                    name={`sections.referral.items.${index}.isVisible`}
-                    label="Visible"
-                  />
-                </div>
+      <ImageField
+        control={control}
+        name="sections.referral.image"
+        label="Image"
+      />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.referral.items.${index}.title`}
-                  label="Title"
-                />
+      <ArrayEditor
+        control={control}
+        path="sections.referral.steps"
+        title="Steps"
+        addLabel="Add Step"
+        empty={() => ({
+          _id: tempId(),
+          icon: "",
+          title: l(),
+          description: l(),
+        })}
+        render={(item) => (
+          <>
+            <PlainField control={control} name={`${item}.icon`} label="Icon" />
+            <LocalizedField
+              control={control}
+              name={`${item}.title`}
+              label="Title"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.description`}
+              label="Description"
+              multiline
+            />
+          </>
+        )}
+      />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.referral.items.${index}.description`}
-                  label="Description"
-                  multiline
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Referral Item"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            icon: "",
-            title: {
-              en: "",
-              ar: "",
-            },
-            description: {
-              en: "",
-              ar: "",
-            },
-            isVisible: true,
-          })
-        }
+      <ButtonField
+        control={control}
+        name="sections.referral.button"
+        label="Button"
       />
     </SectionAccordion>
   )
 }
 
 /* ============================================================
-   CONSULTATION
+   14. CONSULTATION  (sections.consultation.fields)
 ============================================================ */
 
-function ConsultationSection({
-  control,
-}: {
-  control: Control<TradePageApiData>
-}) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.consultation.formFields",
-  })
-
+function ConsultationSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="Consultation / Lead Form"
@@ -1349,88 +1102,60 @@ function ConsultationSection({
       control={control}
       visibleName="sections.consultation.isVisible"
     >
-      <LocalizedField
+      <Head control={control} section="consultation" />
+
+      <ImageField
         control={control}
-        name="sections.consultation.eyebrow"
-        label="Eyebrow"
+        name="sections.consultation.image"
+        label="Image"
       />
 
-      <LocalizedField
+      <ArrayEditor
         control={control}
-        name="sections.consultation.heading"
-        label="Heading"
-      />
-
-      <LocalizedField
-        control={control}
-        name="sections.consultation.description"
-        label="Description"
-        multiline
-      />
-
-      <div className="space-y-3">
-        <Label>Form Fields</Label>
-
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-3 gap-3">
-                  <PlainField
-                    control={control}
-                    name={`sections.consultation.formFields.${index}.name`}
-                    label="Field Name"
-                    placeholder="name"
-                  />
-
-                  <PlainField
-                    control={control}
-                    name={`sections.consultation.formFields.${index}.type`}
-                    label="Type"
-                    placeholder="text"
-                  />
-
-                  <BoolField
-                    control={control}
-                    name={`sections.consultation.formFields.${index}.required`}
-                    label="Required"
-                  />
-                </div>
-
-                <LocalizedField
-                  control={control}
-                  name={`sections.consultation.formFields.${index}.label`}
-                  label="Label"
-                />
-
-                <BoolField
-                  control={control}
-                  name={`sections.consultation.formFields.${index}.isVisible`}
-                  label="Visible"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
+        path="sections.consultation.fields"
+        title="Form Fields"
+        addLabel="Add Form Field"
+        empty={() => ({
+          _id: tempId(),
+          name: "",
+          type: "text",
+          label: l(),
+          required: false,
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <div className="grid grid-cols-3 gap-3">
+              <PlainField
+                control={control}
+                name={`${item}.name`}
+                label="Field Name"
+                placeholder="name"
+              />
+              <PlainField
+                control={control}
+                name={`${item}.type`}
+                label="Type"
+                placeholder="text"
+              />
+              <BoolField
+                control={control}
+                name={`${item}.required`}
+                label="Required"
+              />
             </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add Form Field"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            name: "",
-            type: "text",
-            label: {
-              en: "",
-              ar: "",
-            },
-            required: false,
-            isVisible: true,
-          })
-        }
+            <LocalizedField
+              control={control}
+              name={`${item}.label`}
+              label="Label"
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
 
       <LocalizedField
@@ -1443,15 +1168,10 @@ function ConsultationSection({
 }
 
 /* ============================================================
-   FAQ
+   15. FAQ  (sections.faq.faqs)
 ============================================================ */
 
-function FaqSection({ control }: { control: Control<TradePageApiData> }) {
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "sections.faq.items",
-  })
-
+function FaqSection({ control }: { control: FormControl }) {
   return (
     <SectionAccordion
       title="FAQ"
@@ -1459,53 +1179,39 @@ function FaqSection({ control }: { control: Control<TradePageApiData> }) {
       control={control}
       visibleName="sections.faq.isVisible"
     >
-      <div className="space-y-3">
-        {fields.map((field, index) => (
-          <div key={field.id} className="rounded-lg border border-zinc-200 p-4">
-            <div className="flex items-start gap-3">
-              <div className="flex-1 space-y-4">
-                <LocalizedField
-                  control={control}
-                  name={`sections.faq.items.${index}.question`}
-                  label="Question"
-                />
+      <Head control={control} section="faq" />
 
-                <LocalizedField
-                  control={control}
-                  name={`sections.faq.items.${index}.answer`}
-                  label="Answer"
-                  multiline
-                />
-
-                <BoolField
-                  control={control}
-                  name={`sections.faq.items.${index}.isVisible`}
-                  label="Visible"
-                />
-              </div>
-
-              <DeleteItemButton onClick={() => remove(index)} />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <AddItemButton
-        label="Add FAQ"
-        onClick={() =>
-          append({
-            _id: tempId(),
-            question: {
-              en: "",
-              ar: "",
-            },
-            answer: {
-              en: "",
-              ar: "",
-            },
-            isVisible: true,
-          })
-        }
+      <ArrayEditor
+        control={control}
+        path="sections.faq.faqs"
+        title="FAQs"
+        addLabel="Add FAQ"
+        empty={() => ({
+          _id: tempId(),
+          question: l(),
+          answer: l(),
+          isVisible: true,
+        })}
+        render={(item) => (
+          <>
+            <LocalizedField
+              control={control}
+              name={`${item}.question`}
+              label="Question"
+            />
+            <LocalizedField
+              control={control}
+              name={`${item}.answer`}
+              label="Answer"
+              multiline
+            />
+            <BoolField
+              control={control}
+              name={`${item}.isVisible`}
+              label="Visible"
+            />
+          </>
+        )}
       />
     </SectionAccordion>
   )
