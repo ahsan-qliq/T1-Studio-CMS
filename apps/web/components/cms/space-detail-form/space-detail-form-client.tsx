@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { SpaceDetailForm } from "./space-detail-form"
+import { DeletePageButton } from "../form-shared/delete-page-button"
 import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
 
 export function SpaceDetailFormClient({
@@ -94,5 +95,19 @@ export function SpaceDetailFormClient({
     }
   }
 
-  return <SpaceDetailForm initialData={data} onSave={handleSave} />
+  return (
+    <div className="space-y-4">
+      {data._id && data.slug && (
+        <div className="flex justify-end">
+          <DeletePageButton
+            slug={data.slug}
+            endpoint="/api/save-space-detail-page"
+            redirectTo="/pages/spaces"
+            label="space"
+          />
+        </div>
+      )}
+      <SpaceDetailForm initialData={data} onSave={handleSave} />
+    </div>
+  )
 }

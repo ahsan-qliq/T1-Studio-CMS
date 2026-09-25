@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import {
   saveSpaceDetailPage,
   fetchSpaceDetailPage,
+  deleteSpaceDetailPage,
 } from "@/lib/space-detail-page-api"
 
 import type { SpaceDetailPageApiData } from "@/types/api-space-detail-page"
@@ -64,6 +65,40 @@ export async function GET(request: Request) {
           error instanceof Error
             ? error.message
             : "Failed to fetch Space detail page",
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const slug = searchParams.get("slug")
+
+    if (!slug) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Space slug is required.",
+        },
+        { status: 400 }
+      )
+    }
+
+    await deleteSpaceDetailPage(slug)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("[DELETE /api/save-space-detail-page]", error)
+
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete space page",
       },
       { status: 500 }
     )

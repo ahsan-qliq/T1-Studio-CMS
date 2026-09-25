@@ -93,3 +93,18 @@ export async function saveBlogDetailPage(
     }
   )
 }
+
+/**
+ * Delete a blog page by slug.
+ */
+export async function deleteBlogDetailPage(slug: string): Promise<void> {
+  const clean = slug.trim()
+
+  if (!clean) {
+    throw new Error("Blog slug is required.")
+  }
+
+  await cmsApiFetch(`/blog-detail-page?slug=${encodeURIComponent(clean)}`, {
+    method: "DELETE",
+  })
+}

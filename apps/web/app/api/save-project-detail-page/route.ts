@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import {
   saveProjectDetailPage,
   fetchProjectDetailPage,
+  deleteProjectDetailPage,
 } from "@/lib/project-detail-page-api"
 
 import type { ProjectDetailPageApiData } from "@/types/api-project-detail-page"
@@ -64,6 +65,40 @@ export async function GET(request: Request) {
           error instanceof Error
             ? error.message
             : "Failed to fetch Project detail page",
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const slug = searchParams.get("slug")
+
+    if (!slug) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Project slug is required.",
+        },
+        { status: 400 }
+      )
+    }
+
+    await deleteProjectDetailPage(slug)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("[DELETE /api/save-project-detail-page]", error)
+
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete project page",
       },
       { status: 500 }
     )

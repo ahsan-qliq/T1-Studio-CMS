@@ -112,3 +112,18 @@ export function createSpaceDetailPage(
 ): Promise<SpaceDetailPageApiData> {
   return saveSpaceDetailPage(data, true)
 }
+
+/**
+ * Delete a space page by slug.
+ */
+export async function deleteSpaceDetailPage(slug: string): Promise<void> {
+  const clean = slug.trim()
+
+  if (!clean) {
+    throw new Error("Space slug is required.")
+  }
+
+  await cmsApiFetch(`/space-detail-page?slug=${encodeURIComponent(clean)}`, {
+    method: "DELETE",
+  })
+}

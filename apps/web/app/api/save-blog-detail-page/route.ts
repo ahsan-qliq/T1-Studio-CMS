@@ -3,6 +3,7 @@ import { NextResponse } from "next/server"
 import {
   saveBlogDetailPage,
   fetchBlogDetailPage,
+  deleteBlogDetailPage,
 } from "@/lib/blog-detail-page-api"
 
 import type { BlogDetailPageApiData } from "@/types/api-blog-detail-page"
@@ -78,6 +79,38 @@ export async function GET(request: Request) {
           error instanceof Error
             ? error.message
             : "Failed to fetch Blog detail page",
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const slug = searchParams.get("slug")
+
+    if (!slug) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Blog slug is required.",
+        },
+        { status: 400 }
+      )
+    }
+
+    await deleteBlogDetailPage(slug)
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("[DELETE /api/save-blog-detail-page]", error)
+
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to delete blog page",
       },
       { status: 500 }
     )

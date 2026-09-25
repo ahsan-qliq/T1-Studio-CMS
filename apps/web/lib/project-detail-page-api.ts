@@ -54,10 +54,7 @@ export async function saveProjectDetailPage(
 
   const method = data._id ? "PATCH" : "POST"
 
-  const query =
-    method === "PATCH"
-      ? `?slug=${encodeURIComponent(slug)}`
-      : ""
+  const query = method === "PATCH" ? `?slug=${encodeURIComponent(slug)}` : ""
 
   const response = await cmsApiJson<ProjectDetailPageApiData>(
     `/project-detail-page${query}`,
@@ -74,4 +71,19 @@ export async function saveProjectDetailPage(
   )
 
   return response
+}
+
+/**
+ * Delete a project page by slug.
+ */
+export async function deleteProjectDetailPage(slug: string): Promise<void> {
+  const clean = slug.trim()
+
+  if (!clean) {
+    throw new Error("Project slug is required.")
+  }
+
+  await cmsApiFetch(`/project-detail-page?slug=${encodeURIComponent(clean)}`, {
+    method: "DELETE",
+  })
 }

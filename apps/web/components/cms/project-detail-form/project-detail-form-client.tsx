@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { ProjectDetailForm } from "./project-detail-form"
+import { DeletePageButton } from "../form-shared/delete-page-button"
 import type { ProjectDetailPageApiData } from "@/types/api-project-detail-page"
 
 export function ProjectDetailFormClient({
@@ -79,5 +80,19 @@ export function ProjectDetailFormClient({
     }
   }
 
-  return <ProjectDetailForm initialData={data} onSave={handleSave} />
+  return (
+    <div className="space-y-4">
+      {data._id && data.slug && (
+        <div className="flex justify-end">
+          <DeletePageButton
+            slug={data.slug}
+            endpoint="/api/save-project-detail-page"
+            redirectTo="/pages/projects"
+            label="project"
+          />
+        </div>
+      )}
+      <ProjectDetailForm initialData={data} onSave={handleSave} />
+    </div>
+  )
 }

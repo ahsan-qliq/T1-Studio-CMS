@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { DeletePageButton } from "../form-shared/delete-page-button"
 import { BlogDetailForm } from "./blog-detail-form"
 import type { BlogDetailPageApiData } from "@/types/api-blog-detail-page"
 
@@ -81,5 +82,19 @@ export function BlogDetailFormClient({
     }
   }
 
-  return <BlogDetailForm initialData={data} onSave={handleSave} />
+  return (
+    <div className="space-y-4">
+      {data._id && data.slug && (
+        <div className="flex justify-end">
+          <DeletePageButton
+            slug={data.slug}
+            endpoint="/api/save-blog-detail-page"
+            redirectTo="/pages/blog"
+            label="blog"
+          />
+        </div>
+      )}
+      <BlogDetailForm initialData={data} onSave={handleSave} />
+    </div>
+  )
 }
