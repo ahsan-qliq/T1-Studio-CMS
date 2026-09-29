@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Controller, type FieldPath } from "react-hook-form"
-import { ChevronDown, Eye, EyeOff, Plus, Trash2 } from "lucide-react"
+import { Controller, useFieldArray, type FieldPath } from "react-hook-form"
+import { ChevronDown, ChevronUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react"
 import { Input } from "@workspace/ui/components/input"
 import { Textarea } from "@workspace/ui/components/textarea"
 import { Label } from "@workspace/ui/components/label"
@@ -371,6 +371,81 @@ export function AddItemButton({
       <Plus className="size-4" aria-hidden />
       {label}
     </Button>
+  )
+}
+
+/**
+ * Hero breadcrumbs: ordered list of `{ label: { en, ar }, href }`.
+ * Used in every page hero except Home.
+ */
+export function BreadcrumbsField({
+  control,
+  name = "sections.hero.breadcrumbs",
+  label = "Breadcrumbs",
+}: {
+  control: HomePageControl
+  name?: string
+  label?: string
+}) {
+  const { fields, append, remove, move } = useFieldArray({
+    control,
+    name: name as never,
+  })
+
+  return (
+    <div className="space-y-2 rounded-md border border-zinc-100 bg-zinc-50/60 p-3">
+      <p className="text-xs font-medium text-zinc-600">{label}</p>
+      {fields.map((field, index) => (
+        <div
+          key={field.id}
+          className="flex items-start gap-2 rounded-lg border border-zinc-200 bg-white p-3"
+        >
+          <div className="flex-1 space-y-3">
+            <LocalizedField
+              control={control}
+              name={`${name}.${index}.label`}
+              label={`Breadcrumb ${index + 1} Label`}
+            />
+            <PlainField
+              control={control}
+              name={`${name}.${index}.href`}
+              label="Link URL"
+              placeholder="/about"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Move breadcrumb up"
+              disabled={index === 0}
+              onClick={() => move(index, index - 1)}
+            >
+              <ChevronUp className="size-4" aria-hidden />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Move breadcrumb down"
+              disabled={index === fields.length - 1}
+              onClick={() => move(index, index + 1)}
+            >
+              <ChevronDown className="size-4" aria-hidden />
+            </Button>
+            <DeleteItemButton
+              label="Delete breadcrumb"
+              onClick={() => remove(index)}
+            />
+          </div>
+        </div>
+      ))}
+      <AddItemButton
+        label="Add Breadcrumb"
+        onClick={() => append({ label: { en: "", ar: "" }, href: "" } as never)}
+      />
+    </div>
   )
 }
 

@@ -7,6 +7,12 @@ export interface Localized {
   ar: string
 }
 
+/** One hero breadcrumb: bilingual label + link. Used by every page hero except Home. */
+export interface ApiBreadcrumb {
+  label: Localized
+  href: string
+}
+
 export interface ApiImage {
   url: string
   key: string

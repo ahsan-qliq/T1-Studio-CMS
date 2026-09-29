@@ -19,6 +19,7 @@ import {
   BoolField,
   AddItemButton,
   DeleteItemButton,
+  BreadcrumbsField,
 } from "../home-page-form/shared-fields"
 import { SeoFields } from "../form-shared/seo-field"
 import type { AboutPageApiData } from "@/types/api-about-page"
@@ -125,17 +126,13 @@ export function AboutPageFormClient({
           name="sections.hero.mobileImage"
           label="Mobile Image"
         />
-        <ButtonField
-          control={control}
-          name="sections.hero.primaryButton"
-          label="Primary Button"
-        />
         <PlainField
           control={control}
           name="sections.hero.overlayOpacity"
           label="Overlay Opacity"
           type="number"
         />
+        <BreadcrumbsField control={control} name="sections.hero.breadcrumbs" />
       </SectionAccordion>
       {sections.map(([name, title, hasEyebrow], index) => (
         <AboutSectionForm

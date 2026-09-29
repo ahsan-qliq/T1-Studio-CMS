@@ -19,6 +19,7 @@ import {
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
+  BreadcrumbsField,
 } from "../home-page-form/shared-fields"
 
 import { SeoFields } from "../form-shared/seo-field"
@@ -150,11 +151,7 @@ export function WhyT1PageFormClient({
           placeholder="0.5"
         />
 
-        <ButtonField
-          control={control}
-          name="sections.hero.primaryButton"
-          label="Primary Button"
-        />
+        <BreadcrumbsField control={control} name="sections.hero.breadcrumbs" />
       </SectionAccordion>
 
       {/* ======================================================

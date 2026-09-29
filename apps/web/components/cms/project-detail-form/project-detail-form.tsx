@@ -18,6 +18,7 @@ import {
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
+  BreadcrumbsField
 } from "../home-page-form/shared-fields"
 import { SeoFields } from "../form-shared/seo-field"
 import type { ProjectDetailPageApiData } from "@/types/api-project-detail-page"
@@ -192,6 +193,13 @@ function HeroSection({ control }: { control: F }) {
         name="sections.hero.mobileImage"
         label="Background Image (Mobile)"
       />
+      <PlainField
+        control={control}
+        name="sections.hero.overlayOpacity"
+        label="Overlay Opacity (%)"
+        type="number"
+      />
+      <BreadcrumbsField control={control} name="sections.hero.breadcrumbs" />
       <p className="text-xs font-medium text-zinc-600">Stats</p>
       <div className="space-y-3">
         {fields.map((f, i) => (
@@ -229,12 +237,6 @@ function HeroSection({ control }: { control: F }) {
         onClick={() =>
           append({ _id: tempId(), value: "", label: emptyLoc(), icon: "" })
         }
-      />
-      <PlainField
-        control={control}
-        name="sections.hero.overlayOpacity"
-        label="Overlay Opacity (%)"
-        type="number"
       />
     </SectionAccordion>
   )

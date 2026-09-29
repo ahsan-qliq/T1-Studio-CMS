@@ -21,6 +21,7 @@ import {
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
+  BreadcrumbsField,
 } from "../home-page-form/shared-fields"
 
 import { SeoFields } from "../form-shared/seo-field"
@@ -272,16 +273,7 @@ function HeroSection({ control }: { control: FormControl }) {
         type="number"
         placeholder="40"
       />
-      <ButtonField
-        control={control}
-        name="sections.hero.primaryButton"
-        label="Primary Button"
-      />
-      <ButtonField
-        control={control}
-        name="sections.hero.secondaryButton"
-        label="Secondary Button"
-      />
+      <BreadcrumbsField control={control} name="sections.hero.breadcrumbs" />
     </SectionAccordion>
   )
 }

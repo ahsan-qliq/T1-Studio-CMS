@@ -19,6 +19,7 @@ import {
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
+  BreadcrumbsField,
 } from "../home-page-form/shared-fields"
 import { SeoFields } from "../form-shared/seo-field"
 import type { SpacesPageApiData } from "@/types/api-spaces-page"
@@ -169,22 +170,13 @@ function HeroSection({ control }: { control: F }) {
         name="sections.hero.mobileImage"
         label="Background Image (Mobile)"
       />
-      <ButtonField
-        control={control}
-        name="sections.hero.primaryButton"
-        label="Primary Button"
-      />
-      <ButtonField
-        control={control}
-        name="sections.hero.secondaryButton"
-        label="Secondary Button"
-      />
       <PlainField
         control={control}
         name="sections.hero.overlayOpacity"
         label="Overlay Opacity (%)"
         type="number"
       />
+      <BreadcrumbsField control={control} name="sections.hero.breadcrumbs" />
     </SectionAccordion>
   )
 }

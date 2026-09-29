@@ -731,8 +731,6 @@ function WhyChooseColumnCard({
 
 // ─── 8. Testimonials ────────────────────────────────────────────────────
 
-// ─── 8. Testimonials ────────────────────────────────────────────────────
-
 function TestimonialsSection({
   control,
 }: {

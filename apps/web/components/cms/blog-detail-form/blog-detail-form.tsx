@@ -21,6 +21,7 @@ import {
   SectionAccordion,
   DeleteItemButton,
   AddItemButton,
+  BreadcrumbsField
 } from "../home-page-form/shared-fields"
 import { SeoFields } from "../form-shared/seo-field"
 
@@ -466,6 +467,7 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
           label="Overlay Opacity"
           type="number"
         />
+        <BreadcrumbsField control={control} name="sections.hero.breadcrumbs" />
       </SectionAccordion>
 
       <SectionAccordion title="Article Content" order={4} control={control}>
