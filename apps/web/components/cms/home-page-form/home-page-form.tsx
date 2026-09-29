@@ -731,6 +731,8 @@ function WhyChooseColumnCard({
 
 // ─── 8. Testimonials ────────────────────────────────────────────────────
 
+// ─── 8. Testimonials ────────────────────────────────────────────────────
+
 function TestimonialsSection({
   control,
 }: {
@@ -740,6 +742,7 @@ function TestimonialsSection({
     control,
     name: "testimonials.testimonials",
   })
+
   return (
     <SectionAccordion
       title="Client Testimonials"
@@ -752,17 +755,20 @@ function TestimonialsSection({
         name="testimonials.eyebrow"
         label="Eyebrow"
       />
+
       <LocalizedField
         control={control}
         name="testimonials.heading"
         label="Heading"
       />
+
       <LocalizedField
         control={control}
         name="testimonials.description"
         label="Description"
         multiline
       />
+
       <div className="space-y-3">
         {fields.map((f, i) => (
           <div
@@ -772,42 +778,73 @@ function TestimonialsSection({
             <div className="flex-1 space-y-2">
               <LocalizedField
                 control={control}
-                name={`testimonials.testimonials.${i}.name`}
+                name={`testimonials.testimonials.${i}.clientName`}
                 label="Client Name"
               />
+
               <LocalizedField
                 control={control}
-                name={`testimonials.testimonials.${i}.role`}
-                label="Client Role"
+                name={`testimonials.testimonials.${i}.designation`}
+                label="Designation"
               />
+
               <LocalizedField
                 control={control}
-                name={`testimonials.testimonials.${i}.quote`}
-                label="Quote"
+                name={`testimonials.testimonials.${i}.testimonial`}
+                label="Testimonial"
                 multiline
               />
+
               <ImageField
                 control={control}
                 name={`testimonials.testimonials.${i}.image`}
                 label="Client Photo"
               />
+
+              <div className="grid grid-cols-2 gap-3">
+                <PlainField
+                  control={control}
+                  name={`testimonials.testimonials.${i}.videoUrl`}
+                  label="Video URL"
+                  placeholder="https://..."
+                />
+
+                <BoolField
+                  control={control}
+                  name={`testimonials.testimonials.${i}.isVisible`}
+                  label="Visible"
+                />
+              </div>
             </div>
+
             <DeleteItemButton onClick={() => remove(i)} />
           </div>
         ))}
       </div>
+
       <AddItemButton
         label="Add Testimonial"
         onClick={() =>
           append({
             _id: tempId(),
-            name: { en: "", ar: "" },
-            role: { en: "", ar: "" },
-            quote: { en: "", ar: "" },
-            image: { url: "", key: "", alt: { en: "", ar: "" } },
+            clientName: { en: "", ar: "" },
+            designation: { en: "", ar: "" },
+            testimonial: { en: "", ar: "" },
+            image: {
+              url: "",
+              key: "",
+              alt: { en: "", ar: "" },
+            },
+            videoUrl: "",
             isVisible: true,
           })
         }
+      />
+
+      <BoolField
+        control={control}
+        name="testimonials.autoplay"
+        label="Autoplay carousel"
       />
     </SectionAccordion>
   )

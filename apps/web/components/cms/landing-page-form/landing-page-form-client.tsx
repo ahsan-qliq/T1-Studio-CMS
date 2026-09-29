@@ -25,6 +25,7 @@ import {
 } from "../home-page-form/shared-fields"
 
 import { SeoFields } from "../form-shared/seo-field"
+import { DeletePageButton } from "../form-shared/delete-page-button"
 
 import type { LandingPageApiData } from "@/types/api-landing-page"
 
@@ -49,37 +50,69 @@ export function LandingPageFormClient({
     setSaving(true)
 
     try {
+      const isNew = !data._id
+
       const response = await fetch("/api/save-landing-page", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ data, isNew }),
       })
 
-      if (!response.ok) {
-        throw new Error(await response.text())
+      const json = await response.json().catch(() => null)
+
+      if (!response.ok || json?.success === false) {
+        throw new Error(json?.message || "Failed to save landing page.")
       }
+
+      const slug = (json?.data?.slug ?? data.slug)?.trim()
+
       // Re-fetch the freshly saved page so the form reflects exactly what
       // the backend now has (e.g. CDN URLs the backend fills in from the
       // uploaded image's S3 key).
-      try {
-        const fresh = await fetch("/api/save-landing-page")
-        if (fresh.ok) {
-          reset((await fresh.json()) as LandingPageApiData)
+      if (slug) {
+        try {
+          const fresh = await fetch(
+            `/api/save-landing-page?slug=${encodeURIComponent(slug)}`,
+            { cache: "no-store" }
+          )
+          if (fresh.ok) {
+            const freshJson = await fresh.json()
+            reset((freshJson.data ?? freshJson) as LandingPageApiData)
+          }
+        } catch (error) {
+          console.error("Failed to refresh landing page after save:", error)
         }
-      } catch (error) {
-        console.error("Failed to refresh landing page after save:", error)
+      } else if (json?.data) {
+        reset(json.data as LandingPageApiData)
       }
     } catch (error) {
       console.error("Failed to save landing page:", error)
+      alert(
+        error instanceof Error ? error.message : "Failed to save landing page."
+      )
     } finally {
       setSaving(false)
     }
   })
 
+  const currentSlug = form.watch("slug")
+  const currentId = form.watch("_id")
+
   return (
     <form onSubmit={submit} className="w-full space-y-4 pb-24">
+      {currentId && currentSlug && (
+        <div className="flex justify-end">
+          <DeletePageButton
+            slug={currentSlug}
+            endpoint="/api/save-landing-page"
+            redirectTo="/pages/landing"
+            label="landing page"
+          />
+        </div>
+      )}
+
       {/* =====================================================
           PAGE SETTINGS
       ===================================================== */}

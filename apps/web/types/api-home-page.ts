@@ -88,11 +88,12 @@ export interface WhyChooseColumnApi {
 
 export interface TestimonialItem {
   _id?: string
-  name?: Localized
-  role?: Localized
-  quote?: Localized
-  image?: ApiImage
-  isVisible?: boolean
+  clientName: Localized
+  designation: Localized
+  testimonial: Localized
+  image: ApiImage
+  videoUrl: string
+  isVisible: boolean
 }
 
 export interface ConsultationTabItem {
@@ -232,6 +233,7 @@ export interface TestimonialsSection {
   heading: Localized
   description: Localized
   testimonials: TestimonialItem[]
+  autoplay: boolean
 }
 
 export interface ConsultationCtaSection {

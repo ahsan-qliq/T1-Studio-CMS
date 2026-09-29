@@ -8,6 +8,7 @@ import { fetchAllSpaceDetailPages } from "@/lib/space-detail-page-api"
 import { fetchAllProjectDetailPages } from "@/lib/project-detail-page-api"
 
 import { fetchAllBlogDetailPages } from "@/lib/blog-detail-page-api"
+import { fetchAllLandingPages } from "@/lib/landing-page-api"
 
 import type { NavPage, NavSection } from "@/types/cms"
 
@@ -33,11 +34,12 @@ async function getSidebarNav(): Promise<NavSection[]> {
     /**
      * FETCH DYNAMIC DATA
      */
-    const [spacesResult, projectsResult, blogsResult] =
+    const [spacesResult, projectsResult, blogsResult, landingResult] =
       await Promise.allSettled([
         fetchAllSpaceDetailPages(),
         fetchAllProjectDetailPages(),
         fetchAllBlogDetailPages(),
+        fetchAllLandingPages(),
       ])
 
     /**
@@ -97,6 +99,25 @@ async function getSidebarNav(): Promise<NavSection[]> {
 
     /**
      * ==========================================
+     * LANDING PAGES
+     * ==========================================
+     */
+
+    let landingDetailPages: NavPage[] = []
+
+    if (landingResult.status === "fulfilled") {
+      const landingPages = landingResult.value ?? []
+
+      landingDetailPages = landingPages
+        .filter((page) => Boolean(page.slug))
+        .map((page) => ({
+          slug: `landing/${page.slug}`,
+          label: page.pageName || page.slug,
+        }))
+    }
+
+    /**
+     * ==========================================
      * CREATE DROPDOWN SECTIONS
      * ==========================================
      */
@@ -138,6 +159,17 @@ async function getSidebarNav(): Promise<NavSection[]> {
         ...blogDetailPages,
       ],
     })
+
+    /**
+     * LANDING DROPDOWN
+     */
+    if (landingDetailPages.length > 0) {
+      dynamicSections.push({
+        label: "Landing",
+        icon: "FileText",
+        children: landingDetailPages,
+      })
+    }
 
     /**
      * ==========================================
