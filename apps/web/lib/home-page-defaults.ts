@@ -99,6 +99,7 @@ export function createEmptyHomePage(): HomePageApiData {
       heading: l(),
       description: l(),
       testimonials: [],
+      autoplay: false,
     },
 
     consultationCTA: {
