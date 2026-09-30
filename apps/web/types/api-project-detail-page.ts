@@ -4,6 +4,7 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
 import type { ProjectPosition } from "./api-projects-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface ProjectStatItem {
   _id?: string
@@ -106,6 +107,7 @@ export interface ProjectDetailHeroSection {
   mobileImage: ApiImage
   stats: ProjectStatItem[]
   overlayOpacity: number
+  breadcrumbs?: ApiBreadcrumb[]
 }
 
 export interface ProjectDetailBeforeAfterSection {

@@ -1,5 +1,6 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface TradeLogoItem {
   _id?: string
@@ -138,6 +139,7 @@ export interface TradePageSections {
     overlayOpacity: number
     primaryButton: ApiButton
     secondaryButton: ApiButton
+    breadcrumbs?: ApiBreadcrumb[]
   }
   logos: {
     isVisible: boolean

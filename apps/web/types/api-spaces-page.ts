@@ -1,4 +1,5 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface SpacesFeaturedSpaceItem {
   _id?: string
@@ -30,7 +31,12 @@ export interface WhyChooseColumnApi {
 }
 
 export type ProjectPosition =
-  | "top-left" | "top-right" | "middle-left" | "middle-right" | "bottom-left" | "bottom-right"
+  | "top-left"
+  | "top-right"
+  | "middle-left"
+  | "middle-right"
+  | "bottom-left"
+  | "bottom-right"
 
 export interface ProjectItem {
   _id?: string
@@ -91,6 +97,7 @@ export interface SpacesSections {
     primaryButton: ApiButton
     secondaryButton: ApiButton
     overlayOpacity: number
+    breadcrumbs?: ApiBreadcrumb[]
   }
   intro: {
     isVisible: boolean

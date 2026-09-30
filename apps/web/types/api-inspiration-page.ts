@@ -1,5 +1,5 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
-
+import type { ApiBreadcrumb } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
 
 export interface InspirationRoomItem {
@@ -62,6 +62,7 @@ export interface InspirationHero {
   mobileImage: ApiImage
   overlayOpacity: number
   primaryButton: ApiButton
+  breadcrumbs?: ApiBreadcrumb[]
 }
 
 export interface InspirationRooms {

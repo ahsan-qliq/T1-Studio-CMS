@@ -1,5 +1,6 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface WhyT1PageApiData {
   _id?: string
@@ -17,6 +18,7 @@ export interface WhyT1PageApiData {
       mobileImage: ApiImage
       primaryButton: ApiButton
       overlayOpacity: number
+      breadcrumbs?: ApiBreadcrumb[]
     }
     comparison: {
       isVisible: boolean

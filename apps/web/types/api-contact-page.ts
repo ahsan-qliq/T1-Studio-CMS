@@ -1,5 +1,6 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 /* =========================================================
    HERO
@@ -19,6 +20,7 @@ export interface ContactHeroSection {
   primaryButton: ApiButton
 
   overlayOpacity: number
+  breadcrumbs?: ApiBreadcrumb[]
 }
 
 /* =========================================================

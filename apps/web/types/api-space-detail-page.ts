@@ -5,6 +5,7 @@ import type {
   ProjectItem,
   SeoData,
 } from "./api-spaces-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface FeatureItem {
   _id?: string
@@ -66,6 +67,7 @@ export interface SpaceDetailSections {
     mobileImage: ApiImage
     primaryButton: ApiButton
     overlayOpacity: number
+    breadcrumbs?: ApiBreadcrumb[]
   }
   intro: {
     isVisible: boolean

@@ -1,4 +1,5 @@
 import type { Localized } from "./api-home-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface BlogDetailImage {
   url: string
@@ -99,6 +100,7 @@ export interface BlogDetailPageApiData {
       excerpt: Localized
       backgroundImage: BlogDetailImage
       overlayOpacity: number
+      breadcrumbs?: ApiBreadcrumb[]
     }
 
     articleContent: {

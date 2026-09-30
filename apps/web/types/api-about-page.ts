@@ -1,5 +1,6 @@
 import type { ApiButton, ApiImage, Localized } from "./api-home-page"
 import type { SeoData } from "./api-spaces-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface AboutSection {
   isVisible: boolean
@@ -11,6 +12,7 @@ export interface AboutSection {
   backgroundImage?: ApiImage
   mobileImage?: ApiImage
   primaryButton?: ApiButton
+  breadcrumbs?: ApiBreadcrumb[]
   button?: ApiButton
   overlayOpacity?: number
   autoplay?: boolean

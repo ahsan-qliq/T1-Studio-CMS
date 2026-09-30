@@ -1,4 +1,5 @@
 import type { ApiImage, Localized } from "./api-home-page"
+import type { ApiBreadcrumb } from "./api-home-page"
 
 export interface BlogButton {
   label: Localized
@@ -64,6 +65,7 @@ export interface BlogPageApiData {
       backgroundImage: ApiImage
       overlayOpacity: number
       primaryButton: BlogButton
+      breadcrumbs?: ApiBreadcrumb[]
     }
 
     blogListing: {
