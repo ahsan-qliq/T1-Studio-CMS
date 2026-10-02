@@ -24,7 +24,7 @@ import {
   BreadcrumbsField,
 } from "../home-page-form/shared-fields"
 
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 
 import type { ContactPageApiData } from "@/types/api-contact-page"
 
@@ -149,7 +149,7 @@ export function ContactPageFormClient({
           SEO
       ===================================================== */}
 
-      <SeoFields control={control} namePrefix="seo" />
+      <PageMetadataSection control={control} order={6} />
 
       {/* =====================================================
           SAVE BUTTON

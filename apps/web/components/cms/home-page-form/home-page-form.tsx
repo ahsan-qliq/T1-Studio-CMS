@@ -20,6 +20,7 @@ import {
   AddItemButton,
 } from "./shared-fields"
 import type { HomePageApiData, HomePageSections } from "@/types/api-home-page"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 
 // ─── Small id helper for newly-added array items (the API assigns real
 // Mongo _ids on save; these are just stable React keys until then) ────────
@@ -34,7 +35,7 @@ interface HomePageFormProps {
 
 export function HomePageForm({ initialData, onSave }: HomePageFormProps) {
   const form = useForm<HomePageSections>({
-    defaultValues: initialData.sections,
+    defaultValues: { ...initialData.sections, seo: initialData.seo },
   })
   const { control, handleSubmit, formState, reset } = form
   const [saving, setSaving] = useState(false)
@@ -51,6 +52,7 @@ export function HomePageForm({ initialData, onSave }: HomePageFormProps) {
 
   return (
     <form onSubmit={submit} className="space-y-4 pb-24">
+      <PageMetadataSection control={control} order={15} />
       <HeroSection control={control} />
       <StatsSection control={control} />
       <ServicesSection control={control} />
@@ -65,6 +67,7 @@ export function HomePageForm({ initialData, onSave }: HomePageFormProps) {
       <DesignTipsSection control={control} />
       <FaqSection control={control} />
       <LocationLinksSection control={control} />
+      
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
         <Button

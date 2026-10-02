@@ -23,13 +23,14 @@ import {
   AddItemButton,
   BreadcrumbsField
 } from "../home-page-form/shared-fields"
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 
 import type { Localized } from "@/types/api-home-page"
 import type {
   BlogContentBlock,
   BlogDetailPageApiData,
 } from "@/types/api-blog-detail-page"
+import { SeoFields } from "../form-shared/seo-field";
 
 type F = Control<BlogDetailPageApiData>
 
