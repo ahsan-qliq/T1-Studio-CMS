@@ -22,7 +22,7 @@ import {
   BreadcrumbsField,
 } from "../home-page-form/shared-fields"
 
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 import type { WhyT1PageApiData } from "@/types/api-why-t1-page"
 
 const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
@@ -212,7 +212,7 @@ export function WhyT1PageFormClient({
           SEO
       ====================================================== */}
 
-      <SeoFields control={control} namePrefix="seo" />
+      <PageMetadataSection control={control} order={11} />
 
       {/* ======================================================
           SAVE

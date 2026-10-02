@@ -23,7 +23,7 @@ import {
   BreadcrumbsField
 } from "../home-page-form/shared-fields"
 
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 
 import type { BlogPageApiData } from "@/types/api-blog-page"
 
@@ -153,7 +153,7 @@ export function BlogPageFormClient({
           SEO
       ===================================================== */}
 
-      <SeoFields control={control} namePrefix="seo" />
+      <PageMetadataSection control={control} order={5} />
 
       {/* =====================================================
           SAVE

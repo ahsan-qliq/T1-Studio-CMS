@@ -9,10 +9,11 @@ export function HomePageFormClient({
   initialData: HomePageApiData
 }) {
   const handleSave = async (sections: HomePageSections) => {
+    const { seo, ...restSections } = sections
     const res = await fetch("/api/save-home-page", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...initialData, sections }),
+      body: JSON.stringify({ ...initialData, seo, sections: restSections }),
     })
     if (!res.ok) {
       // Replace with your preferred toast/notification pattern.
@@ -28,7 +29,7 @@ export function HomePageFormClient({
       const fresh = await fetch("/api/save-home-page")
       if (fresh.ok) {
         const freshData = (await fresh.json()) as HomePageApiData
-        return freshData.sections
+        return { ...freshData.sections, seo: freshData.seo }
       }
     } catch (error) {
       console.error("Failed to refresh home page after save:", error)

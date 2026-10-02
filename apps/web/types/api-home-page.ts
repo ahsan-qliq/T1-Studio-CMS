@@ -2,6 +2,9 @@
 // field. Unlike the old per-section CMS types, there is no translation
 // layer here — what the form edits is exactly what gets sent back to the API.
 
+import type { SeoData } from "./api-spaces-page"
+export type { SeoData }
+
 export interface Localized {
   en: string
   ar: string
@@ -317,6 +320,7 @@ export interface HomePageSections {
   designTips: DesignTipsSection
   faq: FaqSection
   locationLinks: LocationLinksSection
+  seo: SeoData
 }
 
 export interface HomePageApiData {
@@ -328,6 +332,7 @@ export interface HomePageApiData {
   createdAt: string
   updatedAt: string
   __v: number
+  seo: SeoData
   sections: HomePageSections
 }
 
