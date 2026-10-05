@@ -18,7 +18,8 @@ export interface ProjectsListItem {
   slug: string
   title: Localized
   location: Localized
-  category: string
+  category: Localized
+  completionYear?: Localized
   shortDescription: Localized
   image: ApiImage
   href: string
