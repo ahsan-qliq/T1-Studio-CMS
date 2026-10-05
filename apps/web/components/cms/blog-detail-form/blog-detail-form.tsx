@@ -23,7 +23,7 @@ import {
   AddItemButton,
   BreadcrumbsField
 } from "../home-page-form/shared-fields"
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 
 import type { Localized } from "@/types/api-home-page"
 import type {
@@ -714,9 +714,9 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
         />
       </SectionAccordion>
 
-      <SeoFields
+      <PageMetadataSection
         control={control}
-        namePrefix="seo"
+        order={8}
         renderOgImage={({ control, name, label }) => (
           <ImageField control={control} name={name} label={label} />
         )}

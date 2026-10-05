@@ -20,7 +20,7 @@ import {
   AddItemButton,
   BreadcrumbsField
 } from "../home-page-form/shared-fields"
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 import type { ProjectDetailPageApiData } from "@/types/api-project-detail-page"
 
 const tempId = () => `tmp-${Math.random().toString(36).slice(2, 10)}`
@@ -127,7 +127,7 @@ export function ProjectDetailForm({
       <RelatedProjectsSection control={control} />
       <ConsultationSection control={control} />
 
-      <SeoFields control={control} namePrefix="seo" />
+      <PageMetadataSection control={control} order={10} />
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
         <Button

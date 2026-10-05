@@ -24,7 +24,7 @@ import {
   AddItemButton,
 } from "../home-page-form/shared-fields"
 
-import { SeoFields } from "../form-shared/seo-field"
+import { PageMetadataSection } from "../form-shared/page-metadata-section"
 import { DeletePageButton } from "../form-shared/delete-page-button"
 
 import type { LandingPageApiData } from "@/types/api-landing-page"
@@ -200,7 +200,7 @@ export function LandingPageFormClient({
           SEO
       ===================================================== */}
 
-      <SeoFields control={control} namePrefix="seo" />
+      <PageMetadataSection control={control} order={10} />
 
       {/* =====================================================
           SAVE

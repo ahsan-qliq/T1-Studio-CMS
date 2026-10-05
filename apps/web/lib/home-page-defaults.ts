@@ -161,6 +161,16 @@ export function createEmptyHomePage(): HomePageApiData {
       description: l(),
       columns: [],
     },
+
+    seo: {
+      metaTitle: l(),
+      metaDescription: l(),
+      keywords: { en: [], ar: [] },
+      canonicalUrl: "",
+      ogImage: i(),
+      noIndex: false,
+      noFollow: false,
+    },
   }
 
   return {
@@ -172,6 +182,15 @@ export function createEmptyHomePage(): HomePageApiData {
     createdAt: "",
     updatedAt: "",
     __v: 0,
+    seo: {
+      metaTitle: l(),
+      metaDescription: l(),
+      keywords: { en: [], ar: [] },
+      canonicalUrl: "",
+      ogImage: i(),
+      noIndex: false,
+      noFollow: false,
+    },
     sections,
   }
 }
