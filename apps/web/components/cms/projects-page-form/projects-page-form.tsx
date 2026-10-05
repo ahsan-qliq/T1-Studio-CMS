@@ -251,20 +251,12 @@ function ProjectsListSection({ control }: { control: F }) {
             className="flex items-start gap-2 rounded-lg border border-zinc-200 p-3"
           >
             <div className="flex-1 space-y-2">
-              <div className="grid grid-cols-2 gap-3">
-                <PlainField
-                  control={control}
-                  name={`sections.projects.projects.${i}.slug`}
-                  label="Project Slug"
-                  placeholder="emirates-hills"
-                />
-                <PlainField
-                  control={control}
-                  name={`sections.projects.projects.${i}.category`}
-                  label="Category"
-                  placeholder="residential"
-                />
-              </div>
+              <PlainField
+                control={control}
+                name={`sections.projects.projects.${i}.slug`}
+                label="Project Slug"
+                placeholder="emirates-hills"
+              />
               <LocalizedField
                 control={control}
                 name={`sections.projects.projects.${i}.title`}
@@ -272,8 +264,18 @@ function ProjectsListSection({ control }: { control: F }) {
               />
               <LocalizedField
                 control={control}
+                name={`sections.projects.projects.${i}.category`}
+                label="Category"
+              />
+              <LocalizedField
+                control={control}
                 name={`sections.projects.projects.${i}.location`}
                 label="Location"
+              />
+              <LocalizedField
+                control={control}
+                name={`sections.projects.projects.${i}.completionYear`}
+                label="Completion Year"
               />
               <LocalizedField
                 control={control}
@@ -338,7 +340,8 @@ function ProjectsListSection({ control }: { control: F }) {
             slug: "",
             title: emptyLoc(),
             location: emptyLoc(),
-            category: "residential",
+            category: emptyLoc(),
+            completionYear: emptyLoc(),
             shortDescription: emptyLoc(),
             image: emptyImg(),
             href: "",
