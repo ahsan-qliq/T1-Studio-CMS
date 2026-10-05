@@ -31,6 +31,7 @@ export function createEmptyHomePage(): HomePageApiData {
     createdAt: "",
     updatedAt: "",
     __v: 0,
+    seo: seo(),
     sections: {} as HomePageSections,
   }
 }
