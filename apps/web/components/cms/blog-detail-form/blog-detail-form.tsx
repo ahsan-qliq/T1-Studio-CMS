@@ -30,7 +30,6 @@ import type {
   BlogContentBlock,
   BlogDetailPageApiData,
 } from "@/types/api-blog-detail-page"
-import { SeoFields } from "../form-shared/seo-field";
 
 type F = Control<BlogDetailPageApiData>
 
@@ -715,9 +714,9 @@ export function BlogDetailForm({ initialData, onSave }: BlogDetailFormProps) {
         />
       </SectionAccordion>
 
-      <SeoFields
+      <PageMetadataSection
         control={control}
-        namePrefix="seo"
+        order={8}
         renderOgImage={({ control, name, label }) => (
           <ImageField control={control} name={name} label={label} />
         )}
