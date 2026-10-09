@@ -99,11 +99,18 @@ export function SidebarNav({ items }: SidebarNavProps) {
             )
           }
 
+          const isActive = item.href ? pathname === item.href : false
           return (
             <li key={item.label}>
               <Link
                 href={item.href ?? "#"}
-                className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-xs font-medium text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-xs font-medium transition-colors",
+                  isActive
+                    ? "bg-white/10 font-semibold text-white"
+                    : "text-zinc-400 hover:bg-white/10 hover:text-white"
+                )}
               >
                 {Icon && (
                   <Icon className="size-4 shrink-0" aria-hidden="true" />

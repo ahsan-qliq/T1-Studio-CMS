@@ -42,6 +42,7 @@ export const sidebarNav: NavSection[] = [
       { slug: "landing", label: "Landing Page" },
     ],
   },
+  { label: "Partners", icon: "Inbox", href: "/partners" },
   { label: "Media Library", icon: "Image", href: "/media" },
   { label: "Settings", icon: "Settings", href: "/settings" },
 ]
