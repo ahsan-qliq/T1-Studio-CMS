@@ -116,8 +116,10 @@ export function ProjectsPageForm({
       <BeforeAfterSection control={control} />
       <PartnershipSection control={control} />
       <FaqSection control={control} />
+      <StatsSection control={control} />
+      <LogosSection control={control} />
 
-      <PageMetadataSection control={control} order={7} />
+      <PageMetadataSection control={control} order={9} />
 
       <div className="fixed inset-x-0 bottom-0 flex justify-end border-t border-zinc-200 bg-white px-6 py-3">
         <Button
@@ -660,6 +662,280 @@ function PartnershipSection({ control }: { control: F }) {
 }
 
 // ─── 6. FAQ ─────────────────────────────────────────────────────────────
+
+// ─── 7. Stats ───────────────────────────────────────────────────────────
+
+function StatsItemsField({
+  control,
+  groupIndex,
+}: {
+  control: F
+  groupIndex: number
+}) {
+  const { fields, append, remove } = useFieldArray({
+    control: control as any,
+    name: `sections.stats.${groupIndex}.stats` as any,
+  })
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium">Stats</label>
+      <div className="space-y-2">
+        {fields.map((stat, si) => (
+          <div
+            key={stat.id}
+            className="flex items-start gap-2 rounded border border-zinc-100 bg-zinc-50 p-2"
+          >
+            <div className="flex-1 space-y-2">
+              <PlainField
+                control={control}
+                name={`sections.stats.${groupIndex}.stats.${si}.value` as any}
+                label="Value"
+                placeholder="500+"
+              />
+              <LocalizedField
+                control={control}
+                name={`sections.stats.${groupIndex}.stats.${si}.label` as any}
+                label="Label"
+              />
+              <LocalizedField
+                control={control}
+                name={`sections.stats.${groupIndex}.stats.${si}.description` as any}
+                label="Description"
+              />
+              <BoolField
+                control={control}
+                name={`sections.stats.${groupIndex}.stats.${si}.isVisible` as any}
+                label="Visible"
+              />
+            </div>
+            <DeleteItemButton onClick={() => remove(si)} />
+          </div>
+        ))}
+      </div>
+      <AddItemButton
+        label="Add Stat"
+        onClick={() =>
+          append({
+            value: "",
+            label: emptyLoc(),
+            description: emptyLoc(),
+            isVisible: true,
+          } as any)
+        }
+      />
+    </div>
+  )
+}
+
+function StatsSection({ control }: { control: F }) {
+  const { fields: groups, append: appendGroup, remove: removeGroup } =
+    useFieldArray({
+      control,
+      name: "sections.stats" as any,
+    })
+  return (
+    <SectionAccordion title="Stats" order={7} control={control}>
+      <div className="space-y-4">
+        {groups.map((group, gi) => (
+          <div
+            key={group.id}
+            className="rounded-lg border border-zinc-200 p-3 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-zinc-700">
+                Group {gi + 1}
+              </span>
+              <DeleteItemButton onClick={() => removeGroup(gi)} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <PlainField
+                control={control}
+                name={`sections.stats.${gi}.category` as any}
+                label="Category"
+                placeholder="commercial"
+              />
+              <PlainField
+                control={control}
+                name={`sections.stats.${gi}.order` as any}
+                label="Order"
+                type="number"
+              />
+            </div>
+            <LocalizedField
+              control={control}
+              name={`sections.stats.${gi}.heading` as any}
+              label="Group Heading"
+            />
+            <BoolField
+              control={control}
+              name={`sections.stats.${gi}.isVisible` as any}
+              label="Visible"
+            />
+            <StatsItemsField control={control} groupIndex={gi} />
+          </div>
+        ))}
+      </div>
+      <AddItemButton
+        label="Add Stats Group"
+        onClick={() =>
+          appendGroup({
+            _id: tempId(),
+            category: "",
+            isVisible: true,
+            order: groups.length,
+            heading: emptyLoc(),
+            stats: [],
+          } as any)
+        }
+      />
+    </SectionAccordion>
+  )
+}
+
+// ─── 8. Logos ───────────────────────────────────────────────────────────
+
+function LogosItemsField({
+  control,
+  groupIndex,
+}: {
+  control: F
+  groupIndex: number
+}) {
+  const { fields, append, remove } = useFieldArray({
+    control: control as any,
+    name: `sections.logos.${groupIndex}.logos` as any,
+  })
+  return (
+    <div className="space-y-2">
+      <label className="text-sm font-medium">Logos</label>
+      <div className="space-y-2">
+        {fields.map((logo, li) => (
+          <div
+            key={logo.id}
+            className="flex items-start gap-2 rounded border border-zinc-100 bg-zinc-50 p-2"
+          >
+            <div className="flex-1 space-y-2">
+              <PlainField
+                control={control}
+                name={`sections.logos.${groupIndex}.logos.${li}.name` as any}
+                label="Name"
+                placeholder="Brand Name"
+              />
+              <ImageField
+                control={control}
+                name={`sections.logos.${groupIndex}.logos.${li}.logo` as any}
+                label="Logo Image"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <PlainField
+                  control={control}
+                  name={`sections.logos.${groupIndex}.logos.${li}.href` as any}
+                  label="Link URL"
+                  placeholder="https://example.com"
+                />
+                <BoolField
+                  control={control}
+                  name={`sections.logos.${groupIndex}.logos.${li}.openInNewTab` as any}
+                  label="Open in new tab"
+                />
+              </div>
+              <BoolField
+                control={control}
+                name={`sections.logos.${groupIndex}.logos.${li}.isVisible` as any}
+                label="Visible"
+              />
+            </div>
+            <DeleteItemButton onClick={() => remove(li)} />
+          </div>
+        ))}
+      </div>
+      <AddItemButton
+        label="Add Logo"
+        onClick={() =>
+          append({
+            name: "",
+            logo: emptyImg(),
+            href: "",
+            openInNewTab: true,
+            isVisible: true,
+          } as any)
+        }
+      />
+    </div>
+  )
+}
+
+function LogosSection({ control }: { control: F }) {
+  const { fields: groups, append: appendGroup, remove: removeGroup } =
+    useFieldArray({
+      control,
+      name: "sections.logos" as any,
+    })
+  return (
+    <SectionAccordion title="Client Logos" order={8} control={control}>
+      <div className="space-y-4">
+        {groups.map((group, gi) => (
+          <div
+            key={group.id}
+            className="rounded-lg border border-zinc-200 p-3 space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-zinc-700">
+                Group {gi + 1}
+              </span>
+              <DeleteItemButton onClick={() => removeGroup(gi)} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <PlainField
+                control={control}
+                name={`sections.logos.${gi}.category` as any}
+                label="Category"
+                placeholder="commercial"
+              />
+              <PlainField
+                control={control}
+                name={`sections.logos.${gi}.order` as any}
+                label="Order"
+                type="number"
+              />
+            </div>
+            <LocalizedField
+              control={control}
+              name={`sections.logos.${gi}.heading` as any}
+              label="Group Heading"
+            />
+            <LocalizedField
+              control={control}
+              name={`sections.logos.${gi}.description` as any}
+              label="Group Description"
+              multiline
+            />
+            <BoolField
+              control={control}
+              name={`sections.logos.${gi}.isVisible` as any}
+              label="Visible"
+            />
+            <LogosItemsField control={control} groupIndex={gi} />
+          </div>
+        ))}
+      </div>
+      <AddItemButton
+        label="Add Logos Group"
+        onClick={() =>
+          appendGroup({
+            _id: tempId(),
+            category: "",
+            isVisible: true,
+            order: groups.length,
+            heading: emptyLoc(),
+            description: emptyLoc(),
+            logos: [],
+          } as any)
+        }
+      />
+    </SectionAccordion>
+  )
+}
 
 function FaqSection({ control }: { control: F }) {
   const { fields, append, remove } = useFieldArray({
