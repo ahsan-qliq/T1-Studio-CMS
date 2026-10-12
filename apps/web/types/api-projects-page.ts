@@ -131,6 +131,42 @@ export interface ProjectsFaqSection {
   faqs: ProjectsFaqItem[]
 }
 
+export interface ProjectsStatItem {
+  _id?: string
+  value: string
+  label: Localized
+  description: Localized
+  isVisible: boolean
+}
+
+export interface ProjectsStatsGroup {
+  _id?: string
+  category: string
+  isVisible: boolean
+  order: number
+  heading: Localized
+  stats: ProjectsStatItem[]
+}
+
+export interface ProjectsLogoItem {
+  _id?: string
+  name: string
+  logo: ApiImage
+  href: string
+  openInNewTab: boolean
+  isVisible: boolean
+}
+
+export interface ProjectsLogosGroup {
+  _id?: string
+  category: string
+  isVisible: boolean
+  order: number
+  heading: Localized
+  description: Localized
+  logos: ProjectsLogoItem[]
+}
+
 export interface ProjectsSections {
   hero: ProjectsHeroSection
   projects: ProjectsListSection
@@ -138,6 +174,8 @@ export interface ProjectsSections {
   beforeAfter: ProjectsBeforeAfterSection
   partnership: ProjectsPartnershipSection
   faq: ProjectsFaqSection
+  stats: ProjectsStatsGroup[]
+  logos: ProjectsLogosGroup[]
 }
 
 export interface ProjectsPageApiData {
