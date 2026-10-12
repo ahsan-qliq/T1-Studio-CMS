@@ -21,10 +21,8 @@ export function HomePageFormClient({
       console.error("Save failed:", await res.text())
       return
     }
-    // Re-fetch the freshly saved page so the form reflects exactly what
-    // the backend now has (e.g. CDN URLs the backend fills in from the
-    // uploaded image's S3 key). HomePageForm's internal form only manages
-    // `sections`, so we return that piece for it to reset() with.
+
+    
     try {
       const fresh = await fetch("/api/save-home-page")
       if (fresh.ok) {
