@@ -57,7 +57,7 @@ export async function PATCH(request: Request, { params }: RouteProps) {
 
   // Proxy status update to the CMS backend
   try {
-    await cmsApiFetch(`/partners/${id}/status`, {
+    await cmsApiFetch(`/trade-submissions/${id}/status`, {
       method: "PATCH",
       data: { category, status },
     })
