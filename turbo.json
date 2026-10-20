@@ -3,8 +3,10 @@
   "ui": "tui",
   "globalEnv": [
     "CMS_API_BASE_URL",
+    "CMS_API_URL",
     "CMS_ACCESS_TOKEN",
     "CMS_DEV_AUTH_BYPASS",
+    "APP_URL",
     "NODE_ENV"
   ],
   "tasks": {
