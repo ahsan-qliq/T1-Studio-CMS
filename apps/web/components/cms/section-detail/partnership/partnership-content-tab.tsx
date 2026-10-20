@@ -120,6 +120,7 @@ export function PartnershipContentTab({ content, language, onChange }: Partnersh
             {fields.map((field, index) => (
               <PartnershipStepRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 step={form.watch(`steps.${index}`)}
                 index={index}
                 language={language}

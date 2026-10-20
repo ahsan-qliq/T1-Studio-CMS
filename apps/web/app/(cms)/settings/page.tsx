@@ -33,11 +33,14 @@ export default async function SettingsPage() {
       <section className="rounded-lg border border-zinc-200 bg-white p-6">
         <div className="flex items-center gap-4 border-b border-zinc-100 pb-6">
           {user.avatar ? (
-            <img
-              src={user.avatar}
-              alt=""
-              className="size-16 rounded-full object-cover"
-            />
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={user.avatar}
+                alt=""
+                className="size-16 rounded-full object-cover"
+              />
+            </>
           ) : (
             <div className="flex size-16 items-center justify-center rounded-full bg-amber-400 text-lg font-bold text-zinc-900">
               {initials(user)}

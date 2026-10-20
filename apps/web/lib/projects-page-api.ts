@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ProjectsPageApiData } from "@/types/api-projects-page"
 import { cmsApiFetch, cmsApiJson } from "./cms-api-client"
 

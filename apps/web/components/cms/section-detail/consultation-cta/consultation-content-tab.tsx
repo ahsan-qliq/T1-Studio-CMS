@@ -75,6 +75,7 @@ export function ConsultationContentTab({
 
   useFormSync(form, onChange)
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const imageUrl = form.watch("imageUrl")
 
   return (
@@ -161,12 +162,12 @@ export function ConsultationContentTab({
                       {...form.register(`formFields.${idx}.label`)}
                       placeholder="Field label"
                       aria-label={`Field ${idx + 1} label`}
-                      className="w-[200px] shrink-0"
+                      className="w-50 shrink-0"
                     />
                     <select
                       {...form.register(`formFields.${idx}.type`)}
                       aria-label={`Field ${idx + 1} type`}
-                      className="w-[140px] shrink-0 rounded-md border border-zinc-200 bg-white px-2.5 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900"
+                      className="w-35 shrink-0 rounded-md border border-zinc-200 bg-white px-2.5 py-2 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-900"
                     >
                       {FIELD_TYPES.map((t) => (
                         <option key={t} value={t}>

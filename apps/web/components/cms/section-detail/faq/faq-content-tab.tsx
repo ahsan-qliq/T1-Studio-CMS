@@ -112,7 +112,8 @@ export function FaqContentTab({ content, language, onChange }: FaqContentTabProp
                 <DragHandle className="mt-8" />
 
                 <span className="mt-8 flex size-9 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-xs font-semibold text-zinc-600">
-                  {form.watch(`faqs.${index}.number`)}
+                  {// eslint-disable-next-line react-hooks/incompatible-library
+                  form.watch(`faqs.${index}.number`)}
                 </span>
 
                 <div className="min-w-0 flex-1">

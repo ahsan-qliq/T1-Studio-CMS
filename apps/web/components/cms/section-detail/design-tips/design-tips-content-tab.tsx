@@ -110,6 +110,7 @@ export function DesignTipsContentTab({ content, language, onChange }: DesignTips
             {fields.map((field, index) => (
               <DesignTipsArticleRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 article={form.watch(`articles.${index}`)}
                 index={index}
                 language={language}

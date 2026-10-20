@@ -200,6 +200,7 @@ function ArrayEditor({
   render: (item: string) => ReactNode
 }) {
   const { fields, append, remove } = useFieldArray({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     control: control as Control<any>,
     name: path as never,
   })

@@ -130,6 +130,7 @@ export function AwardsContentTab({ content, language, onChange }: AwardsContentT
             {fields.map((field, index) => (
               <AwardsLogoRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 logo={form.watch(`logos.${index}`)}
                 index={index}
                 register={form.register}

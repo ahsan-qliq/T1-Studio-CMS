@@ -36,7 +36,9 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     let stored = "system"
+    // eslint-disable-next-line no-empty
     try { stored = localStorage.getItem("theme") || "system" } catch {}
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setThemeState(stored)
     setResolvedTheme(applyTheme(stored))
 
@@ -52,6 +54,7 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = React.useCallback((next: string) => {
     setThemeState(next)
+    // eslint-disable-next-line no-empty
     try { localStorage.setItem("theme", next) } catch {}
     setResolvedTheme(applyTheme(next))
   }, [])

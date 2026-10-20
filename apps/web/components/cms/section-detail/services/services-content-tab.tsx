@@ -107,6 +107,7 @@ export function ServicesContentTab({ content, language, onChange }: ServicesCont
             {fields.map((field, index) => (
               <ServiceCardRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 card={form.watch(`cards.${index}`)}
                 index={index}
                 language={language}

@@ -221,6 +221,8 @@ export function CookiePolicyPageFormClient({
           control={control}
           name="sections.yourChoices.note"
           label="Note"
+
+          
           multiline
         />
       </SectionAccordion>

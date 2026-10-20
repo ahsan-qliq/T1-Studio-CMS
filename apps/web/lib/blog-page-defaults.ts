@@ -1,10 +1,6 @@
 import type {
-  BlogArticle,
-  BlogCategory,
-  BlogFaqItem,
   BlogFeaturedArticle,
   BlogPageApiData,
-  BlogPartnershipItem,
 } from "@/types/api-blog-page"
 
 import type { ApiImage, Localized } from "@/types/api-home-page"
@@ -26,11 +22,6 @@ const button = () => ({
   openInNewTab: false,
 })
 
-const category = (): BlogCategory => ({
-  key: "",
-  label: localized(),
-})
-
 const featuredArticle = (): BlogFeaturedArticle => ({
   blogSlug: "",
   title: localized(),
@@ -39,33 +30,6 @@ const featuredArticle = (): BlogFeaturedArticle => ({
   image: image(),
   href: "",
   featured: true,
-  isVisible: true,
-})
-
-const article = (): BlogArticle => ({
-  blogSlug: "",
-  title: localized(),
-  excerpt: localized(),
-  category: localized(),
-  categoryKey: "",
-  author: localized(),
-  readTime: localized(),
-  publishedDate: "",
-  image: image(),
-  href: "",
-  featured: false,
-  isVisible: true,
-})
-
-const partnershipItem = (): BlogPartnershipItem => ({
-  icon: "",
-  title: localized(),
-  description: localized(),
-})
-
-const faqItem = (): BlogFaqItem => ({
-  question: localized(),
-  answer: localized(),
   isVisible: true,
 })
 

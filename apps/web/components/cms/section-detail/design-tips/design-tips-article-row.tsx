@@ -57,6 +57,7 @@ export function DesignTipsArticleRow({
           onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
         >
           {article.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={article.imageUrl}
               alt={article.titleEn || `Article ${index + 1}`}

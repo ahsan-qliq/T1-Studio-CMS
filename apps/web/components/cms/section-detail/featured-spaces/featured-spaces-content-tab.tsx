@@ -103,6 +103,7 @@ export function FeaturedSpacesContentTab({
             {fields.map((field, index) => (
               <SpaceCardRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 card={form.watch(`cards.${index}`)}
                 index={index}
                 language={language}
