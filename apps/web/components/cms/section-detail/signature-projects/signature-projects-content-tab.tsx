@@ -146,6 +146,7 @@ export function SignatureProjectsContentTab({
             {fields.map((field, index) => (
               <ProjectCardRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 project={form.watch(`selectedProjects.${index}`)}
                 index={index}
                 register={form.register}
