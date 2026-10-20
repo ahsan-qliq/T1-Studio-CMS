@@ -1,7 +1,6 @@
 "use client"
 
 import { Info } from "lucide-react"
-import { cn } from "@workspace/ui/lib/utils"
 import type { SignatureProjectsContent } from "@/types/cms"
 
 interface DataSourceTabProps {
