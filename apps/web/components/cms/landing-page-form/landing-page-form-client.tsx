@@ -97,6 +97,7 @@ export function LandingPageFormClient({
     }
   })
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const currentSlug = form.watch("slug")
   const currentId = form.watch("_id")
 
