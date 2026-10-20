@@ -135,6 +135,7 @@ export function JourneyContentTab({ content, language, onChange }: JourneyConten
             {fields.map((field, index) => (
               <JourneyStepRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 step={form.watch(`steps.${index}`)}
                 index={index}
                 language={language}
