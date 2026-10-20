@@ -182,7 +182,8 @@ export function FooterContentTab({ content, language, onChange }: FooterContentT
           <div>
             <p className="mb-2 text-xs font-medium text-zinc-600">Social Links</p>
             <div className="space-y-2">
-              {form.watch("socialLinks").map((social, index) => (
+              {// eslint-disable-next-line react-hooks/incompatible-library
+              form.watch("socialLinks").map((social, index) => (
                 <div key={social.id} className="flex items-center gap-2">
                   <span className="w-20 shrink-0 text-xs font-medium text-zinc-500">
                     {social.platform}
