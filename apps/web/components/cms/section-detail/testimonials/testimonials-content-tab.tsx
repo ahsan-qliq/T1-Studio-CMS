@@ -105,6 +105,7 @@ export function TestimonialsContentTab({
             {fields.map((field, index) => (
               <TestimonialCardRow
                 key={field.id}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 testimonial={form.watch(`testimonials.${index}`)}
                 index={index}
                 language={language}
