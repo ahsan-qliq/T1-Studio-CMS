@@ -126,6 +126,7 @@ export function WhyChooseContentTab({ content, language, onChange }: WhyChooseCo
                 register={form.register}
                 getValues={form.getValues}
                 setValue={form.setValue}
+                // eslint-disable-next-line react-hooks/incompatible-library
                 highlighted={form.watch(`columns.${colIndex}.highlighted`)}
                 onToggleHighlight={(value) => {
                   form.setValue(`columns.${colIndex}.highlighted`, value)
