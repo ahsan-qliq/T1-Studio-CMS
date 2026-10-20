@@ -16,21 +16,6 @@ export function generateStaticParams() {
   return [{ slug: "spaces" }, { slug: "projects" }]
 }
 
-/** Shared error panel so a down/misconfigured API doesn't crash the route. */
-function LoadError({ err }: { err: unknown }) {
-  return (
-    <div className="mx-auto max-w-2xl px-6 py-16 text-center">
-      <h1 className="text-lg font-semibold text-zinc-900">
-        Couldn&apos;t load this page
-      </h1>
-      <p className="mt-2 text-sm text-zinc-500">
-        {err instanceof Error ? err.message : "Unknown error"} — is the API
-        running at the configured CMS_API_BASE_URL?
-      </p>
-    </div>
-  )
-}
-
 export default async function PageEditorPage({ params }: PageEditorPageProps) {
   const { slug } = await params
 
