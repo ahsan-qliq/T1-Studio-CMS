@@ -99,6 +99,7 @@ FormLabel.displayName = "FormLabel"
 export const FormControl = React.forwardRef<
   HTMLElement,
   { children: React.ReactElement<React.HTMLAttributes<HTMLElement>> }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 >(({ children }, _ref) => {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
 
