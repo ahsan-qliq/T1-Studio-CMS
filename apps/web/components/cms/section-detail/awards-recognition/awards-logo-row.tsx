@@ -37,6 +37,7 @@ export function AwardsLogoRow({ logo, index, register, setValue, onRemove }: Awa
       <div className="relative shrink-0">
         <div className="flex h-14 w-28 items-center justify-center overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
           {logo.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={logo.imageUrl}
               alt={logo.altText || "Logo"}
