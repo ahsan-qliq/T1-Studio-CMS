@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useState } from "react"
@@ -243,6 +244,7 @@ export function ImageField({
                 }`}
               >
                 {imageValue?.url && !isDirectS3Url(imageValue.url) ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={imageValue.url}
                     alt={label}
