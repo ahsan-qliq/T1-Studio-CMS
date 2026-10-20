@@ -85,6 +85,7 @@ function ImageUploadSlot({
 
   // Update preview when existing imageUrl changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreviewUrl(imageUrl)
   }, [imageUrl])
 
@@ -186,6 +187,7 @@ function ImageUploadSlot({
       >
         {previewUrl ? (
           <div className="relative aspect-video w-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewUrl}
               alt={label}
@@ -356,13 +358,13 @@ export function HeroContentTab({ content, onChange }: Props) {
           <ImageUploadSlot
             label="Desktop Image"
             imageUrl={content.desktopImageUrl}
-            onChange={(_file) => {}}
+            onChange={() => {}}
           />
           <ImageUploadSlot
             label="Mobile Image"
             optional
             imageUrl={content.mobileImageUrl}
-            onChange={(_file) => {}}
+            onChange={() => {}}
           />
         </div>
 
