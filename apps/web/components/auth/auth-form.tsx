@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { FormEvent, useState } from "react"
+import { FormEvent, useState, useTransition } from "react"
 import { Button } from "@workspace/ui/components/button"
 import { Input } from "@workspace/ui/components/input"
 import { Label } from "@workspace/ui/components/label"
@@ -19,6 +19,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [submitting, setSubmitting] = useState(false)
+  const [navigating, startTransition] = useTransition()
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -34,8 +35,9 @@ export function AuthForm({ mode }: AuthFormProps) {
       if (!response.success) {
         throw new Error(response.message ?? "Authentication failed")
       }
-      router.push(mode === "login" ? "/pages/home" : "/login")
-      router.refresh()
+      startTransition(() => {
+        router.replace(mode === "login" ? "/pages/home" : "/login")
+      })
     } catch (cause) {
       setError(getAuthErrorMessage(cause))
     } finally {
@@ -103,8 +105,10 @@ export function AuthForm({ mode }: AuthFormProps) {
             {error}
           </p>
         )}
-        <Button type="submit" disabled={submitting} className="w-full">
-          {submitting
+        <Button type="submit" disabled={submitting || navigating} className="w-full">
+          {navigating
+            ? "Redirecting..."
+            : submitting
             ? "Please wait..."
             : isRegister
               ? "Create account"
